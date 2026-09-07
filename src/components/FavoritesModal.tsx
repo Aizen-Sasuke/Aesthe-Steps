@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Heart, ShoppingBag, Trash2 } from 'lucide-react';
-import { Product } from '../types';
+import { Product, ProductColorVariant } from '../types';
 
 interface FavoritesModalProps {
   isOpen: boolean;
@@ -8,8 +8,8 @@ interface FavoritesModalProps {
   favorites: string[];
   products: Product[];
   onToggleFavorite: (productId: string) => void;
-  onSelectProduct: (product: Product) => void;
-  onQuickBuy: (product: Product) => void;
+  onSelectProduct: (product: Product, variant?: ProductColorVariant) => void;
+  onQuickBuy: (product: Product, variant?: ProductColorVariant) => void;
 }
 
 export const FavoritesModal: React.FC<FavoritesModalProps> = ({
@@ -55,25 +55,46 @@ export const FavoritesModal: React.FC<FavoritesModalProps> = ({
               >
                 <div 
                   onClick={() => {
-                    onSelectProduct(shoe);
+                    onSelectProduct(shoe, shoe.variants?.[0]);
                     onClose();
                   }}
-                  className="flex items-center gap-3 cursor-pointer flex-1"
+                  className="flex items-center gap-3 cursor-pointer flex-1 min-w-0"
                 >
-                  <div className="w-14 h-14 rounded-xl bg-[#FFF5F7] p-1 flex items-center justify-center border border-pink-100">
-                    <img src={shoe.image} alt={shoe.name} className="w-full h-full object-contain" />
+                  <div className="w-14 h-14 rounded-xl bg-[#FFF5F7] p-1 flex items-center justify-center border border-pink-100 flex-shrink-0">
+                    <img
+                      src={shoe.image}
+                      alt={shoe.name}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-contain mix-blend-multiply"
+                    />
                   </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-[#18181B] font-serif-display line-clamp-1">{shoe.name}</h4>
+                  <div className="min-w-0">
+                    <h4 className="text-xs font-bold text-[#18181B] font-serif-display truncate">{shoe.name}</h4>
                     <p className="text-[11px] text-[#DB2777] font-bold">৳ {shoe.priceBDT.toLocaleString()}</p>
-                    <span className="text-[10px] text-[#18181B]/60">{shoe.category}</span>
+                    
+                    {/* Variant swatch pills */}
+                    {shoe.variants && shoe.variants.length > 0 && (
+                      <div className="flex items-center gap-1 pt-1">
+                        {shoe.variants.map((v) => (
+                          <span
+                            key={v.id}
+                            className="w-2.5 h-2.5 rounded-full border border-black/10 inline-block"
+                            style={{ backgroundColor: v.colorHex }}
+                            title={v.name}
+                          />
+                        ))}
+                        <span className="text-[10px] text-[#18181B]/60 ml-1 font-medium">
+                          {shoe.variants.length} shades
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-shrink-0">
                   <button
                     onClick={() => {
-                      onQuickBuy(shoe);
+                      onQuickBuy(shoe, shoe.variants?.[0]);
                       onClose();
                     }}
                     className="p-2.5 rounded-xl bg-[#18181B] hover:bg-[#F472B6] text-white text-xs font-bold flex items-center gap-1 transition-colors"

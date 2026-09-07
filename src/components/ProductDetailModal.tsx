@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Heart, ShoppingBag, Check, Truck, RefreshCw, Star, Footprints, Eye } from 'lucide-react';
-import { Product } from '../types';
+import { Product, ProductColorVariant } from '../types';
 
 interface ProductDetailModalProps {
   product: Product | null;
+  initialVariant?: ProductColorVariant;
   onClose: () => void;
-  onAddToCart: (product: Product, size: number, quantity: number) => void;
+  onAddToCart: (product: Product, size: number, quantity: number, variant?: ProductColorVariant) => void;
   onToggleFavorite: (productId: string) => void;
   isFavorite: boolean;
 }
 
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   product,
+  initialVariant,
   onClose,
   onAddToCart,
   onToggleFavorite,
@@ -20,12 +22,25 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   if (!product) return null;
 
   const [selectedSize, setSelectedSize] = useState<number>(product.sizes[0] || 38);
+  const [selectedVariant, setSelectedVariant] = useState<ProductColorVariant | undefined>(
+    initialVariant || product.variants?.[0]
+  );
   const [quantity, setQuantity] = useState<number>(1);
   const [addedAnimation, setAddedAnimation] = useState(false);
   const [photoView, setPhotoView] = useState<'shoe' | 'feet'>('shoe');
 
+  useEffect(() => {
+    if (product) {
+      setSelectedSize(product.sizes[0] || 38);
+      setSelectedVariant(initialVariant || product.variants?.[0]);
+      setPhotoView('shoe');
+    }
+  }, [product, initialVariant]);
+
+  const activeImage = (photoView === 'shoe' && selectedVariant) ? selectedVariant.image : product.image;
+
   const handleAdd = () => {
-    onAddToCart(product, selectedSize, quantity);
+    onAddToCart(product, selectedSize, quantity, selectedVariant);
     setAddedAnimation(true);
     setTimeout(() => {
       setAddedAnimation(false);
@@ -84,11 +99,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </div>
 
             {/* Main Picture Display */}
-            <div className="relative z-10 w-64 h-64 sm:w-72 sm:h-72 my-4 flex items-center justify-center">
+            <div className="relative z-10 w-64 h-64 sm:w-72 sm:h-72 my-4 flex items-center justify-center transition-all duration-300">
               {photoView === 'shoe' ? (
                 <img
-                  src={product.image}
-                  alt={product.name}
+                  src={activeImage}
+                  alt={selectedVariant ? `${product.name} in ${selectedVariant.name}` : product.name}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain mix-blend-multiply filter drop-shadow-lg"
                 />
@@ -106,12 +121,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
             {/* Badge */}
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FDF2F4] border border-pink-200 text-[#DB2777] text-xs font-bold uppercase tracking-wider">
-              {product.badge || 'Drop 01'} • True to Size
+              {selectedVariant?.badge || product.badge || 'Drop 01'} • True to Size
             </div>
           </div>
 
           {/* Right Column: Specs, Sizing, and Order */}
-          <div className="md:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-5 bg-[#FAF6F0]">
+          <div className="md:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-4 bg-[#FAF6F0]">
             
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -141,6 +156,49 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <p className="text-xs sm:text-sm text-[#18181B]/80 leading-relaxed font-normal">
                 {product.description}
               </p>
+
+              {/* Colorway Swatch Selector */}
+              {product.variants && product.variants.length > 0 && (
+                <div className="pt-2 border-t border-pink-200/60">
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#18181B]">
+                      Colorway: <span className="text-[#DB2777] font-semibold">{selectedVariant?.name}</span>
+                    </label>
+                    {selectedVariant?.badge && (
+                      <span className="text-[10px] uppercase font-bold text-[#DB2777] bg-[#FDF2F4] px-2 py-0.5 rounded-full border border-pink-200">
+                        {selectedVariant.badge}
+                      </span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {product.variants.map((variant) => {
+                      const isSelected = selectedVariant?.id === variant.id;
+                      return (
+                        <button
+                          key={variant.id}
+                          onClick={() => {
+                            setSelectedVariant(variant);
+                            setPhotoView('shoe');
+                          }}
+                          className={`p-2 rounded-xl text-left border transition-all flex items-center gap-2 ${
+                            isSelected
+                              ? 'border-[#DB2777] bg-white ring-2 ring-[#DB2777]/20 shadow-2xs'
+                              : 'border-pink-200 bg-white/60 hover:bg-white hover:border-pink-300'
+                          }`}
+                        >
+                          <span
+                            className="w-4 h-4 rounded-full border border-black/10 flex-shrink-0"
+                            style={{ backgroundColor: variant.colorHex }}
+                          />
+                          <span className="text-[11px] font-semibold text-[#18181B] truncate">
+                            {variant.name}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Craft Specifications */}
               <div className="space-y-1.5 pt-2 border-t border-pink-200/60">
@@ -184,7 +242,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="space-y-3 pt-4 border-t border-pink-200/60">
+            <div className="space-y-3 pt-3 border-t border-pink-200/60">
               <div className="flex items-center gap-3">
                 <button
                   id="modal-add-to-cart-btn"
@@ -197,7 +255,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   }`}
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  <span>{addedAnimation ? 'Added to Bag!' : 'Bag It Now'}</span>
+                  <span>{addedAnimation ? 'Added to Bag!' : `Bag It (${selectedVariant?.name || 'Selected'})`}</span>
                 </button>
 
                 <button

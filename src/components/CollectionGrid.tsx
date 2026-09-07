@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Heart, Eye, ShoppingBag, Sparkles, Filter, Footprints } from 'lucide-react';
-import { Product } from '../types';
+import { Product, ProductColorVariant } from '../types';
 
 interface CollectionGridProps {
   products: Product[];
-  onSelectProduct: (product: Product) => void;
-  onQuickBuy: (product: Product) => void;
+  onSelectProduct: (product: Product, variant?: ProductColorVariant) => void;
+  onQuickBuy: (product: Product, variant?: ProductColorVariant) => void;
   onToggleFavorite: (productId: string) => void;
   isFavorite: (productId: string) => boolean;
   searchQuery: string;
@@ -22,6 +22,7 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [priceFilter, setPriceFilter] = useState<'all' | 'under2500' | 'statement'>('all');
   const [activeViewMode, setActiveViewMode] = useState<Record<string, 'shoe' | 'feet'>>({});
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
 
   const categories = [
     { id: 'all', label: 'All 3 Core Drops' },
@@ -151,6 +152,9 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
             {filteredProducts.map((product) => {
               const favorited = isFavorite(product.id);
               const viewMode = activeViewMode[product.id] || 'shoe';
+              const activeVariantId = selectedVariants[product.id];
+              const currentVariant = product.variants?.find((v) => v.id === activeVariantId) || product.variants?.[0];
+              const cardDisplayImage = (viewMode === 'shoe' && currentVariant) ? currentVariant.image : product.image;
 
               return (
                 <div
@@ -161,7 +165,7 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
                   {/* Top Bar: Minimal Badge & Heart (Float freely, no card border) */}
                   <div className="w-full flex items-center justify-between px-2 mb-2 z-20">
                     <span className="text-[11px] font-bold tracking-widest uppercase text-[#DB2777]">
-                      {product.badge || 'Drop 01'}
+                      {currentVariant?.badge || product.badge || 'Drop 01'}
                     </span>
 
                     <div className="flex items-center gap-1.5">
@@ -194,7 +198,7 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
 
                   {/* Clean Footwear Floating Silhouette (NO BOXES, NO BORDERS, NO CARDS) */}
                   <div
-                    onClick={() => onSelectProduct(product)}
+                    onClick={() => onSelectProduct(product, currentVariant)}
                     className="relative w-full h-72 sm:h-80 flex items-center justify-center cursor-pointer group/shoe my-2"
                   >
                     {/* Natural ambient blur shadow beneath shoe */}
@@ -214,10 +218,10 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
                       </div>
                     ) : (
                       /* Footwear cutout using mix-blend-multiply to completely remove white background */
-                      <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center">
+                      <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center transition-all duration-300">
                         <img
-                          src={product.image}
-                          alt={product.name}
+                          src={cardDisplayImage}
+                          alt={currentVariant ? `${product.name} - ${currentVariant.name}` : product.name}
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-contain mix-blend-multiply filter drop-shadow-md group-hover:-translate-y-3 group-hover:scale-108 transition-all duration-400 ease-out"
                         />
@@ -233,10 +237,10 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
                   </div>
 
                   {/* Open Editorial Typography (No boxed card footer) */}
-                  <div className="w-full pt-4 space-y-2">
+                  <div className="w-full pt-4 space-y-2.5">
                     <div>
                       <h3
-                        onClick={() => onSelectProduct(product)}
+                        onClick={() => onSelectProduct(product, currentVariant)}
                         className="font-serif-display text-xl sm:text-2xl font-normal text-[#18181B] hover:text-[#DB2777] transition-colors cursor-pointer"
                       >
                         {product.name}
@@ -246,8 +250,43 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
                       </p>
                     </div>
 
+                    {/* Professional Color Swatches */}
+                    {product.variants && product.variants.length > 0 && (
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="flex items-center justify-center gap-2">
+                          {product.variants.map((v) => {
+                            const isSelected = currentVariant?.id === v.id;
+                            return (
+                              <button
+                                key={v.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedVariants((prev) => ({ ...prev, [product.id]: v.id }));
+                                  setActiveViewMode((prev) => ({ ...prev, [product.id]: 'shoe' }));
+                                }}
+                                className={`w-5 h-5 rounded-full transition-all duration-200 flex items-center justify-center ${
+                                  isSelected
+                                    ? 'ring-2 ring-[#DB2777] scale-110'
+                                    : 'ring-1 ring-black/10 hover:scale-105'
+                                }`}
+                                title={`${v.name} - ${v.badge || ''}`}
+                              >
+                                <span
+                                  className="w-3.5 h-3.5 rounded-full"
+                                  style={{ backgroundColor: v.colorHex }}
+                                />
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <span className="text-[10px] font-semibold text-[#18181B]/60 tracking-wider">
+                          Shade: <span className="text-[#DB2777]">{currentVariant?.name}</span>
+                        </span>
+                      </div>
+                    )}
+
                     {/* Price and Minimal Bag It Button */}
-                    <div className="pt-2 flex items-center justify-center gap-3">
+                    <div className="pt-1 flex items-center justify-center gap-3">
                       <div className="text-base sm:text-lg font-bold text-[#18181B]">
                         ৳ {product.priceBDT.toLocaleString()}
                         <span className="text-[11px] text-[#18181B]/50 font-normal ml-1.5">
@@ -257,7 +296,7 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
 
                       <button
                         id={`card-buy-${product.id}`}
-                        onClick={() => onQuickBuy(product)}
+                        onClick={() => onQuickBuy(product, currentVariant)}
                         className="px-5 py-2 rounded-full bg-[#18181B] text-white hover:bg-[#DB2777] font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-xs active:scale-95 flex items-center gap-1.5"
                       >
                         <span>Bag It</span>

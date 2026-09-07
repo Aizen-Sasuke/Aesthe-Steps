@@ -6,8 +6,8 @@ interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   cartItems: CartItem[];
-  onUpdateQuantity: (productId: string, size: number, quantity: number) => void;
-  onRemoveItem: (productId: string, size: number) => void;
+  onUpdateQuantity: (productId: string, size: number, quantity: number, variantId?: string) => void;
+  onRemoveItem: (productId: string, size: number, variantId?: string) => void;
   onClearCart: () => void;
 }
 
@@ -160,67 +160,83 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <>
                 {/* Cart Items List */}
                 <div className="space-y-3">
-                  {cartItems.map((item) => (
-                    <div
-                      key={`${item.product.id}-${item.selectedSize}`}
-                      className="p-3.5 rounded-2xl bg-white border border-pink-200/80 flex items-center gap-3 shadow-2xs"
-                    >
-                      <div className="w-16 h-16 rounded-xl bg-[#FFF5F7] p-1 flex items-center justify-center border border-pink-100 flex-shrink-0">
-                        <img
-                          src={item.product.image}
-                          alt={item.product.name}
-                          referrerPolicy="no-referrer"
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
+                  {cartItems.map((item) => {
+                    const itemImage = item.selectedVariant?.image || item.product.image;
+                    const itemKey = `${item.product.id}-${item.selectedSize}-${item.selectedVariant?.id || 'std'}-${item.customEngraving || ''}`;
 
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-xs font-bold text-[#18181B] font-serif-display truncate">
-                          {item.product.name}
-                        </h4>
-                        <div className="flex items-center gap-2 text-[11px] text-[#18181B]/60 pt-0.5">
-                          <span>Size: EU {item.selectedSize}</span>
-                          {item.customEngraving && (
-                            <span className="text-[#DB2777] text-[10px] bg-pink-50 px-1.5 py-0.5 rounded border border-pink-200">
-                              Stamp: {item.customEngraving}
+                    return (
+                      <div
+                        key={itemKey}
+                        className="p-3.5 rounded-2xl bg-white border border-pink-200/80 flex items-center gap-3 shadow-2xs"
+                      >
+                        <div className="w-16 h-16 rounded-xl bg-[#FFF5F7] p-1 flex items-center justify-center border border-pink-100 flex-shrink-0">
+                          <img
+                            src={itemImage}
+                            alt={item.selectedVariant ? `${item.product.name} in ${item.selectedVariant.name}` : item.product.name}
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-contain mix-blend-multiply"
+                          />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-xs font-bold text-[#18181B] font-serif-display truncate">
+                            {item.product.name}
+                          </h4>
+
+                          {/* Variant & Size details */}
+                          <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#18181B]/70 pt-0.5">
+                            {item.selectedVariant && (
+                              <span className="inline-flex items-center gap-1 font-semibold text-[#DB2777]">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full border border-black/10 inline-block"
+                                  style={{ backgroundColor: item.selectedVariant.colorHex }}
+                                />
+                                <span>{item.selectedVariant.name}</span>
+                              </span>
+                            )}
+                            <span>EU {item.selectedSize}</span>
+                            {item.customEngraving && (
+                              <span className="text-[#DB2777] text-[10px] bg-pink-50 px-1.5 py-0.5 rounded border border-pink-200">
+                                Stamp: {item.customEngraving}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs font-bold text-[#18181B] pt-1">
+                            ৳ {(item.product.priceBDT * item.quantity).toLocaleString()}
+                          </div>
+                        </div>
+
+                        {/* Quantity & Remove */}
+                        <div className="flex flex-col items-end gap-2">
+                          <button
+                            onClick={() => onRemoveItem(item.product.id, item.selectedSize, item.selectedVariant?.id)}
+                            className="text-[#18181B]/40 hover:text-rose-500 p-1 transition-colors"
+                            title="Remove item"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+
+                          <div className="flex items-center gap-1.5 bg-[#FAF6F0] px-2 py-1 rounded-lg border border-pink-200">
+                            <button
+                              onClick={() => onUpdateQuantity(item.product.id, item.selectedSize, item.quantity - 1, item.selectedVariant?.id)}
+                              className="text-[#18181B]/70 hover:text-[#18181B]"
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <span className="text-xs font-bold text-[#18181B] min-w-[14px] text-center">
+                              {item.quantity}
                             </span>
-                          )}
-                        </div>
-                        <div className="text-xs font-bold text-[#18181B] pt-1">
-                          ৳ {(item.product.priceBDT * item.quantity).toLocaleString()}
-                        </div>
-                      </div>
-
-                      {/* Quantity & Remove */}
-                      <div className="flex flex-col items-end gap-2">
-                        <button
-                          onClick={() => onRemoveItem(item.product.id, item.selectedSize)}
-                          className="text-[#18181B]/40 hover:text-rose-500 p-1 transition-colors"
-                          title="Remove item"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-
-                        <div className="flex items-center gap-1.5 bg-[#FAF6F0] px-2 py-1 rounded-lg border border-pink-200">
-                          <button
-                            onClick={() => onUpdateQuantity(item.product.id, item.selectedSize, item.quantity - 1)}
-                            className="text-[#18181B]/70 hover:text-[#18181B]"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="text-xs font-bold text-[#18181B] min-w-[14px] text-center">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() => onUpdateQuantity(item.product.id, item.selectedSize, item.quantity + 1)}
-                            className="text-[#18181B]/70 hover:text-[#18181B]"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
+                            <button
+                              onClick={() => onUpdateQuantity(item.product.id, item.selectedSize, item.quantity + 1, item.selectedVariant?.id)}
+                              className="text-[#18181B]/70 hover:text-[#18181B]"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Delivery Destination Options */}

@@ -11,7 +11,7 @@ import { SizeGuideModal } from './components/SizeGuideModal';
 import { Footer } from './components/Footer';
 
 import { HERO_PRODUCTS, ALL_PRODUCTS } from './data/products';
-import { Product, CartItem, ActiveNavTab } from './types';
+import { Product, CartItem, ActiveNavTab, ProductColorVariant } from './types';
 import { Check, Sparkles, Heart } from 'lucide-react';
 
 export default function App() {
@@ -39,6 +39,7 @@ export default function App() {
   const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null);
+  const [selectedProductVariant, setSelectedProductVariant] = useState<ProductColorVariant | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Toast notification state
@@ -69,10 +70,22 @@ export default function App() {
   };
 
   // Cart operations
-  const handleAddToCart = (product: Product, selectedSize: number, quantity: number = 1, customEngraving?: string) => {
+  const handleAddToCart = (
+    product: Product,
+    selectedSize: number,
+    quantity: number = 1,
+    variant?: ProductColorVariant,
+    customEngraving?: string
+  ) => {
+    const activeVariant = variant || product.variants?.[0];
+
     setCartItems((prev) => {
       const existingIndex = prev.findIndex(
-        (item) => item.product.id === product.id && item.selectedSize === selectedSize && item.customEngraving === customEngraving
+        (item) =>
+          item.product.id === product.id &&
+          item.selectedSize === selectedSize &&
+          item.selectedVariant?.id === activeVariant?.id &&
+          item.customEngraving === customEngraving
       );
 
       if (existingIndex > -1) {
@@ -80,35 +93,54 @@ export default function App() {
         updated[existingIndex].quantity += quantity;
         return updated;
       } else {
-        return [...prev, { product, selectedSize, quantity, customEngraving }];
+        return [
+          ...prev,
+          { product, selectedSize, quantity, selectedVariant: activeVariant, customEngraving }
+        ];
       }
     });
 
-    showToast(`Added ${product.name} (EU ${selectedSize}) to bag!`);
+    const variantLabel = activeVariant ? ` (${activeVariant.name})` : '';
+    showToast(`Added ${product.name}${variantLabel} to bag!`);
   };
 
-  const handleQuickBuy = (product: Product) => {
-    handleAddToCart(product, product.sizes[0] || 38, 1);
+  const handleQuickBuy = (product: Product, variant?: ProductColorVariant) => {
+    const activeVariant = variant || product.variants?.[0];
+    handleAddToCart(product, product.sizes[0] || 38, 1, activeVariant);
     setIsCartOpen(true);
   };
 
-  const handleUpdateQuantity = (productId: string, size: number, quantity: number) => {
+  const handleUpdateQuantity = (
+    productId: string,
+    size: number,
+    quantity: number,
+    variantId?: string
+  ) => {
     if (quantity <= 0) {
-      handleRemoveItem(productId, size);
+      handleRemoveItem(productId, size, variantId);
       return;
     }
     setCartItems((prev) =>
       prev.map((item) =>
-        item.product.id === productId && item.selectedSize === size
+        item.product.id === productId &&
+        item.selectedSize === size &&
+        item.selectedVariant?.id === variantId
           ? { ...item, quantity }
           : item
       )
     );
   };
 
-  const handleRemoveItem = (productId: string, size: number) => {
+  const handleRemoveItem = (productId: string, size: number, variantId?: string) => {
     setCartItems((prev) =>
-      prev.filter((item) => !(item.product.id === productId && item.selectedSize === size))
+      prev.filter(
+        (item) =>
+          !(
+            item.product.id === productId &&
+            item.selectedSize === size &&
+            item.selectedVariant?.id === variantId
+          )
+      )
     );
   };
 
@@ -186,8 +218,11 @@ export default function App() {
         {/* 1. Hero Circular Arc Orbit Carousel (Matches Video) */}
         <HeroCarousel
           products={HERO_PRODUCTS}
-          onSelectProduct={(p) => setSelectedProductForDetail(p)}
-          onQuickBuy={handleQuickBuy}
+          onSelectProduct={(p, v) => {
+            setSelectedProductForDetail(p);
+            setSelectedProductVariant(v);
+          }}
+          onQuickBuy={(p, v) => handleQuickBuy(p, v)}
           onToggleFavorite={handleToggleFavorite}
           isFavorite={isFavorite}
           onScrollToCollection={handleScrollToCollection}
@@ -201,8 +236,11 @@ export default function App() {
         {/* 3. "Ultimate Collection" Bento Grid (Matches Video) */}
         <CollectionGrid
           products={ALL_PRODUCTS}
-          onSelectProduct={(p) => setSelectedProductForDetail(p)}
-          onQuickBuy={handleQuickBuy}
+          onSelectProduct={(p, v) => {
+            setSelectedProductForDetail(p);
+            setSelectedProductVariant(v);
+          }}
+          onQuickBuy={(p, v) => handleQuickBuy(p, v)}
           onToggleFavorite={handleToggleFavorite}
           isFavorite={isFavorite}
           searchQuery={searchQuery}
@@ -245,8 +283,12 @@ export default function App() {
 
       <ProductDetailModal
         product={selectedProductForDetail}
-        onClose={() => setSelectedProductForDetail(null)}
-        onAddToCart={(prod, size, qty) => handleAddToCart(prod, size, qty)}
+        initialVariant={selectedProductVariant}
+        onClose={() => {
+          setSelectedProductForDetail(null);
+          setSelectedProductVariant(undefined);
+        }}
+        onAddToCart={(prod, size, qty, variant) => handleAddToCart(prod, size, qty, variant)}
         onToggleFavorite={handleToggleFavorite}
         isFavorite={selectedProductForDetail ? isFavorite(selectedProductForDetail.id) : false}
       />
@@ -256,7 +298,7 @@ export default function App() {
         onClose={() => setIsCustomizeOpen(false)}
         products={HERO_PRODUCTS}
         onAddCustomizedToCart={(product, size, stamp, tone) => {
-          handleAddToCart(product, size, 1, `${stamp} (${tone})`);
+          handleAddToCart(product, size, 1, undefined, `${stamp} (${tone})`);
           setIsCartOpen(true);
         }}
       />
@@ -267,8 +309,11 @@ export default function App() {
         favorites={favorites}
         products={ALL_PRODUCTS}
         onToggleFavorite={handleToggleFavorite}
-        onSelectProduct={(p) => setSelectedProductForDetail(p)}
-        onQuickBuy={handleQuickBuy}
+        onSelectProduct={(p, v) => {
+          setSelectedProductForDetail(p);
+          setSelectedProductVariant(v);
+        }}
+        onQuickBuy={(p, v) => handleQuickBuy(p, v)}
       />
 
       <SizeGuideModal

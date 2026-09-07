@@ -149,6 +149,88 @@ export const LookbookSection: React.FC<LookbookSectionProps> = ({ onShopNow }) =
 
         </div>
 
+        {/* New: The 12-Shade Palette Spectrum Editorial Feature */}
+        {LOOKBOOK_IMAGES.paletteLookbook && (
+          <div className="mt-16 sm:mt-20 pt-12 border-t border-pink-200/60">
+            <div className="relative rounded-3xl overflow-hidden bg-[#FAF6F0] border border-pink-200/80 shadow-lg grid grid-cols-1 lg:grid-cols-12 items-center">
+              
+              {/* Left Column: Story & Palette Chips */}
+              <div className="lg:col-span-6 p-8 sm:p-12 space-y-5 text-left order-2 lg:order-1">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FDF2F4] border border-pink-200 text-[#DB2777] text-xs font-bold uppercase tracking-wider">
+                  <Sparkles className="w-3 h-3" />
+                  Colorway Architecture
+                </div>
+
+                <h3 className="font-serif-display text-2xl sm:text-3xl lg:text-4xl font-normal text-[#18181B] tracking-tight">
+                  12 Curated Shades. <br />
+                  <span className="italic text-[#DB2777]">Tailored For Dhaka Wardrobes.</span>
+                </h3>
+
+                <p className="text-sm text-[#18181B]/80 leading-relaxed font-normal">
+                  Whether you're pairing them with distressed denim for a university run or an embroidered pastel kurta for family dinners, every silhouette comes in 4 dedicated, tested colorways.
+                </p>
+
+                {/* Color Chips preview */}
+                <div className="space-y-2 pt-2">
+                  <span className="text-[11px] font-bold text-[#18181B]/60 uppercase tracking-wider">
+                    Core Drop Palettes:
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { name: 'Blush Pink', color: '#f472b6' },
+                      { name: 'Obsidian Noir', color: '#18181b' },
+                      { name: 'Pearl Ivory', color: '#f8fafc' },
+                      { name: 'Champagne Peach', color: '#fed7aa' },
+                      { name: 'Midnight Diamond', color: '#27272a' },
+                      { name: 'Silver Starlight', color: '#e2e8f0' },
+                      { name: 'Rose Gold Shimmer', color: '#fb7185' },
+                      { name: 'Caramel Tan', color: '#d97706' },
+                      { name: 'Oatmeal Cream', color: '#fef3c7' },
+                      { name: 'Midnight Bow', color: '#1c1917' }
+                    ].map((shade, i) => (
+                      <span
+                        key={i}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-pink-200 text-[11px] font-medium text-[#18181B] shadow-2xs"
+                      >
+                        <span
+                          className="w-2.5 h-2.5 rounded-full border border-black/10 flex-shrink-0"
+                          style={{ backgroundColor: shade.color }}
+                        />
+                        <span>{shade.name}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    onClick={onShopNow}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#18181B] text-white hover:bg-[#DB2777] text-xs font-bold uppercase tracking-wider transition-colors shadow-xs"
+                  >
+                    <span>Explore All 12 Shades</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Column: Editorial Rug Flatlay Photo */}
+              <div className="lg:col-span-6 h-72 sm:h-96 lg:h-full relative overflow-hidden order-1 lg:order-2">
+                <img
+                  src={LOOKBOOK_IMAGES.paletteLookbook}
+                  alt="Aesthe Steps Color Variants Flatlay on Persian Rug"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent lg:hidden" />
+                <div className="absolute bottom-4 left-4 lg:bottom-6 lg:left-6 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-xs text-[#18181B] text-[11px] font-bold shadow-md">
+                  Studio Flatlay // Dhaka Drop 01
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
       </div>
     </section>
   );

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, ArrowRight, Heart, Sparkles, Footprints, Eye } from 'lucide-react';
-import { Product } from '../types';
+import { ChevronLeft, ChevronRight, ArrowRight, Heart, Sparkles, Footprints, Eye, Palette } from 'lucide-react';
+import { Product, ProductColorVariant } from '../types';
 
 interface HeroCarouselProps {
   products: Product[];
-  onSelectProduct: (product: Product) => void;
-  onQuickBuy: (product: Product) => void;
+  onSelectProduct: (product: Product, variant?: ProductColorVariant) => void;
+  onQuickBuy: (product: Product, variant?: ProductColorVariant) => void;
   onToggleFavorite: (productId: string) => void;
   isFavorite: (productId: string) => boolean;
   onScrollToCollection: () => void;
@@ -23,9 +23,22 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [viewMode, setViewMode] = useState<'product' | 'feet'>('product');
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
 
   const currentProduct = products[currentIndex];
   const total = products.length;
+
+  // Reset selected variant when product changes
+  useEffect(() => {
+    if (currentProduct?.variants && currentProduct.variants.length > 0) {
+      setSelectedVariantId(currentProduct.variants[0].id);
+    } else {
+      setSelectedVariantId(null);
+    }
+  }, [currentIndex, currentProduct]);
+
+  const activeVariant = currentProduct.variants?.find(v => v.id === selectedVariantId) || currentProduct.variants?.[0];
+  const displayImage = (viewMode === 'product' && activeVariant) ? activeVariant.image : currentProduct.image;
 
   const handlePrev = () => {
     setDirection(-1);
@@ -172,14 +185,14 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               <div className="relative flex-1 flex flex-col items-center justify-center py-4">
                 <AnimatePresence mode="wait" custom={direction}>
                   <motion.div
-                    key={`${currentProduct.id}-${viewMode}`}
+                    key={`${currentProduct.id}-${viewMode}-${selectedVariantId || 'default'}`}
                     custom={direction}
                     initial={{ opacity: 0, x: direction * 80, scale: 0.9 }}
                     animate={{ opacity: 1, x: 0, scale: 1 }}
                     exit={{ opacity: 0, x: -direction * 80, scale: 0.9 }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                     className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 flex items-center justify-center select-none cursor-pointer group"
-                    onClick={() => onSelectProduct(currentProduct)}
+                    onClick={() => onSelectProduct(currentProduct, activeVariant)}
                   >
                     {/* Natural organic ground shadow */}
                     <div className="absolute bottom-6 w-3/4 h-7 rounded-full bg-[#18181B]/8 blur-xl transition-all duration-500 group-hover:scale-110" />
@@ -192,8 +205,8 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                         className="relative z-10 w-full h-full flex items-center justify-center"
                       >
                         <img
-                          src={currentProduct.image}
-                          alt={currentProduct.name}
+                          src={displayImage}
+                          alt={activeVariant ? `${currentProduct.name} in ${activeVariant.name}` : currentProduct.name}
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-contain mix-blend-multiply filter drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
                         />
@@ -252,10 +265,10 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
             </div>
 
             {/* Active Shoe Details & Immediate BUY Pill */}
-            <div className="mt-2 text-center space-y-1.5 z-20">
+            <div className="mt-2 text-center space-y-2 z-20">
               <div className="flex items-center justify-center gap-2">
                 <span className="text-xs font-bold tracking-wider text-[#DB2777] uppercase">
-                  {currentProduct.badge || 'Drop 01'}
+                  {activeVariant?.badge || currentProduct.badge || 'Drop 01'}
                 </span>
                 <span className="text-pink-300">•</span>
                 <span className="text-xs text-[#18181B]/70 font-medium">
@@ -267,8 +280,45 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                 {currentProduct.name}
               </h2>
 
+              {/* Professional Colorway Swatch Bar */}
+              {currentProduct.variants && currentProduct.variants.length > 0 && (
+                <div className="flex flex-col items-center gap-1.5 pt-1">
+                  <div className="flex items-center gap-1.5 flex-wrap justify-center">
+                    <span className="text-[11px] font-bold text-[#18181B]/60 uppercase tracking-wider mr-1">
+                      Color:
+                    </span>
+                    {currentProduct.variants.map((variant) => {
+                      const isSelected = activeVariant?.id === variant.id;
+                      return (
+                        <button
+                          key={variant.id}
+                          id={`hero-color-${variant.id}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedVariantId(variant.id);
+                            setViewMode('product');
+                          }}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
+                            isSelected
+                              ? 'bg-white shadow-sm ring-1 ring-[#DB2777] text-[#DB2777] scale-105'
+                              : 'bg-white/60 hover:bg-white text-[#18181B]/70 hover:text-[#18181B]'
+                          }`}
+                          title={`${variant.name} (${variant.badge || 'Colorway'})`}
+                        >
+                          <span
+                            className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs flex-shrink-0"
+                            style={{ backgroundColor: variant.colorHex }}
+                          />
+                          <span className="text-[11px] font-medium">{variant.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Price & Buy Action */}
-              <div className="flex items-center justify-center gap-3 pt-1">
+              <div className="flex items-center justify-center gap-3 pt-2">
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-xl sm:text-2xl font-bold text-[#18181B]">
                     ৳ {currentProduct.priceBDT.toLocaleString()}
@@ -280,7 +330,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
                 <button
                   id={`hero-buy-${currentProduct.id}`}
-                  onClick={() => onQuickBuy(currentProduct)}
+                  onClick={() => onQuickBuy(currentProduct, activeVariant)}
                   className="px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider bg-[#18181B] text-white hover:bg-[#DB2777] hover:text-white transition-all shadow-sm hover:scale-105 active:scale-95 flex items-center gap-1.5"
                 >
                   <span>Bag It</span>

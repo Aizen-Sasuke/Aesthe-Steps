@@ -1,3 +1,12 @@
+export interface ProductColorVariant {
+  id: string;
+  name: string;
+  colorHex: string;
+  secondaryHex?: string;
+  image: string;
+  badge?: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -14,6 +23,7 @@ export interface Product {
     ringColor: string;
   };
   sizes: number[];
+  variants?: ProductColorVariant[];
   badge?: string;
   description: string;
   details: string[];
@@ -25,6 +35,7 @@ export interface Product {
 export interface CartItem {
   product: Product;
   selectedSize: number;
+  selectedVariant?: ProductColorVariant;
   quantity: number;
   customEngraving?: string;
 }
