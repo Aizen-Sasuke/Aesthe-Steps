@@ -73,7 +73,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center pt-2 pb-6">
           
           {/* Left Column: Typography & Story */}
-          <div className="lg:col-span-5 flex flex-col justify-center text-left space-y-5 z-20">
+          <div className="lg:col-span-5 flex flex-col justify-center text-left space-y-4 sm:space-y-5 z-20">
             
             {/* Dhaka Gen-Z Pill Badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 w-fit">
@@ -84,14 +84,14 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
             </div>
 
             {/* Main Quirky Fashion Editorial Serif Headline */}
-            <div className="space-y-2">
+            <div className="space-y-1.5 sm:space-y-2">
               <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl font-normal text-[#18181B] dark:text-zinc-50 leading-[1.05] tracking-tight">
                 Cute shoes. <br />
                 <span className="italic font-normal text-[#DB2777] dark:text-pink-400">
                   Zero blister drama.
                 </span>
               </h1>
-              <p className="text-xs font-bold tracking-[0.2em] text-[#18181B]/60 dark:text-zinc-400 uppercase pt-1">
+              <p className="text-[11px] sm:text-xs font-bold tracking-[0.2em] text-[#18181B]/60 dark:text-zinc-400 uppercase pt-0.5">
                 AESTHÉ STEPS • BY HAX & MAHIN
               </p>
             </div>
@@ -101,33 +101,33 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               Every cute sandal in Dhaka used to bite your heels. We built slides with 180g featherlight cloud soles and heat-pressed glass crystals that actually stay on when you walk.
             </p>
 
-            {/* Micro Badges (Cash on Delivery & Swaps) */}
-            <div className="flex flex-wrap gap-2 text-xs text-[#18181B] dark:text-zinc-200 pt-1">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 font-medium shadow-2xs">
+            {/* Micro Badges (Cash on Delivery & Swaps) - Rhythmic consistent spacing */}
+            <div className="flex flex-wrap gap-2 text-xs text-[#18181B] dark:text-zinc-200">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF5EE] dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-800/80 font-medium text-[11px] sm:text-xs shadow-2xs">
                 🛵 Cash on Delivery (All BD)
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 font-medium shadow-2xs">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF5EE] dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-800/80 font-medium text-[11px] sm:text-xs shadow-2xs">
                 ⚡ Free 7-Day Size Swaps
               </span>
             </div>
 
-            {/* CTA Buttons */}
-            <div className="pt-2 flex flex-wrap items-center gap-3">
+            {/* CTA Buttons - Harmonized height & responsive wrapping */}
+            <div className="flex flex-col min-[380px]:flex-row items-stretch min-[380px]:items-center gap-2.5 sm:gap-3 pt-0.5">
               <button
                 id="hero-explore-btn"
                 onClick={onScrollToCollection}
-                className="group flex items-center gap-3 px-7 py-3.5 rounded-full bg-[#18181B] dark:bg-pink-600 text-[#FAF6F0] dark:text-white font-bold text-xs sm:text-sm uppercase tracking-wider hover:bg-[#F472B6] dark:hover:bg-pink-500 hover:text-white transition-all duration-300 shadow-md hover:shadow-pink-300"
+                className="group flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-[#18181B] dark:bg-pink-600 text-[#FAF6F0] dark:text-white font-bold text-xs sm:text-sm uppercase tracking-wider hover:bg-[#F472B6] dark:hover:bg-pink-500 hover:text-white transition-all duration-300 shadow-sm"
               >
                 <span>Shop The Lineup ({total})</span>
-                <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center group-hover:translate-x-1 transition-transform">
-                  <ArrowRight className="w-3.5 h-3.5" />
+                <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                  <ArrowRight className="w-3 h-3" />
                 </span>
               </button>
 
               <button
                 id="hero-toggle-view"
                 onClick={() => setViewMode(viewMode === 'product' ? 'feet' : 'product')}
-                className="flex items-center gap-2 px-5 py-3 rounded-full bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-300/80 dark:border-zinc-700 text-xs font-bold text-[#DB2777] dark:text-pink-300 hover:bg-pink-100 dark:hover:bg-zinc-800 transition-colors"
+                className="flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#FAF5EE] dark:bg-zinc-900 border border-pink-300/80 dark:border-zinc-700 text-xs font-bold text-[#DB2777] dark:text-pink-300 hover:bg-pink-100/60 dark:hover:bg-zinc-800 transition-colors"
               >
                 {viewMode === 'product' ? (
                   <>
@@ -145,77 +145,84 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
           </div>
 
           {/* Right Column: Clean Product Showcase (Unboxed, open luxury editorial) */}
-          <div className="lg:col-span-7 relative flex flex-col items-center justify-center min-h-[420px] sm:min-h-[480px]">
+          <div className="lg:col-span-7 relative flex flex-col items-center justify-center min-h-[400px] sm:min-h-[460px]">
             
-            {/* Ambient soft glow wash (NO concentric ring borders or dashed circles) */}
+            {/* Ambient soft glow wash */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-[360px] sm:w-[500px] h-[360px] sm:h-[500px] rounded-full bg-gradient-to-br from-[#FDF2F4] via-pink-50/40 to-transparent dark:from-pink-900/30 dark:via-pink-950/20 dark:to-transparent blur-3xl opacity-100 dark:opacity-50" />
+              <div className="w-[320px] sm:w-[480px] h-[320px] sm:h-[480px] rounded-full bg-gradient-to-br from-[#FDF5E8]/60 via-pink-100/30 to-transparent dark:from-pink-950/20 dark:via-zinc-900/20 dark:to-transparent blur-3xl opacity-100 dark:opacity-60" />
             </div>
 
-            {/* Carousel Stage Controls */}
-            <div className="relative w-full max-w-xl flex items-center justify-between px-2 sm:px-4 z-20">
+            {/* Carousel Stage (Controls overlaid & docked to image presentation area) */}
+            <div className="relative w-full max-w-lg flex items-center justify-center px-0 sm:px-2 z-20">
               
-              {/* Left Arrow Button (Minimal unboxed aesthetic) */}
-              <button
-                id="hero-carousel-prev"
-                onClick={handlePrev}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 dark:bg-zinc-800/90 hover:bg-[#18181B] dark:hover:bg-zinc-100 text-[#18181B] dark:text-zinc-100 hover:text-white dark:hover:text-[#18181B] flex items-center justify-center shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 z-30"
-                aria-label="Previous shoe"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-
-              {/* Orbiting Left Preview Footwear (Clickable floating silhouette) */}
+              {/* Orbiting Left Preview Footwear (Desktop only) */}
               <div 
                 onClick={handlePrev}
-                className="hidden sm:block absolute left-2 md:left-6 top-1/2 -translate-y-1/2 -translate-x-1/4 scale-65 opacity-40 hover:opacity-90 hover:scale-75 transition-all duration-300 cursor-pointer z-10"
+                className="hidden md:block absolute -left-10 lg:-left-16 top-1/2 -translate-y-1/2 scale-65 opacity-35 hover:opacity-90 hover:scale-75 transition-all duration-300 cursor-pointer z-10"
                 title={`Switch to ${prevProduct.name}`}
               >
-                <div className="w-40 h-40 flex items-center justify-center rotate-[-15deg]">
+                <div className="w-36 h-36 flex items-center justify-center rotate-[-15deg]">
                   <img
                     src={prevProduct.image}
                     alt={prevProduct.name}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal filter drop-shadow-md"
+                    className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
                   />
                 </div>
               </div>
 
-              {/* Center Main Hero Shoe with Levitation & Lifestyle Toggle */}
-              <div className="relative flex-1 flex flex-col items-center justify-center py-4">
+              {/* Center Main Stage Area with Docked Arrow Controls */}
+              <div className="relative w-full max-w-[320px] sm:max-w-[380px] md:max-w-[420px] flex items-center justify-center py-2 sm:py-4">
+                
+                {/* Left Arrow Button - Physically docked & overlaid with subtle frosted scrim */}
+                <button
+                  id="hero-carousel-prev"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePrev();
+                  }}
+                  className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FAF6F0]/85 dark:bg-zinc-900/85 backdrop-blur-md border border-pink-200/60 dark:border-zinc-800 text-[#18181B] dark:text-zinc-200 hover:bg-[#18181B] dark:hover:bg-white hover:text-white dark:hover:text-[#18181B] flex items-center justify-center shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 z-30"
+                  aria-label="Previous shoe"
+                >
+                  <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                </button>
+
+                {/* Subtle soft warm pedestal that integrates naturally into cream background */}
+                <div className="absolute inset-2 sm:inset-4 rounded-3xl bg-gradient-to-b from-[#F7EFE6]/50 via-[#FAF6F0]/20 to-transparent dark:from-zinc-800/20 dark:via-zinc-900/10 dark:to-transparent pointer-events-none" />
+
                 <AnimatePresence mode="wait" custom={direction}>
                   <motion.div
                     key={`${currentProduct.id}-${viewMode}-${selectedVariantId || 'default'}`}
                     custom={direction}
-                    initial={{ opacity: 0, x: direction * 80, scale: 0.9 }}
+                    initial={{ opacity: 0, x: direction * 60, scale: 0.95 }}
                     animate={{ opacity: 1, x: 0, scale: 1 }}
-                    exit={{ opacity: 0, x: -direction * 80, scale: 0.9 }}
+                    exit={{ opacity: 0, x: -direction * 60, scale: 0.95 }}
                     transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                    className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 flex items-center justify-center select-none cursor-pointer group"
+                    className="relative w-64 h-64 sm:w-76 sm:h-76 md:w-88 md:h-88 flex items-center justify-center select-none cursor-pointer group"
                     onClick={() => onSelectProduct(currentProduct, activeVariant)}
                   >
                     {/* Natural organic ground shadow */}
-                    <div className="absolute bottom-6 w-3/4 h-7 rounded-full bg-[#18181B]/8 dark:bg-black/40 blur-xl transition-all duration-500 group-hover:scale-110" />
+                    <div className="absolute bottom-5 w-3/5 h-5 rounded-full bg-[#18181B]/4 dark:bg-black/25 blur-lg transition-all duration-500 group-hover:scale-105" />
 
-                    {/* Shoe Cutout with Background Removed (mix-blend-multiply) or Full-Bleed Styled Photo */}
+                    {/* Shoe Presentation - Integrated cleanly without harsh white box or heavy shadow */}
                     {viewMode === 'product' ? (
                       <motion.div
-                        animate={{ y: [0, -8, 0] }}
+                        animate={{ y: [0, -6, 0] }}
                         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                        className="relative z-10 w-full h-full flex items-center justify-center"
+                        className="relative z-10 w-full h-full flex items-center justify-center p-2"
                       >
                         <img
                           src={displayImage}
                           alt={activeVariant ? `${currentProduct.name} in ${activeVariant.name}` : currentProduct.name}
                           referrerPolicy="no-referrer"
-                          className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal filter drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-300"
                         />
                       </motion.div>
                     ) : (
                       <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
+                        initial={{ opacity: 0, scale: 0.96 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="relative z-10 w-64 h-80 sm:w-72 sm:h-92 rounded-3xl overflow-hidden shadow-xl"
+                        className="relative z-10 w-60 h-76 sm:w-68 sm:h-84 rounded-2xl overflow-hidden border border-pink-200/50 dark:border-zinc-800/80 shadow-xs"
                       >
                         <img
                           src={currentProduct.lifestyleImage || currentProduct.image}
@@ -223,59 +230,52 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                        <div className="absolute bottom-3 left-3 right-3 py-1.5 px-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-full text-center text-[11px] font-bold text-[#18181B] dark:text-zinc-100 shadow">
+                        <div className="absolute bottom-3 left-3 right-3 py-1.5 px-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-full text-center text-[11px] font-bold text-[#18181B] dark:text-zinc-100 shadow-2xs">
                           Styled On Feet in Dhaka
                         </div>
                       </motion.div>
                     )}
 
                     {/* Quick view tooltip */}
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xs text-[#18181B] dark:text-zinc-100 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xs text-[#18181B] dark:text-zinc-100 px-3 py-1 rounded-full text-[11px] font-bold shadow-2xs">
                       Tap for specs
                     </div>
                   </motion.div>
                 </AnimatePresence>
+
+                {/* Right Arrow Button - Physically docked & overlaid with subtle frosted scrim */}
+                <button
+                  id="hero-carousel-next"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNext();
+                  }}
+                  className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FAF6F0]/85 dark:bg-zinc-900/85 backdrop-blur-md border border-pink-200/60 dark:border-zinc-800 text-[#18181B] dark:text-zinc-200 hover:bg-[#18181B] dark:hover:bg-white hover:text-white dark:hover:text-[#18181B] flex items-center justify-center shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 z-30"
+                  aria-label="Next shoe"
+                >
+                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                </button>
               </div>
 
-              {/* Orbiting Right Preview Footwear (Clickable) */}
+              {/* Orbiting Right Preview Footwear (Desktop only) */}
               <div 
                 onClick={handleNext}
-                className="hidden sm:block absolute right-2 md:right-6 top-1/2 -translate-y-1/2 translate-x-1/4 scale-65 opacity-40 hover:opacity-90 hover:scale-75 transition-all duration-300 cursor-pointer z-10"
+                className="hidden md:block absolute -right-10 lg:-right-16 top-1/2 -translate-y-1/2 scale-65 opacity-35 hover:opacity-90 hover:scale-75 transition-all duration-300 cursor-pointer z-10"
                 title={`Switch to ${nextProduct.name}`}
               >
-                <div className="w-40 h-40 flex items-center justify-center rotate-[15deg]">
+                <div className="w-36 h-36 flex items-center justify-center rotate-[15deg]">
                   <img
                     src={nextProduct.image}
                     alt={nextProduct.name}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal filter drop-shadow-md"
+                    className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
                   />
                 </div>
               </div>
-
-              {/* Right Arrow Button (Minimal unboxed aesthetic) */}
-              <button
-                id="hero-carousel-next"
-                onClick={handleNext}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 dark:bg-zinc-800/90 hover:bg-[#18181B] dark:hover:bg-zinc-100 text-[#18181B] dark:text-zinc-100 hover:text-white dark:hover:text-[#18181B] flex items-center justify-center shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 z-30"
-                aria-label="Next shoe"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
             </div>
 
             {/* Active Shoe Details & Immediate BUY Pill */}
-            <div className="mt-2 text-center space-y-2 z-20">
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-xs font-bold tracking-wider text-[#DB2777] dark:text-pink-400 uppercase">
-                  {activeVariant?.badge || currentProduct.badge || 'Drop 01'}
-                </span>
-                <span className="text-pink-300 dark:text-zinc-700">•</span>
-                <span className="text-xs text-[#18181B]/70 dark:text-zinc-400 font-medium">
-                  {currentProduct.category}
-                </span>
-              </div>
-
+            <div className="mt-1 sm:mt-2 text-center space-y-1.5 z-20">
               <h2 className="font-serif-display text-2xl sm:text-3xl font-normal text-[#18181B] dark:text-zinc-100 tracking-tight">
                 {currentProduct.name}
               </h2>

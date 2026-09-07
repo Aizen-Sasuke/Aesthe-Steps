@@ -54,13 +54,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#FAF6F0]/90 dark:bg-zinc-950/90 backdrop-blur-md border-b border-pink-200/50 dark:border-zinc-800 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2 sm:gap-4">
         
         {/* Brand Logo Wordmark */}
         <button 
           type="button"
           onClick={() => handleNavClick('home')}
-          className="cursor-pointer group flex flex-col items-start leading-none select-none py-1 bg-transparent border-0 p-0 text-left"
+          className="cursor-pointer group flex flex-col items-start leading-none select-none py-1 bg-transparent border-0 p-0 text-left flex-shrink-0"
           id="brand-logo-btn"
           aria-label="Aesthé Steps Home"
         >
@@ -98,13 +98,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Right Actions: Search, Wishlist, Cart, Mobile Toggle */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1 sm:gap-2.5 flex-shrink-0">
           
           {/* Dark Mode Toggle */}
           {toggleDarkMode && (
             <button
               onClick={toggleDarkMode}
-              className="p-2.5 rounded-full text-[#18181B]/70 dark:text-zinc-300 hover:text-[#18181B] dark:hover:text-white hover:bg-pink-100/60 dark:hover:bg-zinc-800/60 transition-colors"
+              className="p-2 sm:p-2.5 rounded-full text-[#18181B]/70 dark:text-zinc-300 hover:text-[#18181B] dark:hover:text-white hover:bg-pink-100/60 dark:hover:bg-zinc-800/60 transition-colors"
               title="Toggle Dark Mode"
             >
               {isDarkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-zinc-700" />}
@@ -118,16 +118,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Search slides, drops..."
+                placeholder="Search slides..."
                 autoFocus
-                className="w-36 sm:w-52 bg-[#FFF9FA] dark:bg-zinc-900 text-xs text-[#18181B] dark:text-zinc-100 placeholder-[#18181B]/40 dark:placeholder-zinc-500 px-3.5 py-2 pr-8 rounded-full border border-[#F472B6] focus:outline-none focus:ring-1 focus:ring-[#F472B6]"
+                className="w-32 sm:w-52 bg-[#FFF9FA] dark:bg-zinc-900 text-xs text-[#18181B] dark:text-zinc-100 placeholder-[#18181B]/40 dark:placeholder-zinc-500 px-3 py-1.5 sm:py-2 pr-7 rounded-full border border-[#F472B6] focus:outline-none focus:ring-1 focus:ring-[#F472B6]"
               />
               <button
                 onClick={() => {
                   setShowSearchInput(false);
                   onSearchChange('');
                 }}
-                className="absolute right-2.5 text-[#18181B]/50 dark:text-zinc-400 hover:text-[#18181B] dark:hover:text-zinc-100"
+                className="absolute right-2 text-[#18181B]/50 dark:text-zinc-400 hover:text-[#18181B] dark:hover:text-zinc-100"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -136,7 +136,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="search-toggle-btn"
               onClick={() => setShowSearchInput(true)}
-              className="p-2.5 rounded-full text-[#18181B]/70 dark:text-zinc-300 hover:text-[#18181B] dark:hover:text-white hover:bg-pink-100/60 dark:hover:bg-zinc-800/60 transition-colors"
+              className="p-2 sm:p-2.5 rounded-full text-[#18181B]/70 dark:text-zinc-300 hover:text-[#18181B] dark:hover:text-white hover:bg-pink-100/60 dark:hover:bg-zinc-800/60 transition-colors"
               title="Search collection"
             >
               <Search className="w-5 h-5" />
@@ -147,12 +147,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="nav-favourites-btn"
             onClick={onOpenFavorites}
-            className="relative p-2.5 rounded-full text-[#18181B]/70 dark:text-zinc-300 hover:text-[#DB2777] dark:hover:text-pink-400 hover:bg-pink-100/60 dark:hover:bg-zinc-800/60 transition-colors"
+            className="relative p-2 sm:p-2.5 rounded-full text-[#18181B]/70 dark:text-zinc-300 hover:text-[#DB2777] dark:hover:text-pink-400 hover:bg-pink-100/60 dark:hover:bg-zinc-800/60 transition-colors"
             title="Saved Favourites"
           >
             <Heart className={`w-5 h-5 ${favoritesCount > 0 ? 'fill-[#F472B6] text-[#F472B6]' : ''}`} />
             {favoritesCount > 0 && (
-              <span className="absolute top-1 right-1 w-4 h-4 text-[10px] font-bold bg-[#F472B6] text-white rounded-full flex items-center justify-center">
+              <span className="absolute top-0.5 right-0.5 w-4 h-4 text-[10px] font-bold bg-[#F472B6] text-white rounded-full flex items-center justify-center">
                 {favoritesCount}
               </span>
             )}
@@ -162,7 +162,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="nav-cart-btn"
             onClick={onOpenCart}
-            className="relative p-2.5 rounded-full bg-[#18181B] dark:bg-pink-600 text-[#FAF6F0] dark:text-white hover:bg-[#F472B6] dark:hover:bg-pink-500 transition-colors shadow-sm"
+            className="relative p-2 sm:p-2.5 rounded-full bg-[#18181B] dark:bg-pink-600 text-[#FAF6F0] dark:text-white hover:bg-[#F472B6] dark:hover:bg-pink-500 transition-colors shadow-sm"
             title="Shopping Bag"
           >
             <ShoppingBag className="w-4 h-4" />
@@ -177,7 +177,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="mobile-menu-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2.5 rounded-full text-[#18181B] dark:text-zinc-200 hover:bg-pink-100/60 dark:hover:bg-zinc-800/60"
+            className="md:hidden p-2 sm:p-2.5 rounded-full text-[#18181B] dark:text-zinc-200 hover:bg-pink-100/60 dark:hover:bg-zinc-800/60"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>

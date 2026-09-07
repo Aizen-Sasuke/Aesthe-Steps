@@ -41,22 +41,37 @@
   background: radial-gradient(circle at 50% 30%, #1c1c24 0%, #0E0E12 85%);
 }
 
-/* Chic minimal scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* Scrollbar: Hidden on mobile/touch devices to avoid persistent thick bars */
+@media (max-width: 767px), (pointer: coarse) {
+  ::-webkit-scrollbar {
+    display: none;
+    width: 0px;
+    height: 0px;
+  }
+  html, body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
-::-webkit-scrollbar-track {
-  background: #FAF6F0;
-}
-:is(.dark ::-webkit-scrollbar-track) {
-  background: #0E0E12;
-}
-::-webkit-scrollbar-thumb {
-  background: #F472B6;
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #DB2777;
+
+/* Chic minimal scrollbar for desktop pointers */
+@media (min-width: 768px) and (pointer: fine) {
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #F472B6;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #DB2777;
+  }
+  :is(.dark) ::-webkit-scrollbar-thumb {
+    background: #DB2777;
+  }
 }
 
