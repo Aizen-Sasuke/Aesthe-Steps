@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <!-- 
+    AESTHÉ STEPS Fine Jewelry Monogram Mark
+    Primary: Obsidian (#18181B)
+    Accent Variants: Brand Pink (#F472B6) | Champagne Gold (#D4AF37)
+  -->
+  <style>
+    :root {
+      --as-mark: #18181B;
+      --as-glint: #18181B;
+      --as-spark: #FAF6F0;
+    }
+    .as-mono-stroke { stroke: var(--as-mark); }
+    .as-mono-fill { fill: var(--as-mark); }
+    .as-glint-fill { fill: var(--as-glint); }
+    .as-glint-spark { fill: var(--as-spark); }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --as-mark: #FAF6F0;
+        --as-glint: #FAF6F0;
+        --as-spark: #18181B;
+      }
+    }
+
+    .variant-pink { --as-mark: #F472B6; --as-glint: #EC4899; --as-spark: #FFFFFF; }
+    .variant-gold { --as-mark: #D4AF37; --as-glint: #E5C158; --as-spark: #FFFFFF; }
+  </style>
+
+  <g id="as-monogram" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Letter S - Upper Arch and Spine (Passes gracefully in front of A's left hairline) -->
+    <path class="as-mono-stroke" d="M 46.5 18 C 45 13.5 37.5 13 31.5 18 C 25.5 22.5 27 30 33 33.5" stroke-width="2.3" fill="none" />
+    
+    <!-- Letter A - Left Leg (Delicate Hairline with Interlace Gap) -->
+    <line class="as-mono-stroke" x1="26" y1="14" x2="24.5" y2="19" stroke-width="1.7" />
+    <line class="as-mono-stroke" x1="23.2" y1="23" x2="15.5" y2="49" stroke-width="1.7" />
+    
+    <!-- Letter A - Serifs & Crossbar -->
+    <line class="as-mono-stroke" x1="12" y1="49" x2="19.5" y2="49" stroke-width="1.7" />
+    <line class="as-mono-stroke" x1="23" y1="14" x2="29.5" y2="14" stroke-width="1.7" />
+    <line class="as-mono-stroke" x1="19.5" y1="37" x2="34" y2="37" stroke-width="1.6" />
+    
+    <!-- Letter S - Lower Bowl (Weaves behind A's weighted stem into bottom sweep) -->
+    <path class="as-mono-stroke" d="M 38 41 C 43 44 41 49 35.5 50.5 C 30 52 25 49.5 22.5 45.5" stroke-width="2.3" fill="none" />
+
+    <!-- Letter A - Right Leg (Main Weighted Stem passing in front) -->
+    <line class="as-mono-stroke" x1="26.5" y1="14" x2="38.5" y2="49" stroke-width="2.8" />
+    <line class="as-mono-stroke" x1="34" y1="49" x2="42.5" y2="49" stroke-width="1.7" />
+  </g>
+
+  <!-- Letter S - Fine Jewelry Teardrop Terminals -->
+  <circle class="as-mono-fill" cx="46.5" cy="18" r="1.6" />
+  <circle class="as-mono-fill" cx="22.5" cy="45.5" r="1.6" />
+
+  <!-- Signature Crystal Sparkle Accent -->
+  <g id="crystal-glint">
+    <path class="as-glint-fill" d="M 49 8.5 Q 49 12.5 53 12.5 Q 49 12.5 49 16.5 Q 49 12.5 45 12.5 Q 49 12.5 49 8.5 Z" />
+    <circle class="as-glint-spark" cx="49" cy="12.5" r="0.6" />
+  </g>
+</svg>

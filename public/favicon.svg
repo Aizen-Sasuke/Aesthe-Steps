@@ -19,19 +19,33 @@
   <rect width="128" height="128" rx="32" fill="url(#bgGrad)" />
   <rect x="2" y="2" width="124" height="124" rx="30" fill="none" stroke="#F472B6" stroke-opacity="0.35" stroke-width="2.5" />
 
-  <!-- Monogram AS -->
-  <text 
-    x="60" 
-    y="86" 
-    font-family="Playfair Display, Fraunces, Georgia, 'Times New Roman', serif" 
-    font-size="64" 
-    font-weight="800" 
-    letter-spacing="-2"
-    text-anchor="middle" 
-    fill="url(#pinkGrad)"
-  >AS</text>
+  <!-- Fine Jewelry Interlocking AS Monogram in Glowing Brand Pink -->
+  <g transform="translate(12.8, 12.8) scale(1.6)" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Letter S - Upper Arch and Spine -->
+    <path stroke="url(#pinkGrad)" d="M 46.5 18 C 45 13.5 37.5 13 31.5 18 C 25.5 22.5 27 30 33 33.5" stroke-width="2.3" fill="none" />
+    
+    <!-- Letter A - Left Leg (Hairline) -->
+    <line stroke="url(#pinkGrad)" x1="26" y1="14" x2="24.5" y2="19" stroke-width="1.7" />
+    <line stroke="url(#pinkGrad)" x1="23.2" y1="23" x2="15.5" y2="49" stroke-width="1.7" />
+    
+    <!-- Letter A - Serifs & Crossbar -->
+    <line stroke="url(#pinkGrad)" x1="12" y1="49" x2="19.5" y2="49" stroke-width="1.7" />
+    <line stroke="url(#pinkGrad)" x1="23" y1="14" x2="29.5" y2="14" stroke-width="1.7" />
+    <line stroke="url(#pinkGrad)" x1="19.5" y1="37" x2="34" y2="37" stroke-width="1.6" />
+    
+    <!-- Letter S - Lower Bowl (Weaves behind A's right stem) -->
+    <path stroke="url(#pinkGrad)" d="M 38 41 C 43 44 41 49 35.5 50.5 C 30 52 25 49.5 22.5 45.5" stroke-width="2.3" fill="none" />
 
-  <!-- Crystal Sparkle on Top-Right -->
-  <path d="M 98 26 Q 98 38 108 38 Q 98 38 98 50 Q 98 38 88 38 Q 98 38 98 26 Z" fill="url(#sparkleGrad)" />
-  <circle cx="98" cy="38" r="2" fill="#FFFFFF" />
+    <!-- Letter A - Right Leg (Main Weighted Stem) -->
+    <line stroke="url(#pinkGrad)" x1="26.5" y1="14" x2="38.5" y2="49" stroke-width="2.8" />
+    <line stroke="url(#pinkGrad)" x1="34" y1="49" x2="42.5" y2="49" stroke-width="1.7" />
+
+    <!-- S Terminals -->
+    <circle fill="url(#pinkGrad)" cx="46.5" cy="18" r="1.6" />
+    <circle fill="url(#pinkGrad)" cx="22.5" cy="45.5" r="1.6" />
+
+    <!-- Signature Crystal Sparkle Accent -->
+    <path fill="url(#sparkleGrad)" d="M 49 8.5 Q 49 12.5 53 12.5 Q 49 12.5 49 16.5 Q 49 12.5 45 12.5 Q 49 12.5 49 8.5 Z" />
+    <circle fill="#FFFFFF" cx="49" cy="12.5" r="0.6" />
+  </g>
 </svg>
