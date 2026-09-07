@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroCarousel } from './components/HeroCarousel';
 import { LookbookSection } from './components/LookbookSection';
+import { AboutSection } from './components/AboutSection';
 import { CollectionGrid } from './components/CollectionGrid';
 import { CartDrawer } from './components/CartDrawer';
 import { ProductDetailModal } from './components/ProductDetailModal';
@@ -261,6 +262,9 @@ export default function App() {
         <LookbookSection
           onShopNow={handleScrollToCollection}
         />
+
+        {/* Brand Story & Value Pillars */}
+        <AboutSection />
 
         {/* 3. "Ultimate Collection" Bento Grid (Matches Video) */}
         <CollectionGrid
