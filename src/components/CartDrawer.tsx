@@ -20,7 +20,7 @@ import { CartItem } from '../types';
  * Format: Country code + Mobile number without '+' or dashes (e.g., '8801XXXXXXXXX' for Bangladesh).
  * You can easily edit this constant anytime to change the receiving WhatsApp number.
  */
-export const WHATSAPP_PHONE_NUMBER = '8801XXXXXXXXX';
+export const WHATSAPP_PHONE_NUMBER = '8801735765566';
 
 interface CartDrawerProps {
   isOpen: boolean;
