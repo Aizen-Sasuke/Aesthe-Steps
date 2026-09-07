@@ -1,6 +1,26 @@
-import React, { useState } from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, ShieldCheck, MapPin, Truck, ArrowRight, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { 
+  X, 
+  Trash2, 
+  Plus, 
+  Minus, 
+  ShoppingBag, 
+  ShieldCheck, 
+  Truck, 
+  ArrowRight, 
+  ArrowLeft, 
+  MessageCircle, 
+  AlertCircle,
+  CheckCircle2
+} from 'lucide-react';
 import { CartItem } from '../types';
+
+/**
+ * WhatsApp destination phone number for receiving orders.
+ * Format: Country code + Mobile number without '+' or dashes (e.g., '8801XXXXXXXXX' for Bangladesh).
+ * You can easily edit this constant anytime to change the receiving WhatsApp number.
+ */
+export const WHATSAPP_PHONE_NUMBER = '8801XXXXXXXXX';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -9,6 +29,7 @@ interface CartDrawerProps {
   onUpdateQuantity: (productId: string, size: number, quantity: number, variantId?: string) => void;
   onRemoveItem: (productId: string, size: number, variantId?: string) => void;
   onClearCart: () => void;
+  onShowToast?: (message: string) => void;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -17,19 +38,28 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   cartItems,
   onUpdateQuantity,
   onRemoveItem,
-  onClearCart
+  onClearCart,
+  onShowToast
 }) => {
+  const [step, setStep] = useState<'cart' | 'checkout'>('cart');
   const [deliveryArea, setDeliveryArea] = useState<'inside_dhaka' | 'outside_dhaka'>('inside_dhaka');
   const [promoCode, setPromoCode] = useState('');
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'bkash' | 'card'>('cod');
   
   // Checkout form fields
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
-  const [orderPlaced, setOrderPlaced] = useState(false);
-  const [orderId, setOrderId] = useState('');
+  const [customerNote, setCustomerNote] = useState('');
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Reset to cart view whenever drawer is closed or if cart becomes empty
+  useEffect(() => {
+    if (!isOpen || cartItems.length === 0) {
+      setStep('cart');
+      setValidationError(null);
+    }
+  }, [isOpen, cartItems.length]);
 
   if (!isOpen) return null;
 
@@ -58,17 +88,91 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     }
   };
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  /**
+   * Builds the formatted order summary message for WhatsApp.
+   */
+  const buildWhatsAppOrderMessage = (): string => {
+    const areaLabel = deliveryArea === 'inside_dhaka' ? 'Inside Dhaka' : 'Outside Dhaka';
+    const feeText = deliveryFee === 0 ? 'FREE' : `৳${deliveryFee}`;
+
+    const itemsSummary = cartItems
+      .map((item, index) => {
+        const variantText = item.selectedVariant ? ` (${item.selectedVariant.name})` : '';
+        const stampText = item.customEngraving ? `\n   • Custom Insole Stamp: "${item.customEngraving}"` : '';
+        const itemTotal = item.product.priceBDT * item.quantity;
+        return `${index + 1}. *${item.product.name}*${variantText}
+   • Size: EU ${item.selectedSize}
+   • Quantity: ${item.quantity}
+   • Price: ৳${item.product.priceBDT.toLocaleString()} each (Subtotal: ৳${itemTotal.toLocaleString()})${stampText}`;
+      })
+      .join('\n\n');
+
+    let message = `🛍️ *NEW ORDER - AESTHÉ STEPS*\n`;
+    message += `==============================\n\n`;
+    message += `*CUSTOMER DETAILS:*\n`;
+    message += `• *Full Name:* ${customerName.trim()}\n`;
+    message += `• *Phone Number:* ${customerPhone.trim()}\n`;
+    message += `• *Delivery Address:* ${customerAddress.trim()}\n`;
+    if (customerNote.trim()) {
+      message += `• *Delivery Note:* ${customerNote.trim()}\n`;
+    }
+    message += `\n*ORDERED SILHOUETTES:*\n`;
+    message += `${itemsSummary}\n\n`;
+    message += `==============================\n`;
+    message += `*BILLING BREAKDOWN:*\n`;
+    message += `• Subtotal: ৳${subtotalBDT.toLocaleString()}\n`;
+    message += `• Delivery Fee (${areaLabel}): ${feeText}\n`;
+    if (discountBDT > 0 && appliedPromo) {
+      message += `• Discount (${appliedPromo}): -৳${discountBDT.toLocaleString()}\n`;
+    }
+    message += `• *TOTAL PAYABLE:* ৳${totalBDT.toLocaleString()}\n`;
+    message += `• *Payment Method:* Cash on Delivery (COD)\n\n`;
+    message += `Please confirm my order and share the expected delivery schedule. Thank you!`;
+
+    return message;
+  };
+
+  /**
+   * Handles checkout submission:
+   * 1. Validates required fields
+   * 2. Builds formatted order summary
+   * 3. Opens WhatsApp in a new tab
+   * 4. Clears cart, closes drawer, and shows toast notification
+   */
+  const handleWhatsAppCheckout = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerName || !customerPhone || !customerAddress) {
-      alert('Please fill in your delivery name, phone number, and Dhaka address.');
+    setValidationError(null);
+
+    const name = customerName.trim();
+    const phone = customerPhone.trim();
+    const address = customerAddress.trim();
+
+    if (!name || !phone || !address) {
+      setValidationError('Please fill in your full name, phone number, and delivery address.');
       return;
     }
 
-    const generatedId = `AST-${Math.floor(100000 + Math.random() * 900000)}`;
-    setOrderId(generatedId);
-    setOrderPlaced(true);
+    // Build the formatted order summary message
+    const orderMessage = buildWhatsAppOrderMessage();
+    const encodedMessage = encodeURIComponent(orderMessage);
+    const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE_NUMBER}?text=${encodedMessage}`;
+
+    // Open WhatsApp in a new tab
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+
+    // Clear cart and reset states
     onClearCart();
+    setStep('cart');
+    setCustomerName('');
+    setCustomerPhone('');
+    setCustomerAddress('');
+    setCustomerNote('');
+
+    // Close the drawer
+    onClose();
+
+    // Show the existing toast notification confirming the order was sent
+    onShowToast?.('Order sent via WhatsApp! We will confirm your delivery shortly.');
   };
 
   return (
@@ -84,18 +188,40 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           
           {/* Drawer Header */}
           <div className="p-5 border-b border-pink-200/80 dark:border-zinc-800 flex items-center justify-between bg-[#FDF2F4] dark:bg-zinc-900">
-            <div className="flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-[#DB2777] dark:text-pink-400" />
-              <h2 className="text-lg font-bold font-serif-display tracking-tight text-[#18181B] dark:text-zinc-50">
-                Your Aesthé Bag
-              </h2>
-              <span className="text-xs bg-white dark:bg-zinc-800 text-[#DB2777] dark:text-pink-400 border border-pink-200 dark:border-zinc-700 px-2.5 py-0.5 rounded-full font-bold">
-                {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}
+            {step === 'checkout' ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setStep('cart');
+                  setValidationError(null);
+                }}
+                className="flex items-center gap-1.5 text-xs font-bold text-[#DB2777] dark:text-pink-400 hover:opacity-80 transition-opacity"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back to Bag</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="w-5 h-5 text-[#DB2777] dark:text-pink-400" />
+                <h2 className="text-lg font-bold font-serif-display tracking-tight text-[#18181B] dark:text-zinc-50">
+                  Your Aesthé Bag
+                </h2>
+                <span className="text-xs bg-white dark:bg-zinc-800 text-[#DB2777] dark:text-pink-400 border border-pink-200 dark:border-zinc-700 px-2.5 py-0.5 rounded-full font-bold">
+                  {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}
+                </span>
+              </div>
+            )}
+
+            {step === 'checkout' && (
+              <span className="text-xs font-bold uppercase tracking-wider text-[#18181B]/70 dark:text-zinc-300">
+                Checkout
               </span>
-            </div>
+            )}
+
             <button
               onClick={onClose}
               className="p-2 rounded-full text-[#18181B]/60 dark:text-zinc-400 hover:text-[#18181B] dark:hover:text-zinc-100 hover:bg-pink-100/60 dark:hover:bg-zinc-800 transition-colors"
+              title="Close bag"
             >
               <X className="w-5 h-5" />
             </button>
@@ -104,43 +230,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           {/* Drawer Body */}
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
             
-            {orderPlaced ? (
-              <div className="text-center py-10 space-y-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-                <h3 className="text-xl font-bold font-serif-display text-[#18181B] dark:text-zinc-50">Order Confirmed!</h3>
-                <p className="text-xs text-[#18181B]/70 dark:text-zinc-400 max-w-xs mx-auto">
-                  Thank you, <span className="text-[#18181B] dark:text-zinc-100 font-bold">{customerName}</span>! Your Aesthé Steps order <span className="text-[#DB2777] dark:text-pink-400 font-mono font-bold">{orderId}</span> is being prepared for dispatch in Dhaka.
-                </p>
-                <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 text-left space-y-2 text-xs shadow-2xs">
-                  <div className="flex justify-between text-[#18181B]/70 dark:text-zinc-400">
-                    <span>Payment Method:</span>
-                    <span className="text-[#18181B] dark:text-zinc-200 font-semibold uppercase">{paymentMethod}</span>
-                  </div>
-                  <div className="flex justify-between text-[#18181B]/70 dark:text-zinc-400">
-                    <span>Total Payable:</span>
-                    <span className="text-[#18181B] dark:text-zinc-100 font-bold">৳ {totalBDT.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between text-[#18181B]/70 dark:text-zinc-400">
-                    <span>Delivery Address:</span>
-                    <span className="text-[#18181B] dark:text-zinc-200 text-right font-medium">{customerAddress}</span>
-                  </div>
-                </div>
-                <p className="text-[11px] text-[#18181B]/60 dark:text-zinc-400">
-                  Our dispatch rider will ring {customerPhone} before arriving.
-                </p>
-                <button
-                  onClick={() => {
-                    setOrderPlaced(false);
-                    onClose();
-                  }}
-                  className="w-full py-3 rounded-full bg-[#18181B] dark:bg-pink-600 hover:bg-[#F472B6] dark:hover:bg-pink-500 text-white font-bold text-xs uppercase tracking-wider transition-colors"
-                >
-                  Continue Shopping
-                </button>
-              </div>
-            ) : cartItems.length === 0 ? (
+            {cartItems.length === 0 ? (
               <div className="text-center py-16 space-y-4">
                 <div className="w-16 h-16 rounded-full bg-white dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 text-[#18181B]/40 dark:text-zinc-400 flex items-center justify-center mx-auto shadow-2xs">
                   <ShoppingBag className="w-7 h-7" />
@@ -156,7 +246,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   Explore Drops
                 </button>
               </div>
-            ) : (
+            ) : step === 'cart' ? (
+              /* STEP 1: CART REVIEW */
               <>
                 {/* Cart Items List */}
                 <div className="space-y-3">
@@ -307,122 +398,215 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     </button>
                   </div>
                 )}
+              </>
+            ) : (
+              /* STEP 2: INLINE CHECKOUT STEP */
+              <div className="space-y-4">
+                {/* Mini Order Summary Card */}
+                <div className="p-3.5 rounded-2xl bg-white dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 space-y-2.5 shadow-2xs">
+                  <div className="flex items-center justify-between text-xs pb-2 border-b border-pink-100 dark:border-zinc-800">
+                    <span className="font-bold text-[#18181B] dark:text-zinc-100 flex items-center gap-1.5">
+                      <ShoppingBag className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" />
+                      Order Summary ({cartItems.reduce((acc, item) => acc + item.quantity, 0)} items)
+                    </span>
+                    <span className="font-bold text-[#DB2777] dark:text-pink-400">
+                      ৳ {totalBDT.toLocaleString()}
+                    </span>
+                  </div>
 
-                {/* Customer Checkout Form */}
-                <form id="checkout-form" onSubmit={handlePlaceOrder} className="space-y-3 pt-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#18181B]/70 dark:text-zinc-400">
-                    Delivery & Contact Details
-                  </h4>
-
-                  <input
-                    type="text"
-                    required
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    placeholder="Your Full Name"
-                    className="w-full bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs text-[#18181B] dark:text-zinc-100 placeholder-[#18181B]/40 dark:placeholder-zinc-500 focus:outline-none focus:border-[#F472B6]"
-                  />
-
-                  <input
-                    type="tel"
-                    required
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
-                    placeholder="Mobile Number (e.g. 017XXXXXXXX)"
-                    className="w-full bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs text-[#18181B] dark:text-zinc-100 placeholder-[#18181B]/40 dark:placeholder-zinc-500 focus:outline-none focus:border-[#F472B6]"
-                  />
-
-                  <textarea
-                    required
-                    value={customerAddress}
-                    onChange={(e) => setCustomerAddress(e.target.value)}
-                    placeholder="Delivery Address (House, Road, Area, Dhaka / District)"
-                    rows={2}
-                    className="w-full bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs text-[#18181B] dark:text-zinc-100 placeholder-[#18181B]/40 dark:placeholder-zinc-500 focus:outline-none focus:border-[#F472B6]"
-                  />
-
-                  {/* Payment Method */}
-                  <div className="space-y-1.5 pt-1">
-                    <label className="text-[11px] font-bold text-[#18181B]/70 dark:text-zinc-400 uppercase tracking-wider">Payment Option</label>
-                    <div className="grid grid-cols-3 gap-2 text-[11px]">
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMethod('cod')}
-                        className={`p-2 rounded-xl border text-center font-bold ${
-                          paymentMethod === 'cod'
-                            ? 'border-[#F472B6] bg-[#FDF2F4] dark:bg-zinc-800 text-[#DB2777] dark:text-pink-400'
-                            : 'border-pink-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[#18181B]/70 dark:text-zinc-400'
-                        }`}
+                  <div className="space-y-1.5 max-h-28 overflow-y-auto pr-1">
+                    {cartItems.map((item) => (
+                      <div 
+                        key={`${item.product.id}-${item.selectedSize}-${item.selectedVariant?.id || 'std'}`}
+                        className="flex items-center justify-between text-[11px] text-[#18181B]/80 dark:text-zinc-300"
                       >
-                        Cash on Delivery
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMethod('bkash')}
-                        className={`p-2 rounded-xl border text-center font-bold ${
-                          paymentMethod === 'bkash'
-                            ? 'border-[#F472B6] bg-[#FDF2F4] dark:bg-zinc-800 text-[#DB2777] dark:text-pink-400'
-                            : 'border-pink-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[#18181B]/70 dark:text-zinc-400'
-                        }`}
-                      >
-                        bKash / Nagad
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMethod('card')}
-                        className={`p-2 rounded-xl border text-center font-bold ${
-                          paymentMethod === 'card'
-                            ? 'border-[#F472B6] bg-[#FDF2F4] dark:bg-zinc-800 text-[#DB2777] dark:text-pink-400'
-                            : 'border-pink-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[#18181B]/70 dark:text-zinc-400'
-                        }`}
-                      >
-                        Card / POS
-                      </button>
+                        <span className="truncate max-w-[220px]">
+                          {item.quantity}× {item.product.name} (EU {item.selectedSize}{item.selectedVariant ? `, ${item.selectedVariant.name}` : ''})
+                        </span>
+                        <span className="font-semibold text-[#18181B] dark:text-zinc-100">
+                          ৳ {(item.product.priceBDT * item.quantity).toLocaleString()}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="pt-2 border-t border-pink-100 dark:border-zinc-800 flex items-center justify-between text-[11px] text-[#18181B]/70 dark:text-zinc-400">
+                    <span>Delivery: {deliveryArea === 'inside_dhaka' ? 'Dhaka (৳70)' : 'Outside Dhaka (৳120)'}</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400">Cash on Delivery</span>
+                  </div>
+                </div>
+
+                {/* Inline Checkout Form */}
+                <form id="whatsapp-checkout-form" onSubmit={handleWhatsAppCheckout} className="space-y-3.5">
+                  <div className="space-y-1">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#18181B] dark:text-zinc-100">
+                      Delivery Information
+                    </h3>
+                    <p className="text-[11px] text-[#18181B]/60 dark:text-zinc-400">
+                      Please provide your recipient details to place your order directly via WhatsApp.
+                    </p>
+                  </div>
+
+                  {/* Validation Error Banner */}
+                  {validationError && (
+                    <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600 dark:text-rose-400" />
+                      <span>{validationError}</span>
                     </div>
+                  )}
+
+                  {/* 1. Full Name */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-[#18181B]/80 dark:text-zinc-300 block">
+                      Full Name <span className="text-[#DB2777] dark:text-pink-400">*</span>
+                    </label>
+                    <input
+                      id="checkout-name"
+                      type="text"
+                      required
+                      value={customerName}
+                      onChange={(e) => {
+                        setCustomerName(e.target.value);
+                        if (validationError) setValidationError(null);
+                      }}
+                      placeholder="e.g. Mahin Ahmed"
+                      className="w-full bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-[#18181B] dark:text-zinc-100 placeholder-[#18181B]/40 dark:placeholder-zinc-500 focus:outline-none focus:border-[#F472B6]"
+                    />
+                  </div>
+
+                  {/* 2. Phone Number */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-[#18181B]/80 dark:text-zinc-300 block">
+                      Phone Number <span className="text-[#DB2777] dark:text-pink-400">*</span>
+                    </label>
+                    <input
+                      id="checkout-phone"
+                      type="tel"
+                      required
+                      value={customerPhone}
+                      onChange={(e) => {
+                        setCustomerPhone(e.target.value);
+                        if (validationError) setValidationError(null);
+                      }}
+                      placeholder="e.g. 017XXXXXXXX"
+                      className="w-full bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-[#18181B] dark:text-zinc-100 placeholder-[#18181B]/40 dark:placeholder-zinc-500 focus:outline-none focus:border-[#F472B6]"
+                    />
+                  </div>
+
+                  {/* 3. Delivery Address */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-[#18181B]/80 dark:text-zinc-300 block">
+                      Delivery Address <span className="text-[#DB2777] dark:text-pink-400">*</span>
+                    </label>
+                    <textarea
+                      id="checkout-address"
+                      required
+                      rows={3}
+                      value={customerAddress}
+                      onChange={(e) => {
+                        setCustomerAddress(e.target.value);
+                        if (validationError) setValidationError(null);
+                      }}
+                      placeholder="House, Road, Area, Ward/Thana, Dhaka / District"
+                      className="w-full bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-[#18181B] dark:text-zinc-100 placeholder-[#18181B]/40 dark:placeholder-zinc-500 focus:outline-none focus:border-[#F472B6] resize-none"
+                    />
+                  </div>
+
+                  {/* 4. Optional Note */}
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[11px] font-bold uppercase tracking-wider text-[#18181B]/80 dark:text-zinc-300">
+                        Order Note
+                      </label>
+                      <span className="text-[10px] text-[#18181B]/50 dark:text-zinc-500">Optional</span>
+                    </div>
+                    <textarea
+                      id="checkout-note"
+                      rows={2}
+                      value={customerNote}
+                      onChange={(e) => setCustomerNote(e.target.value)}
+                      placeholder="e.g. Please call before arrival / deliver after 4 PM"
+                      className="w-full bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-[#18181B] dark:text-zinc-100 placeholder-[#18181B]/40 dark:placeholder-zinc-500 focus:outline-none focus:border-[#F472B6] resize-none"
+                    />
+                  </div>
+
+                  {/* WhatsApp Notice */}
+                  <div className="p-3 rounded-2xl bg-[#FFF5F7] dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 flex items-start gap-2.5 text-[11px] text-[#18181B]/70 dark:text-zinc-400">
+                    <MessageCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                    <p className="leading-relaxed">
+                      Clicking submit will open WhatsApp with your pre-filled order summary sent directly to our team. Payment is <strong className="text-[#18181B] dark:text-zinc-200">Cash on Delivery</strong> upon receipt.
+                    </p>
                   </div>
                 </form>
-              </>
+              </div>
             )}
 
           </div>
 
-          {/* Drawer Footer / Summary */}
-          {!orderPlaced && cartItems.length > 0 && (
+          {/* Drawer Footer */}
+          {cartItems.length > 0 && (
             <div className="p-5 border-t border-pink-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900 space-y-3">
-              <div className="space-y-1 text-xs text-[#18181B]/70 dark:text-zinc-400">
-                <div className="flex justify-between">
-                  <span>Subtotal:</span>
-                  <span className="text-[#18181B] dark:text-zinc-100 font-bold">৳ {subtotalBDT.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Delivery ({deliveryArea === 'inside_dhaka' ? 'Dhaka' : 'Outside'}):</span>
-                  <span>{deliveryFee === 0 ? 'FREE' : `৳ ${deliveryFee}`}</span>
-                </div>
-                {discountBDT > 0 && (
-                  <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-bold">
-                    <span>Discount:</span>
-                    <span>- ৳ {discountBDT.toLocaleString()}</span>
+              {step === 'cart' ? (
+                <>
+                  <div className="space-y-1 text-xs text-[#18181B]/70 dark:text-zinc-400">
+                    <div className="flex justify-between">
+                      <span>Subtotal:</span>
+                      <span className="text-[#18181B] dark:text-zinc-100 font-bold">৳ {subtotalBDT.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Delivery ({deliveryArea === 'inside_dhaka' ? 'Dhaka' : 'Outside'}):</span>
+                      <span>{deliveryFee === 0 ? 'FREE' : `৳ ${deliveryFee}`}</span>
+                    </div>
+                    {discountBDT > 0 && (
+                      <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-bold">
+                        <span>Discount:</span>
+                        <span>- ৳ {discountBDT.toLocaleString()}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-sm font-bold text-[#18181B] dark:text-zinc-100 pt-2 border-t border-pink-100 dark:border-zinc-800">
+                      <span>Total Payable:</span>
+                      <span className="text-[#DB2777] dark:text-pink-400 text-base font-bold">৳ {totalBDT.toLocaleString()}</span>
+                    </div>
                   </div>
-                )}
-                <div className="flex justify-between text-sm font-bold text-[#18181B] dark:text-zinc-100 pt-2 border-t border-pink-100 dark:border-zinc-800">
-                  <span>Total Payable:</span>
-                  <span className="text-[#DB2777] dark:text-pink-400 text-base font-bold">৳ {totalBDT.toLocaleString()}</span>
-                </div>
-              </div>
 
-              <button
-                type="submit"
-                form="checkout-form"
-                className="w-full py-3.5 rounded-full bg-[#18181B] dark:bg-pink-600 hover:bg-[#F472B6] dark:hover:bg-pink-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
-              >
-                <span>Confirm Order (COD)</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+                  <button
+                    id="cart-place-order-btn"
+                    type="button"
+                    onClick={() => setStep('checkout')}
+                    className="w-full py-3.5 rounded-full bg-[#18181B] dark:bg-pink-600 hover:bg-[#F472B6] dark:hover:bg-pink-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
+                  >
+                    <span>Place Order</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
 
-              <div className="flex items-center justify-center gap-2 text-[11px] text-[#18181B]/60 dark:text-zinc-400 font-medium">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" />
-                <span>Inspect your pair before paying the courier</span>
-              </div>
+                  <div className="flex items-center justify-center gap-2 text-[11px] text-[#18181B]/60 dark:text-zinc-400 font-medium">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" />
+                    <span>Inspect your pair before paying the courier</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between text-xs text-[#18181B]/80 dark:text-zinc-300">
+                    <span className="font-medium">Total Payable (COD):</span>
+                    <span className="text-[#DB2777] dark:text-pink-400 text-base font-bold">৳ {totalBDT.toLocaleString()}</span>
+                  </div>
+
+                  <button
+                    id="checkout-submit-whatsapp"
+                    type="submit"
+                    form="whatsapp-checkout-form"
+                    className="w-full py-3.5 rounded-full bg-[#18181B] dark:bg-pink-600 hover:bg-[#F472B6] dark:hover:bg-pink-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
+                  >
+                    <MessageCircle className="w-4 h-4 text-emerald-400" />
+                    <span>Send Order via WhatsApp</span>
+                  </button>
+
+                  <div className="flex items-center justify-center gap-2 text-[11px] text-[#18181B]/60 dark:text-zinc-400 font-medium">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" />
+                    <span>Cash on Delivery • Free Size Exchange in Dhaka</span>
+                  </div>
+                </>
+              )}
             </div>
           )}
 

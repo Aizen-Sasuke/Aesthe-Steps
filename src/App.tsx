@@ -308,6 +308,7 @@ export default function App() {
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onClearCart={handleClearCart}
+        onShowToast={showToast}
       />
 
       <ProductDetailModal
