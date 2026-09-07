@@ -1,0 +1,281 @@
+import React, { useState, useEffect } from 'react';
+import { Navbar } from './components/Navbar';
+import { HeroCarousel } from './components/HeroCarousel';
+import { LookbookSection } from './components/LookbookSection';
+import { CollectionGrid } from './components/CollectionGrid';
+import { CartDrawer } from './components/CartDrawer';
+import { ProductDetailModal } from './components/ProductDetailModal';
+import { CustomizerModal } from './components/CustomizerModal';
+import { FavoritesModal } from './components/FavoritesModal';
+import { SizeGuideModal } from './components/SizeGuideModal';
+import { Footer } from './components/Footer';
+
+import { HERO_PRODUCTS, ALL_PRODUCTS } from './data/products';
+import { Product, CartItem, ActiveNavTab } from './types';
+import { Check, Sparkles, Heart } from 'lucide-react';
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState<ActiveNavTab>('home');
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('aesthe_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('aesthe_favs');
+      return saved ? JSON.parse(saved) : ['aesthe-pink-crystal'];
+    } catch {
+      return ['aesthe-pink-crystal'];
+    }
+  });
+
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
+  const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Toast notification state
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Sync to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('aesthe_cart', JSON.stringify(cartItems));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [cartItems]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('aesthe_favs', JSON.stringify(favorites));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [favorites]);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage((current) => (current === msg ? null : current));
+    }, 3200);
+  };
+
+  // Cart operations
+  const handleAddToCart = (product: Product, selectedSize: number, quantity: number = 1, customEngraving?: string) => {
+    setCartItems((prev) => {
+      const existingIndex = prev.findIndex(
+        (item) => item.product.id === product.id && item.selectedSize === selectedSize && item.customEngraving === customEngraving
+      );
+
+      if (existingIndex > -1) {
+        const updated = [...prev];
+        updated[existingIndex].quantity += quantity;
+        return updated;
+      } else {
+        return [...prev, { product, selectedSize, quantity, customEngraving }];
+      }
+    });
+
+    showToast(`Added ${product.name} (EU ${selectedSize}) to bag!`);
+  };
+
+  const handleQuickBuy = (product: Product) => {
+    handleAddToCart(product, product.sizes[0] || 38, 1);
+    setIsCartOpen(true);
+  };
+
+  const handleUpdateQuantity = (productId: string, size: number, quantity: number) => {
+    if (quantity <= 0) {
+      handleRemoveItem(productId, size);
+      return;
+    }
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.product.id === productId && item.selectedSize === size
+          ? { ...item, quantity }
+          : item
+      )
+    );
+  };
+
+  const handleRemoveItem = (productId: string, size: number) => {
+    setCartItems((prev) =>
+      prev.filter((item) => !(item.product.id === productId && item.selectedSize === size))
+    );
+  };
+
+  const handleClearCart = () => {
+    setCartItems([]);
+  };
+
+  // Favorite toggle
+  const handleToggleFavorite = (productId: string) => {
+    setFavorites((prev) => {
+      const exists = prev.includes(productId);
+      if (exists) {
+        showToast('Removed from favourites');
+        return prev.filter((id) => id !== productId);
+      } else {
+        showToast('Saved to your favourites list');
+        return [...prev, productId];
+      }
+    });
+  };
+
+  const isFavorite = (productId: string) => favorites.includes(productId);
+
+  const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  const handleScrollToCollection = () => {
+    const el = document.getElementById('collection-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FAF6F0] text-[#18181B] flex flex-col selection:bg-[#F472B6] selection:text-white">
+      
+      {/* Top Banner: Dhaka Delivery & Brand Founders Notice */}
+      <div className="bg-[#FDF2F4] border-b border-pink-200/70 py-2.5 px-4 text-center text-xs font-semibold text-[#18181B] flex items-center justify-center gap-3">
+        <span className="inline-block w-2 h-2 rounded-full bg-[#F472B6] animate-pulse" />
+        <span>
+          AESTHÉ STEPS by <strong className="text-[#DB2777]">Hax + Mahin</strong> — Cash on Delivery across Dhaka & all Bangladesh • Free 7-day swaps
+        </span>
+        <span className="hidden md:inline text-pink-300">|</span>
+        <span className="hidden md:inline text-[11px] font-mono text-[#18181B]/70">
+          Use code <span className="text-[#DB2777] font-bold">DHAKAGENZ</span> for 10% OFF
+        </span>
+      </div>
+
+      {/* Main Navbar */}
+      <Navbar
+        activeTab={activeTab}
+        onTabChange={(tab) => {
+          setActiveTab(tab);
+          if (tab === 'shop' || tab === 'collections') {
+            handleScrollToCollection();
+          } else if (tab === 'home') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }}
+        cartCount={totalCartCount}
+        onOpenCart={() => setIsCartOpen(true)}
+        favoritesCount={favorites.length}
+        onOpenFavorites={() => setIsFavoritesOpen(true)}
+        searchQuery={searchQuery}
+        onSearchChange={(q) => {
+          setSearchQuery(q);
+          if (q.trim()) {
+            handleScrollToCollection();
+          }
+        }}
+        onOpenCustomize={() => setIsCustomizeOpen(true)}
+      />
+
+      {/* Main Page Body */}
+      <main className="flex-1">
+        {/* 1. Hero Circular Arc Orbit Carousel (Matches Video) */}
+        <HeroCarousel
+          products={HERO_PRODUCTS}
+          onSelectProduct={(p) => setSelectedProductForDetail(p)}
+          onQuickBuy={handleQuickBuy}
+          onToggleFavorite={handleToggleFavorite}
+          isFavorite={isFavorite}
+          onScrollToCollection={handleScrollToCollection}
+        />
+
+        {/* 2. Lookbook Section: "Comfort Awaits Everyday" (Matches Video) */}
+        <LookbookSection
+          onShopNow={handleScrollToCollection}
+        />
+
+        {/* 3. "Ultimate Collection" Bento Grid (Matches Video) */}
+        <CollectionGrid
+          products={ALL_PRODUCTS}
+          onSelectProduct={(p) => setSelectedProductForDetail(p)}
+          onQuickBuy={handleQuickBuy}
+          onToggleFavorite={handleToggleFavorite}
+          isFavorite={isFavorite}
+          searchQuery={searchQuery}
+        />
+      </main>
+
+      {/* Footer */}
+      <Footer onOpenSizeGuide={() => setIsSizeGuideOpen(true)} />
+
+      {/* Floating Quick Bag Trigger for Mobile / Easy Access */}
+      {totalCartCount > 0 && !isCartOpen && (
+        <button
+          onClick={() => setIsCartOpen(true)}
+          className="fixed bottom-6 right-6 z-40 p-4 rounded-full bg-[#18181B] text-white shadow-xl hover:bg-[#F472B6] hover:scale-105 active:scale-95 transition-all flex items-center gap-2 border-2 border-white"
+        >
+          <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">Bag</span>
+          <span className="w-5 h-5 bg-[#F472B6] text-white rounded-full text-xs font-extrabold flex items-center justify-center">
+            {totalCartCount}
+          </span>
+        </button>
+      )}
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-full bg-[#18181B] border border-pink-400 text-white text-xs font-bold shadow-2xl flex items-center gap-2 animate-bounce">
+          <Check className="w-4 h-4 text-[#F472B6]" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Modals & Drawers */}
+      <CartDrawer
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cartItems={cartItems}
+        onUpdateQuantity={handleUpdateQuantity}
+        onRemoveItem={handleRemoveItem}
+        onClearCart={handleClearCart}
+      />
+
+      <ProductDetailModal
+        product={selectedProductForDetail}
+        onClose={() => setSelectedProductForDetail(null)}
+        onAddToCart={(prod, size, qty) => handleAddToCart(prod, size, qty)}
+        onToggleFavorite={handleToggleFavorite}
+        isFavorite={selectedProductForDetail ? isFavorite(selectedProductForDetail.id) : false}
+      />
+
+      <CustomizerModal
+        isOpen={isCustomizeOpen}
+        onClose={() => setIsCustomizeOpen(false)}
+        products={HERO_PRODUCTS}
+        onAddCustomizedToCart={(product, size, stamp, tone) => {
+          handleAddToCart(product, size, 1, `${stamp} (${tone})`);
+          setIsCartOpen(true);
+        }}
+      />
+
+      <FavoritesModal
+        isOpen={isFavoritesOpen}
+        onClose={() => setIsFavoritesOpen(false)}
+        favorites={favorites}
+        products={ALL_PRODUCTS}
+        onToggleFavorite={handleToggleFavorite}
+        onSelectProduct={(p) => setSelectedProductForDetail(p)}
+        onQuickBuy={handleQuickBuy}
+      />
+
+      <SizeGuideModal
+        isOpen={isSizeGuideOpen}
+        onClose={() => setIsSizeGuideOpen(false)}
+      />
+
+    </div>
+  );
+}

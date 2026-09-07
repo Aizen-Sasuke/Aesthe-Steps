@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
+    background-color: #FAF6F0;
+    color: #18181B;
+  }
+
+  h1, h2, h3, .font-serif-display {
+    font-family: 'Fraunces', 'Playfair Display', Georgia, serif;
+    font-optical-sizing: auto;
+  }
+
+  .font-brand-wordmark {
+    font-family: 'Playfair Display', 'Fraunces', Georgia, serif;
+    letter-spacing: 0.12em;
+  }
+}
+
+/* Subtle warm linen texture / dotted pattern */
+.bg-cream-dots {
+  background-image: radial-gradient(rgba(244, 114, 182, 0.25) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-soft-blush-gradient {
+  background: radial-gradient(circle at 50% 30%, #FDF2F4 0%, #FAF6F0 80%);
+}
+
+/* Chic minimal scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF6F0;
+}
+::-webkit-scrollbar-thumb {
+  background: #F472B6;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #DB2777;
+}
+
