@@ -22,51 +22,51 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="fixed inset-0 bg-black/50 backdrop-blur-xs" onClick={onClose} />
       
-      <div className="relative w-full max-w-lg bg-[#FAF6F0] border border-pink-200 rounded-3xl p-6 z-10 shadow-2xl space-y-6 text-[#18181B]">
-        <div className="flex items-center justify-between border-b border-pink-200/80 pb-4">
+      <div className="relative w-full max-w-lg bg-[#FAF6F0] dark:bg-[#121217] border border-pink-200 dark:border-zinc-800 rounded-3xl p-6 z-10 shadow-2xl space-y-6 text-[#18181B] dark:text-zinc-100 transition-colors">
+        <div className="flex items-center justify-between border-b border-pink-200/80 dark:border-zinc-800 pb-4">
           <div className="flex items-center gap-2">
-            <Ruler className="w-5 h-5 text-[#DB2777]" />
-            <h3 className="text-lg font-bold text-[#18181B] font-serif-display">
+            <Ruler className="w-5 h-5 text-[#DB2777] dark:text-pink-400" />
+            <h3 className="text-lg font-bold text-[#18181B] dark:text-zinc-50 font-serif-display">
               Aesthé Footwear Size Guide
             </h3>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-full text-[#18181B]/60 hover:text-[#18181B]">
+          <button onClick={onClose} className="p-1.5 rounded-full text-[#18181B]/60 dark:text-zinc-400 hover:text-[#18181B] dark:hover:text-zinc-100">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <p className="text-xs text-[#18181B]/70">
+        <p className="text-xs text-[#18181B]/70 dark:text-zinc-400">
           All AESTHÉ STEPS silhouettes follow standard EU foot sizing commonly used across Bangladesh. If between sizes or wide feet, we recommend sizing one size up.
         </p>
 
-        <div className="overflow-x-auto bg-white rounded-2xl border border-pink-200 p-2 shadow-2xs">
+        <div className="overflow-x-auto bg-white dark:bg-zinc-900 rounded-2xl border border-pink-200 dark:border-zinc-800 p-2 shadow-2xs">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-pink-200/60 text-[#18181B]/60 uppercase font-mono text-[11px]">
+              <tr className="border-b border-pink-200/60 dark:border-zinc-800 text-[#18181B]/60 dark:text-zinc-400 uppercase font-mono text-[11px]">
                 <th className="py-2.5 px-3">EU Size</th>
                 <th className="py-2.5 px-3">Foot Length (CM)</th>
                 <th className="py-2.5 px-3">US Women</th>
                 <th className="py-2.5 px-3">UK</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-pink-100">
+            <tbody className="divide-y divide-pink-100 dark:divide-zinc-800">
               {sizeChart.map((row) => (
-                <tr key={row.eu} className="hover:bg-[#FFF5F7] transition-colors">
-                  <td className="py-2.5 px-3 font-bold text-[#DB2777]">EU {row.eu}</td>
-                  <td className="py-2.5 px-3 text-[#18181B] font-medium">{row.cm} cm</td>
-                  <td className="py-2.5 px-3 text-[#18181B]/70">{row.us}</td>
-                  <td className="py-2.5 px-3 text-[#18181B]/70">{row.uk}</td>
+                <tr key={row.eu} className="hover:bg-[#FFF5F7] dark:hover:bg-zinc-800 transition-colors">
+                  <td className="py-2.5 px-3 font-bold text-[#DB2777] dark:text-pink-400">EU {row.eu}</td>
+                  <td className="py-2.5 px-3 text-[#18181B] dark:text-zinc-200 font-medium">{row.cm} cm</td>
+                  <td className="py-2.5 px-3 text-[#18181B]/70 dark:text-zinc-400">{row.us}</td>
+                  <td className="py-2.5 px-3 text-[#18181B]/70 dark:text-zinc-400">{row.uk}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        <div className="p-3.5 rounded-2xl bg-[#FDF2F4] border border-pink-200 text-xs text-[#18181B] space-y-1">
-          <div className="font-bold flex items-center gap-1.5 text-[#DB2777]">
-            <Check className="w-4 h-4 text-[#DB2777]" /> Free 7-Day Size Exchange in Dhaka
+        <div className="p-3.5 rounded-2xl bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 text-xs text-[#18181B] dark:text-zinc-200 space-y-1">
+          <div className="font-bold flex items-center gap-1.5 text-[#DB2777] dark:text-pink-400">
+            <Check className="w-4 h-4 text-[#DB2777] dark:text-pink-400" /> Free 7-Day Size Exchange in Dhaka
           </div>
-          <p className="text-[11px] text-[#18181B]/70">
+          <p className="text-[11px] text-[#18181B]/70 dark:text-zinc-400">
             If the fit isn't 100% perfect, our Dhaka rider will swap your size at your door free of charge.
           </p>
         </div>

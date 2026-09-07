@@ -23,7 +23,14 @@ import feetOliveImg from '../assets/images/feet_olive_bow_slide_1788758072989.jp
 import campaignBannerImg from '../assets/images/campaign_dhaka_girls_slides_1788758089570.jpg';
 import sandalsPaletteImg from '../assets/images/sandals_color_palette_1788760801656.jpg';
 
-export const HERO_PRODUCTS: Product[] = [
+// New Drops
+import pearlRhinestoneSlide from '../assets/images/pearl_rhinestone_slide_1788761807920.jpg';
+import roseGoldBowSlide from '../assets/images/rose_gold_bow_slide_1788761834885.jpg';
+import silverBowSlide from '../assets/images/silver_bow_slide_1788761856060.jpg';
+import blackNewBowSlide from '../assets/images/black_bow_slide_1788761884766.jpg';
+import pinkNewBowSlide from '../assets/images/pink_bow_slide_1788761907540.jpg';
+
+const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'aesthe-pink-crystal',
     name: 'Aesthé Crystal Dn',
@@ -203,7 +210,103 @@ export const HERO_PRODUCTS: Product[] = [
   }
 ];
 
-export const ALL_PRODUCTS: Product[] = [...HERO_PRODUCTS];
+export const NEW_PRODUCTS: Product[] = [
+  {
+    id: 'lumiere-pearl-block',
+    name: 'Lumière Pearl Slip-on',
+    tagline: 'Bridal & Evening Ready Block Heel',
+    category: 'Embellished Heels',
+    priceBDT: 3200,
+    priceUSD: 29,
+    image: pearlRhinestoneSlide,
+    lifestyleImage: feetPinkImg,
+    colorScheme: {
+      primary: '#FDF2F4',
+      accent: '#9CA3AF',
+      glow: '#F3F4F6',
+      ringColor: 'from-gray-100 to-gray-300'
+    },
+    sizes: [36, 37, 38, 39, 40],
+    variants: [
+      {
+        id: 'ivory-pearl',
+        name: 'Ivory Pearl',
+        colorHex: '#F3F4F6',
+        image: pearlRhinestoneSlide,
+        badge: 'Bridal Exclusive'
+      }
+    ],
+    badge: 'NEW ARRIVAL',
+    description: 'Elevate any evening look with this pristine white slip-on block heel, meticulously detailed with a pearl and rhinestone encrusted strap.',
+    details: [
+      'Hand-applied pearl and rhinestone strap',
+      'Comfortable 1.5-inch block heel',
+      'Premium faux-leather footbed',
+      'Anti-slip resin outsole'
+    ],
+    inStock: true,
+    rating: 4.9,
+    reviewsCount: 24
+  },
+  {
+    id: 'chloe-bow-block-heel',
+    name: 'Chloé Bow Block Heel',
+    tagline: 'Signature Leather Bow Slide',
+    category: 'Leather Block Heels',
+    priceBDT: 2850,
+    priceUSD: 26,
+    image: roseGoldBowSlide,
+    lifestyleImage: feetOliveImg,
+    colorScheme: {
+      primary: '#FCA5A5',
+      accent: '#EF4444',
+      glow: '#FEE2E2',
+      ringColor: 'from-rose-300 to-pink-200'
+    },
+    sizes: [36, 37, 38, 39, 40, 41],
+    variants: [
+      {
+        id: 'rose-gold',
+        name: 'Rose Gold',
+        colorHex: '#FBB6CE',
+        image: roseGoldBowSlide,
+        badge: 'Best Seller'
+      },
+      {
+        id: 'metallic-silver',
+        name: 'Metallic Silver',
+        colorHex: '#E5E7EB',
+        image: silverBowSlide
+      },
+      {
+        id: 'blush-pink',
+        name: 'Blush Pink',
+        colorHex: '#F472B6',
+        image: pinkNewBowSlide
+      },
+      {
+        id: 'obsidian-black',
+        name: 'Obsidian Black',
+        colorHex: '#18181B',
+        image: blackNewBowSlide
+      }
+    ],
+    badge: 'FALL COLLECTION • 4 SHADES',
+    description: 'A striking statement bow adorns this metallic block heel. Crafted from supple premium faux leather with a perfectly balanced 1.5-inch heel for all-day chic.',
+    details: [
+      'Prominent knotted statement bow',
+      '1.5-inch block heel for perfect elevation',
+      'Metallic and matte finish options',
+      'Breathable ultra-soft lining'
+    ],
+    inStock: true,
+    rating: 5.0,
+    reviewsCount: 112
+  }
+];
+
+export const ALL_PRODUCTS: Product[] = [...INITIAL_PRODUCTS, ...NEW_PRODUCTS];
+export const HERO_PRODUCTS: Product[] = ALL_PRODUCTS;
 
 export const CAMPAIGN_BANNER_IMG = campaignBannerImg;
 export const PALETTE_LOOKBOOK_IMG = sandalsPaletteImg;

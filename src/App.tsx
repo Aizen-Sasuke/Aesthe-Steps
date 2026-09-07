@@ -42,6 +42,33 @@ export default function App() {
   const [selectedProductVariant, setSelectedProductVariant] = useState<ProductColorVariant | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Dark mode state
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aesthe_theme');
+      if (saved) return saved === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch {
+      return false;
+    }
+  });
+
+  // Apply dark mode class to html element
+  useEffect(() => {
+    try {
+      localStorage.setItem('aesthe_theme', isDarkMode ? 'dark' : 'light');
+    } catch (e) {
+      console.error(e);
+    }
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
   // Toast notification state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -174,17 +201,17 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF6F0] text-[#18181B] flex flex-col selection:bg-[#F472B6] selection:text-white">
+    <div className="min-h-screen bg-[#FAF6F0] text-[#18181B] dark:bg-zinc-950 dark:text-zinc-100 flex flex-col selection:bg-[#F472B6] selection:text-white transition-colors duration-300">
       
       {/* Top Banner: Dhaka Delivery & Brand Founders Notice */}
-      <div className="bg-[#FDF2F4] border-b border-pink-200/70 py-2.5 px-4 text-center text-xs font-semibold text-[#18181B] flex items-center justify-center gap-3">
+      <div className="bg-[#FDF2F4] dark:bg-zinc-900 border-b border-pink-200/70 dark:border-zinc-800 py-2.5 px-4 text-center text-xs font-semibold text-[#18181B] dark:text-zinc-200 flex items-center justify-center gap-3 transition-colors duration-300">
         <span className="inline-block w-2 h-2 rounded-full bg-[#F472B6] animate-pulse" />
         <span>
-          AESTHÉ STEPS by <strong className="text-[#DB2777]">Hax + Mahin</strong> — Cash on Delivery across Dhaka & all Bangladesh • Free 7-day swaps
+          AESTHÉ STEPS by <strong className="text-[#DB2777] dark:text-pink-400">Hax + Mahin</strong> — Cash on Delivery across Dhaka & all Bangladesh • Free 7-day swaps
         </span>
-        <span className="hidden md:inline text-pink-300">|</span>
-        <span className="hidden md:inline text-[11px] font-mono text-[#18181B]/70">
-          Use code <span className="text-[#DB2777] font-bold">DHAKAGENZ</span> for 10% OFF
+        <span className="hidden md:inline text-pink-300 dark:text-zinc-700">|</span>
+        <span className="hidden md:inline text-[11px] font-mono text-[#18181B]/70 dark:text-zinc-400">
+          Use code <span className="text-[#DB2777] dark:text-pink-400 font-bold">DHAKAGENZ</span> for 10% OFF
         </span>
       </div>
 
@@ -211,13 +238,15 @@ export default function App() {
           }
         }}
         onOpenCustomize={() => setIsCustomizeOpen(true)}
+        isDarkMode={isDarkMode}
+        toggleDarkMode={() => setIsDarkMode(!isDarkMode)}
       />
 
       {/* Main Page Body */}
       <main className="flex-1">
         {/* 1. Hero Circular Arc Orbit Carousel (Matches Video) */}
         <HeroCarousel
-          products={HERO_PRODUCTS}
+          products={ALL_PRODUCTS}
           onSelectProduct={(p, v) => {
             setSelectedProductForDetail(p);
             setSelectedProductVariant(v);
@@ -254,7 +283,7 @@ export default function App() {
       {totalCartCount > 0 && !isCartOpen && (
         <button
           onClick={() => setIsCartOpen(true)}
-          className="fixed bottom-6 right-6 z-40 p-4 rounded-full bg-[#18181B] text-white shadow-xl hover:bg-[#F472B6] hover:scale-105 active:scale-95 transition-all flex items-center gap-2 border-2 border-white"
+          className="fixed bottom-6 right-6 z-40 p-4 rounded-full bg-[#18181B] dark:bg-pink-600 text-white shadow-xl hover:bg-[#F472B6] dark:hover:bg-pink-500 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 border-2 border-white dark:border-zinc-800"
         >
           <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">Bag</span>
           <span className="w-5 h-5 bg-[#F472B6] text-white rounded-full text-xs font-extrabold flex items-center justify-center">
@@ -265,7 +294,7 @@ export default function App() {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-full bg-[#18181B] border border-pink-400 text-white text-xs font-bold shadow-2xl flex items-center gap-2 animate-bounce">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-full bg-[#18181B] dark:bg-zinc-800 border border-pink-400 dark:border-pink-500/50 text-white text-xs font-bold shadow-2xl flex items-center gap-2 animate-bounce">
           <Check className="w-4 h-4 text-[#F472B6]" />
           <span>{toastMessage}</span>
         </div>

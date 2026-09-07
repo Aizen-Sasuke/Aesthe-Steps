@@ -61,11 +61,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
   const nextProduct = products[nextIndex];
 
   return (
-    <section className="relative min-h-[86vh] lg:min-h-[90vh] w-full overflow-hidden bg-[#FAF6F0] flex flex-col justify-between py-6 sm:py-10">
+    <section className="relative min-h-[86vh] lg:min-h-[90vh] w-full overflow-hidden bg-[#FAF6F0] dark:bg-[#0E0E12] flex flex-col justify-between py-6 sm:py-10 transition-colors duration-300">
       
       {/* Soft warm blush ambient light (no neon) */}
-      <div className="absolute top-10 right-1/4 w-96 h-96 rounded-full bg-[#FDF2F4] blur-3xl pointer-events-none -z-10" />
-      <div className="absolute bottom-10 left-10 w-80 h-80 rounded-full bg-[#FCE7F3]/60 blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-10 right-1/4 w-96 h-96 rounded-full bg-[#FDF2F4] dark:bg-pink-950/20 blur-3xl pointer-events-none -z-10" />
+      <div className="absolute bottom-10 left-10 w-80 h-80 rounded-full bg-[#FCE7F3]/60 dark:bg-zinc-800/20 blur-3xl pointer-events-none -z-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 flex-1 flex flex-col justify-center">
         
@@ -76,37 +76,37 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
           <div className="lg:col-span-5 flex flex-col justify-center text-left space-y-5 z-20">
             
             {/* Dhaka Gen-Z Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FDF2F4] border border-pink-200 w-fit">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 w-fit">
               <span className="w-2 h-2 rounded-full bg-[#F472B6]" />
-              <span className="text-xs font-bold uppercase tracking-wider text-[#DB2777]">
-                Drop 01 • Dhaka Gen-Z Footwear
+              <span className="text-xs font-bold uppercase tracking-wider text-[#DB2777] dark:text-pink-400">
+                Drop 01 & 02 • All 5 Silhouettes
               </span>
             </div>
 
             {/* Main Quirky Fashion Editorial Serif Headline */}
             <div className="space-y-2">
-              <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl font-normal text-[#18181B] leading-[1.05] tracking-tight">
+              <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl font-normal text-[#18181B] dark:text-zinc-50 leading-[1.05] tracking-tight">
                 Cute shoes. <br />
-                <span className="italic font-normal text-[#DB2777]">
+                <span className="italic font-normal text-[#DB2777] dark:text-pink-400">
                   Zero blister drama.
                 </span>
               </h1>
-              <p className="text-xs font-bold tracking-[0.2em] text-[#18181B]/60 uppercase pt-1">
+              <p className="text-xs font-bold tracking-[0.2em] text-[#18181B]/60 dark:text-zinc-400 uppercase pt-1">
                 AESTHÉ STEPS • BY HAX & MAHIN
               </p>
             </div>
 
             {/* Direct, Punchy Gen-Z Copy */}
-            <p className="text-sm sm:text-base text-[#18181B]/80 max-w-md leading-relaxed font-normal">
+            <p className="text-sm sm:text-base text-[#18181B]/80 dark:text-zinc-300 max-w-md leading-relaxed font-normal">
               Every cute sandal in Dhaka used to bite your heels. We built slides with 180g featherlight cloud soles and heat-pressed glass crystals that actually stay on when you walk.
             </p>
 
             {/* Micro Badges (Cash on Delivery & Swaps) */}
-            <div className="flex flex-wrap gap-2 text-xs text-[#18181B] pt-1">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-pink-200/80 font-medium shadow-2xs">
+            <div className="flex flex-wrap gap-2 text-xs text-[#18181B] dark:text-zinc-200 pt-1">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 font-medium shadow-2xs">
                 🛵 Cash on Delivery (All BD)
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-pink-200/80 font-medium shadow-2xs">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 font-medium shadow-2xs">
                 ⚡ Free 7-Day Size Swaps
               </span>
             </div>
@@ -116,9 +116,9 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               <button
                 id="hero-explore-btn"
                 onClick={onScrollToCollection}
-                className="group flex items-center gap-3 px-7 py-3.5 rounded-full bg-[#18181B] text-[#FAF6F0] font-bold text-xs sm:text-sm uppercase tracking-wider hover:bg-[#F472B6] hover:text-white transition-all duration-300 shadow-md hover:shadow-pink-300"
+                className="group flex items-center gap-3 px-7 py-3.5 rounded-full bg-[#18181B] dark:bg-pink-600 text-[#FAF6F0] dark:text-white font-bold text-xs sm:text-sm uppercase tracking-wider hover:bg-[#F472B6] dark:hover:bg-pink-500 hover:text-white transition-all duration-300 shadow-md hover:shadow-pink-300"
               >
-                <span>Shop The Lineup</span>
+                <span>Shop The Lineup ({total})</span>
                 <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center group-hover:translate-x-1 transition-transform">
                   <ArrowRight className="w-3.5 h-3.5" />
                 </span>
@@ -127,7 +127,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               <button
                 id="hero-toggle-view"
                 onClick={() => setViewMode(viewMode === 'product' ? 'feet' : 'product')}
-                className="flex items-center gap-2 px-5 py-3 rounded-full bg-[#FDF2F4] border border-pink-300/80 text-xs font-bold text-[#DB2777] hover:bg-pink-100 transition-colors"
+                className="flex items-center gap-2 px-5 py-3 rounded-full bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-300/80 dark:border-zinc-700 text-xs font-bold text-[#DB2777] dark:text-pink-300 hover:bg-pink-100 dark:hover:bg-zinc-800 transition-colors"
               >
                 {viewMode === 'product' ? (
                   <>
@@ -149,7 +149,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
             
             {/* Ambient soft glow wash (NO concentric ring borders or dashed circles) */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-[360px] sm:w-[500px] h-[360px] sm:h-[500px] rounded-full bg-gradient-to-br from-[#FDF2F4] via-pink-50/40 to-transparent blur-2xl" />
+              <div className="w-[360px] sm:w-[500px] h-[360px] sm:h-[500px] rounded-full bg-gradient-to-br from-[#FDF2F4] via-pink-50/40 to-transparent dark:from-pink-900/30 dark:via-pink-950/20 dark:to-transparent blur-3xl opacity-100 dark:opacity-50" />
             </div>
 
             {/* Carousel Stage Controls */}
@@ -159,7 +159,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               <button
                 id="hero-carousel-prev"
                 onClick={handlePrev}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-[#18181B] text-[#18181B] hover:text-white flex items-center justify-center shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 z-30"
+                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 dark:bg-zinc-800/90 hover:bg-[#18181B] dark:hover:bg-zinc-100 text-[#18181B] dark:text-zinc-100 hover:text-white dark:hover:text-[#18181B] flex items-center justify-center shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 z-30"
                 aria-label="Previous shoe"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -176,7 +176,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                     src={prevProduct.image}
                     alt={prevProduct.name}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-contain mix-blend-multiply filter drop-shadow-md"
+                    className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal filter drop-shadow-md"
                   />
                 </div>
               </div>
@@ -195,7 +195,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                     onClick={() => onSelectProduct(currentProduct, activeVariant)}
                   >
                     {/* Natural organic ground shadow */}
-                    <div className="absolute bottom-6 w-3/4 h-7 rounded-full bg-[#18181B]/8 blur-xl transition-all duration-500 group-hover:scale-110" />
+                    <div className="absolute bottom-6 w-3/4 h-7 rounded-full bg-[#18181B]/8 dark:bg-black/40 blur-xl transition-all duration-500 group-hover:scale-110" />
 
                     {/* Shoe Cutout with Background Removed (mix-blend-multiply) or Full-Bleed Styled Photo */}
                     {viewMode === 'product' ? (
@@ -208,7 +208,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                           src={displayImage}
                           alt={activeVariant ? `${currentProduct.name} in ${activeVariant.name}` : currentProduct.name}
                           referrerPolicy="no-referrer"
-                          className="w-full h-full object-contain mix-blend-multiply filter drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal filter drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
                         />
                       </motion.div>
                     ) : (
@@ -223,14 +223,14 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                        <div className="absolute bottom-3 left-3 right-3 py-1.5 px-3 bg-white/90 backdrop-blur-md rounded-full text-center text-[11px] font-bold text-[#18181B] shadow">
+                        <div className="absolute bottom-3 left-3 right-3 py-1.5 px-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-full text-center text-[11px] font-bold text-[#18181B] dark:text-zinc-100 shadow">
                           Styled On Feet in Dhaka
                         </div>
                       </motion.div>
                     )}
 
                     {/* Quick view tooltip */}
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 backdrop-blur-xs text-[#18181B] px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xs text-[#18181B] dark:text-zinc-100 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
                       Tap for specs
                     </div>
                   </motion.div>
@@ -248,7 +248,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                     src={nextProduct.image}
                     alt={nextProduct.name}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-contain mix-blend-multiply filter drop-shadow-md"
+                    className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal filter drop-shadow-md"
                   />
                 </div>
               </div>
@@ -257,7 +257,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               <button
                 id="hero-carousel-next"
                 onClick={handleNext}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-[#18181B] text-[#18181B] hover:text-white flex items-center justify-center shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 z-30"
+                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 dark:bg-zinc-800/90 hover:bg-[#18181B] dark:hover:bg-zinc-100 text-[#18181B] dark:text-zinc-100 hover:text-white dark:hover:text-[#18181B] flex items-center justify-center shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 z-30"
                 aria-label="Next shoe"
               >
                 <ChevronRight className="w-5 h-5" />
@@ -267,16 +267,16 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
             {/* Active Shoe Details & Immediate BUY Pill */}
             <div className="mt-2 text-center space-y-2 z-20">
               <div className="flex items-center justify-center gap-2">
-                <span className="text-xs font-bold tracking-wider text-[#DB2777] uppercase">
+                <span className="text-xs font-bold tracking-wider text-[#DB2777] dark:text-pink-400 uppercase">
                   {activeVariant?.badge || currentProduct.badge || 'Drop 01'}
                 </span>
-                <span className="text-pink-300">•</span>
-                <span className="text-xs text-[#18181B]/70 font-medium">
+                <span className="text-pink-300 dark:text-zinc-700">•</span>
+                <span className="text-xs text-[#18181B]/70 dark:text-zinc-400 font-medium">
                   {currentProduct.category}
                 </span>
               </div>
 
-              <h2 className="font-serif-display text-2xl sm:text-3xl font-normal text-[#18181B] tracking-tight">
+              <h2 className="font-serif-display text-2xl sm:text-3xl font-normal text-[#18181B] dark:text-zinc-100 tracking-tight">
                 {currentProduct.name}
               </h2>
 
@@ -284,7 +284,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               {currentProduct.variants && currentProduct.variants.length > 0 && (
                 <div className="flex flex-col items-center gap-1.5 pt-1">
                   <div className="flex items-center gap-1.5 flex-wrap justify-center">
-                    <span className="text-[11px] font-bold text-[#18181B]/60 uppercase tracking-wider mr-1">
+                    <span className="text-[11px] font-bold text-[#18181B]/60 dark:text-zinc-400 uppercase tracking-wider mr-1">
                       Color:
                     </span>
                     {currentProduct.variants.map((variant) => {
@@ -300,13 +300,13 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                           }}
                           className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
                             isSelected
-                              ? 'bg-white shadow-sm ring-1 ring-[#DB2777] text-[#DB2777] scale-105'
-                              : 'bg-white/60 hover:bg-white text-[#18181B]/70 hover:text-[#18181B]'
+                              ? 'bg-white dark:bg-zinc-800 shadow-sm ring-1 ring-[#DB2777] dark:ring-pink-400 text-[#DB2777] dark:text-pink-400 scale-105'
+                              : 'bg-white/60 dark:bg-zinc-900/60 hover:bg-white dark:hover:bg-zinc-800 text-[#18181B]/70 dark:text-zinc-300 hover:text-[#18181B] dark:hover:text-white'
                           }`}
                           title={`${variant.name} (${variant.badge || 'Colorway'})`}
                         >
                           <span
-                            className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs flex-shrink-0"
+                            className="w-3.5 h-3.5 rounded-full border border-black/10 dark:border-white/20 shadow-2xs flex-shrink-0"
                             style={{ backgroundColor: variant.colorHex }}
                           />
                           <span className="text-[11px] font-medium">{variant.name}</span>
@@ -320,10 +320,10 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               {/* Price & Buy Action */}
               <div className="flex items-center justify-center gap-3 pt-2">
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-xl sm:text-2xl font-bold text-[#18181B]">
+                  <span className="text-xl sm:text-2xl font-bold text-[#18181B] dark:text-zinc-100">
                     ৳ {currentProduct.priceBDT.toLocaleString()}
                   </span>
-                  <span className="text-xs text-[#18181B]/50 font-medium">
+                  <span className="text-xs text-[#18181B]/50 dark:text-zinc-400 font-medium">
                     (${currentProduct.priceUSD} USD)
                   </span>
                 </div>
@@ -331,7 +331,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                 <button
                   id={`hero-buy-${currentProduct.id}`}
                   onClick={() => onQuickBuy(currentProduct, activeVariant)}
-                  className="px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider bg-[#18181B] text-white hover:bg-[#DB2777] hover:text-white transition-all shadow-sm hover:scale-105 active:scale-95 flex items-center gap-1.5"
+                  className="px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider bg-[#18181B] dark:bg-pink-600 text-white hover:bg-[#DB2777] dark:hover:bg-pink-500 hover:text-white transition-all shadow-sm hover:scale-105 active:scale-95 flex items-center gap-1.5"
                 >
                   <span>Bag It</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -339,7 +339,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
                 <button
                   onClick={() => onToggleFavorite(currentProduct.id)}
-                  className="p-2 text-[#18181B]/50 hover:text-[#DB2777] hover:scale-110 transition-all"
+                  className="p-2 text-[#18181B]/50 dark:text-zinc-400 hover:text-[#DB2777] dark:hover:text-pink-400 hover:scale-110 transition-all"
                   title="Save to Wishlist"
                 >
                   <Heart className={`w-4 h-4 ${isFavorite(currentProduct.id) ? 'fill-[#F472B6] text-[#F472B6]' : ''}`} />
@@ -351,18 +351,18 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
         </div>
 
-        {/* Bottom Silhouette Selector - Open & Minimalist (NO heavy boxed cards) */}
-        <div className="pt-6 pb-2 border-t border-pink-200/40 mt-4">
+        {/* Bottom Silhouette Selector - Open & Minimalist (Features ALL models in the lineup) */}
+        <div className="pt-6 pb-2 border-t border-pink-200/40 dark:border-zinc-800/80 mt-4">
           <div className="flex items-center justify-between mb-3 px-1">
-            <span className="text-[11px] font-mono tracking-widest text-[#18181B]/70 uppercase font-bold">
-              Select Drop ({currentIndex + 1}/{total})
+            <span className="text-[11px] font-mono tracking-widest text-[#18181B]/70 dark:text-zinc-400 uppercase font-bold">
+              Lineup Silhouettes ({currentIndex + 1}/{total})
             </span>
-            <span className="text-xs text-[#DB2777] font-semibold hidden sm:inline-block">
-              Tap any pair to swap
+            <span className="text-xs text-[#DB2777] dark:text-pink-400 font-semibold hidden sm:inline-block">
+              Tap any pair to inspect in orbit
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {products.map((shoe, idx) => {
               const isSelected = idx === currentIndex;
               return (
@@ -370,15 +370,15 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                   key={shoe.id}
                   id={`preview-card-${shoe.id}`}
                   onClick={() => handleSelect(idx)}
-                  className={`group relative p-2.5 rounded-xl cursor-pointer transition-all duration-200 flex items-center justify-between gap-3 ${
+                  className={`group relative p-2.5 rounded-xl cursor-pointer transition-all duration-200 flex items-center justify-between gap-2.5 border ${
                     isSelected
-                      ? 'bg-pink-100/50 shadow-2xs'
-                      : 'hover:bg-pink-50/60'
+                      ? 'bg-pink-100/70 dark:bg-zinc-800/90 border-pink-300 dark:border-pink-500/50 shadow-sm'
+                      : 'bg-white/50 dark:bg-zinc-900/60 hover:bg-pink-50/60 dark:hover:bg-zinc-800/60 border-pink-200/40 dark:border-zinc-800'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    {/* Floating Silhouette Thumbnail (mix-blend-multiply) */}
-                    <div className="w-14 h-14 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    {/* Floating Silhouette Thumbnail (mix-blend-multiply with soft circular backdrop) */}
+                    <div className="w-12 h-12 rounded-full bg-white/90 dark:bg-white/95 flex items-center justify-center p-1 flex-shrink-0 group-hover:scale-110 transition-transform shadow-2xs">
                       <img
                         src={shoe.image}
                         alt={shoe.name}
@@ -388,24 +388,24 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                     </div>
 
                     {/* Info */}
-                    <div className="text-left">
-                      <p className={`text-xs font-bold transition-colors line-clamp-1 ${isSelected ? 'text-[#DB2777]' : 'text-[#18181B]'}`}>
+                    <div className="text-left min-w-0">
+                      <p className={`text-xs font-bold transition-colors truncate ${isSelected ? 'text-[#DB2777] dark:text-pink-400' : 'text-[#18181B] dark:text-zinc-200'}`}>
                         {shoe.name}
                       </p>
-                      <p className="text-[10px] text-[#18181B]/60 font-medium">
+                      <p className="text-[10px] text-[#18181B]/60 dark:text-zinc-400 font-medium truncate">
                         {shoe.tagline}
                       </p>
-                      <p className="text-xs font-bold text-[#18181B] pt-0.5">
+                      <p className="text-xs font-bold text-[#18181B] dark:text-zinc-100 pt-0.5">
                         ৳ {shoe.priceBDT.toLocaleString()}
                       </p>
                     </div>
                   </div>
 
                   {/* Indicator Dot */}
-                  <div className={`w-2.5 h-2.5 rounded-full transition-all ${
+                  <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 transition-all ${
                     isSelected
-                      ? 'bg-[#DB2777] scale-125'
-                      : 'bg-pink-300/60 group-hover:bg-[#18181B]'
+                      ? 'bg-[#DB2777] dark:bg-pink-400 scale-125'
+                      : 'bg-pink-300/60 dark:bg-zinc-700 group-hover:bg-[#18181B] dark:group-hover:bg-white'
                   }`} />
                 </div>
               );
