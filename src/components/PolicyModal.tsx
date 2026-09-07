@@ -181,7 +181,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
                   4. Data Rights &amp; Contact
                 </h4>
                 <p className="text-xs sm:text-sm">
-                  You have the right to request deletion of your order records or update your contact details at any point by messaging our support line on WhatsApp at <strong>+880 1735-765566</strong> or emailing <strong>hello@aesthesteps.com</strong>.
+                  You have the right to request deletion of your order records or update your contact details at any point by messaging our support line on WhatsApp at <strong>+880 1735-765566</strong> or emailing <strong>aesthesteps@gmail.com</strong>.
                 </p>
               </div>
             </div>
@@ -346,7 +346,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
             <span className="text-pink-300 dark:text-zinc-700">•</span>
             <span className="flex items-center gap-1.5 font-medium">
               <Mail className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" />
-              hello@aesthesteps.com
+              aesthesteps@gmail.com
             </span>
           </div>
 

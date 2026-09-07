@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Search, Heart, X, Menu, Sun, Moon } from 'lucide-react';
 import { ActiveNavTab } from '../types';
+import { BrandLogo } from './BrandLogo';
 
 interface NavbarProps {
   activeTab: ActiveNavTab;
@@ -55,25 +56,16 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-50 w-full bg-[#FAF6F0]/90 dark:bg-zinc-950/90 backdrop-blur-md border-b border-pink-200/50 dark:border-zinc-800 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         
-        {/* Brand Fashion Wordmark (No box/initials) */}
-        <div 
+        {/* Brand Logo Wordmark */}
+        <button 
+          type="button"
           onClick={() => handleNavClick('home')}
-          className="cursor-pointer group flex flex-col items-start leading-none select-none py-1"
+          className="cursor-pointer group flex flex-col items-start leading-none select-none py-1 bg-transparent border-0 p-0 text-left"
           id="brand-logo-btn"
+          aria-label="Aesthé Steps Home"
         >
-          <div className="flex items-center gap-2">
-            <span className="font-serif-display text-2xl sm:text-3xl font-bold tracking-[0.14em] text-[#18181B] dark:text-zinc-100 group-hover:text-[#DB2777] dark:group-hover:text-pink-400 transition-colors">
-              AESTHÉ
-            </span>
-            <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-[#F472B6]" />
-            <span className="hidden sm:inline-block text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#FDF2F4] dark:bg-zinc-800 text-[#DB2777] dark:text-pink-300 border border-pink-200/60 dark:border-pink-900/40">
-              DHAKA
-            </span>
-          </div>
-          <span className="text-[9px] tracking-[0.38em] font-bold text-[#F472B6] uppercase pl-0.5 mt-0.5">
-            S T E P S
-          </span>
-        </div>
+          <BrandLogo size="md" />
+        </button>
 
         {/* Center Pill Navigation (Warm Cream + Soft Pink) */}
         <nav className="hidden md:flex items-center p-1 bg-[#FFF5F7]/80 dark:bg-zinc-900/90 border border-pink-200/70 dark:border-zinc-800 rounded-full shadow-sm">

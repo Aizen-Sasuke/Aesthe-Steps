@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, ArrowRight, Heart, Sparkles, ShieldCheck, RotateCcw, FileText } from 'lucide-react';
+import { BrandLogo } from './BrandLogo';
 
 interface FooterProps {
   onOpenSizeGuide: () => void;
@@ -61,14 +62,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide, onOpenPolicy })
           
           {/* Brand Info with Wordmark */}
           <div className="space-y-4">
-            <div className="flex flex-col">
-              <span className="font-serif-display text-2xl font-black tracking-tight text-[#18181B] dark:text-zinc-100 leading-none">
-                AESTHÉ
-              </span>
-              <span className="text-[10px] font-sans font-bold tracking-[0.28em] text-[#DB2777] dark:text-pink-400 uppercase -mt-0.5">
-                STEPS
-              </span>
-            </div>
+            <BrandLogo size="md" />
             <p className="text-xs text-[#18181B]/70 dark:text-zinc-400 leading-relaxed">
               Footwear for Dhaka's urban Gen-Z. Founded by <strong className="text-[#18181B] dark:text-zinc-200 font-bold">Hax + Mahin</strong>. Elevated silhouettes, cloud-soft footbeds, and friendly prices.
             </p>
@@ -156,7 +150,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide, onOpenPolicy })
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#DB2777] dark:text-pink-400 flex-shrink-0" />
-                <span>hello@aesthesteps.com</span>
+                <a 
+                  href="mailto:aesthesteps@gmail.com"
+                  className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors"
+                >
+                  aesthesteps@gmail.com
+                </a>
               </li>
             </ul>
           </div>
