@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { MapPin, Phone, Mail, ArrowRight, Heart, Sparkles } from 'lucide-react';
+import { MapPin, Phone, Mail, ArrowRight, Heart, Sparkles, ShieldCheck, RotateCcw, FileText } from 'lucide-react';
 
 interface FooterProps {
   onOpenSizeGuide: () => void;
+  onOpenPolicy?: (policy: 'privacy' | 'refund' | 'terms') => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide, onOpenPolicy }) => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -90,20 +91,52 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide }) => {
             </ul>
           </div>
 
-          {/* Customer Care */}
+          {/* Customer Care / Sizing & Legal Policies */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#18181B] dark:text-zinc-100">
               Sizing & Policies
             </h4>
             <ul className="space-y-2 text-xs text-[#18181B]/70 dark:text-zinc-400 font-medium">
               <li>
-                <button onClick={onOpenSizeGuide} className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors text-left font-bold text-[#DB2777] dark:text-pink-400">
+                <button 
+                  onClick={onOpenSizeGuide} 
+                  className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors text-left font-bold text-[#DB2777] dark:text-pink-400 cursor-pointer"
+                >
                   Bangladesh Size Guide (EU 36-41)
                 </button>
               </li>
-              <li><span>Free 7-Day Doorstep Size Swaps</span></li>
-              <li><span>Inspect Before Paying (COD)</span></li>
-              <li><span>Rhinestone & Insole Care</span></li>
+              <li>
+                <button 
+                  onClick={() => onOpenPolicy?.('refund')} 
+                  className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors text-left cursor-pointer flex items-center gap-1.5"
+                >
+                  <RotateCcw className="w-3 h-3 text-[#DB2777] dark:text-pink-400" />
+                  Refund &amp; Exchange Policy
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => onOpenPolicy?.('privacy')} 
+                  className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors text-left cursor-pointer flex items-center gap-1.5"
+                >
+                  <ShieldCheck className="w-3 h-3 text-[#DB2777] dark:text-pink-400" />
+                  Privacy Policy
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => onOpenPolicy?.('terms')} 
+                  className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors text-left cursor-pointer flex items-center gap-1.5"
+                >
+                  <FileText className="w-3 h-3 text-[#DB2777] dark:text-pink-400" />
+                  Terms of Service
+                </button>
+              </li>
+              <li className="pt-0.5">
+                <span className="text-[11px] text-[#18181B]/60 dark:text-zinc-500">
+                  Inspect Before Paying • Free 7-Day COD Swaps
+                </span>
+              </li>
             </ul>
           </div>
 
@@ -119,7 +152,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide }) => {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#DB2777] dark:text-pink-400 flex-shrink-0" />
-                <span>+880 1700-AESTHE (237843)</span>
+                <span>+880 1735-765566 </span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#DB2777] dark:text-pink-400 flex-shrink-0" />
@@ -134,12 +167,28 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide }) => {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#18181B]/60 dark:text-zinc-500 font-medium">
           <p>© 2026 AESTHÉ STEPS. Founded by Hax + Mahin. All rights reserved.</p>
           
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <span className="flex items-center gap-1.5 text-[#DB2777] dark:text-pink-400 font-bold">
               <Heart className="w-3.5 h-3.5 fill-[#F472B6] text-[#F472B6]" /> Built for Dhaka Gen-Z
             </span>
-            <span>Privacy</span>
-            <span>Terms of Service</span>
+            <button
+              onClick={() => onOpenPolicy?.('privacy')}
+              className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors cursor-pointer"
+            >
+              Privacy
+            </button>
+            <button
+              onClick={() => onOpenPolicy?.('refund')}
+              className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors cursor-pointer"
+            >
+              Refund Policy
+            </button>
+            <button
+              onClick={() => onOpenPolicy?.('terms')}
+              className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors cursor-pointer"
+            >
+              Terms of Service
+            </button>
           </div>
         </div>
 

@@ -9,6 +9,7 @@ import { ProductDetailModal } from './components/ProductDetailModal';
 import { CustomizerModal } from './components/CustomizerModal';
 import { FavoritesModal } from './components/FavoritesModal';
 import { SizeGuideModal } from './components/SizeGuideModal';
+import { PolicyModal, PolicyType } from './components/PolicyModal';
 import { Footer } from './components/Footer';
 
 import { HERO_PRODUCTS, ALL_PRODUCTS } from './data/products';
@@ -39,6 +40,7 @@ export default function App() {
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [activePolicyModal, setActivePolicyModal] = useState<PolicyType | null>(null);
   const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null);
   const [selectedProductVariant, setSelectedProductVariant] = useState<ProductColorVariant | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
@@ -95,6 +97,55 @@ export default function App() {
     setTimeout(() => {
       setToastMessage((current) => (current === msg ? null : current));
     }, 3200);
+  };
+
+  // Route & Hash detection for legal/policy pages (e.g. #privacy-policy, /privacy-policy)
+  useEffect(() => {
+    const handleUrlRoute = () => {
+      const hash = window.location.hash.toLowerCase();
+      const path = window.location.pathname.toLowerCase();
+
+      if (hash.includes('privacy') || path.includes('privacy')) {
+        setActivePolicyModal('privacy');
+      } else if (
+        hash.includes('refund') || 
+        hash.includes('exchange') || 
+        path.includes('refund') || 
+        path.includes('exchange')
+      ) {
+        setActivePolicyModal('refund');
+      } else if (hash.includes('terms') || path.includes('terms')) {
+        setActivePolicyModal('terms');
+      }
+    };
+
+    handleUrlRoute();
+    window.addEventListener('hashchange', handleUrlRoute);
+    window.addEventListener('popstate', handleUrlRoute);
+    return () => {
+      window.removeEventListener('hashchange', handleUrlRoute);
+      window.removeEventListener('popstate', handleUrlRoute);
+    };
+  }, []);
+
+  const handleOpenPolicy = (policy: PolicyType) => {
+    setActivePolicyModal(policy);
+    try {
+      window.history.pushState(null, '', `#${policy}-policy`);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleClosePolicy = () => {
+    setActivePolicyModal(null);
+    try {
+      if (window.location.hash) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    } catch {
+      // ignore
+    }
   };
 
   // Cart operations
@@ -281,7 +332,10 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <Footer onOpenSizeGuide={() => setIsSizeGuideOpen(true)} />
+      <Footer 
+        onOpenSizeGuide={() => setIsSizeGuideOpen(true)} 
+        onOpenPolicy={handleOpenPolicy}
+      />
 
       {/* Floating Quick Bag Trigger for Mobile / Easy Access */}
       {totalCartCount > 0 && !isCartOpen && (
@@ -353,6 +407,20 @@ export default function App() {
       <SizeGuideModal
         isOpen={isSizeGuideOpen}
         onClose={() => setIsSizeGuideOpen(false)}
+      />
+
+      <PolicyModal
+        isOpen={activePolicyModal !== null}
+        activePolicy={activePolicyModal || 'privacy'}
+        onClose={handleClosePolicy}
+        onSelectPolicy={(policy) => {
+          setActivePolicyModal(policy);
+          try {
+            window.history.replaceState(null, '', `#${policy}-policy`);
+          } catch {
+            // ignore
+          }
+        }}
       />
 
     </div>
