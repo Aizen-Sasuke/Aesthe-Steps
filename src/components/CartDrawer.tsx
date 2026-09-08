@@ -72,7 +72,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   
   let discountBDT = 0;
   if (appliedPromo === 'DHAKAGENZ') {
-    discountBDT = Math.round(subtotalBDT * 0.1);
+    discountBDT = Math.min(Math.round(subtotalBDT * 0.1), 100);
   } else if (appliedPromo === 'HAXMAHIN') {
     discountBDT = 200;
   }
@@ -84,7 +84,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     if (code === 'DHAKAGENZ' || code === 'HAXMAHIN') {
       setAppliedPromo(code);
     } else {
-      alert('Invalid code! Try "DHAKAGENZ" for 10% off or "HAXMAHIN" for ৳ 200 off.');
+      alert('Invalid code! Try "DHAKAGENZ" for 10% off (up to ৳100) or "HAXMAHIN" for ৳200 off.');
     }
   };
 
@@ -392,7 +392,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                 {appliedPromo && (
                   <div className="text-[11px] text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-lg flex justify-between items-center font-medium">
-                    <span>Coupon '{appliedPromo}' applied!</span>
+                    <span>Coupon '{appliedPromo}' applied! ({appliedPromo === 'DHAKAGENZ' ? '10% off, up to ৳100' : '৳200 off'})</span>
                     <button onClick={() => setAppliedPromo(null)} className="text-[#18181B]/60 dark:text-zinc-400 hover:text-[#18181B]">
                       ✕
                     </button>
@@ -430,9 +430,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     ))}
                   </div>
 
-                  <div className="pt-2 border-t border-pink-100 dark:border-zinc-800 flex items-center justify-between text-[11px] text-[#18181B]/70 dark:text-zinc-400">
-                    <span>Delivery: {deliveryArea === 'inside_dhaka' ? 'Dhaka (৳70)' : 'Outside Dhaka (৳120)'}</span>
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400">Cash on Delivery</span>
+                  <div className="pt-2 border-t border-pink-100 dark:border-zinc-800 space-y-1 text-[11px] text-[#18181B]/70 dark:text-zinc-400">
+                    <div className="flex items-center justify-between">
+                      <span>Delivery: {deliveryArea === 'inside_dhaka' ? 'Dhaka (৳70)' : 'Outside Dhaka (৳120)'}</span>
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400">Cash on Delivery</span>
+                    </div>
+                    {discountBDT > 0 && (
+                      <div className="flex items-center justify-between text-emerald-600 dark:text-emerald-400 font-semibold">
+                        <span>Discount {appliedPromo === 'DHAKAGENZ' ? '(10% off, up to ৳100)' : `(${appliedPromo})`}:</span>
+                        <span>- ৳ {discountBDT.toLocaleString()}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -559,7 +567,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     </div>
                     {discountBDT > 0 && (
                       <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-bold">
-                        <span>Discount:</span>
+                        <span>Discount {appliedPromo === 'DHAKAGENZ' ? '(10% off, up to ৳100)' : appliedPromo ? `(${appliedPromo})` : ''}:</span>
                         <span>- ৳ {discountBDT.toLocaleString()}</span>
                       </div>
                     )}

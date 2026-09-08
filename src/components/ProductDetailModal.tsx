@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Heart, ShoppingBag, Check, Truck, RefreshCw, Star, Footprints, Eye } from 'lucide-react';
+import { X, Heart, ShoppingBag, Check, Truck, RefreshCw, Star, Footprints, Eye, Sparkles } from 'lucide-react';
 import { Product, ProductColorVariant } from '../types';
 
 interface ProductDetailModalProps {
@@ -123,7 +123,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
             {/* Badge */}
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 text-[#DB2777] dark:text-pink-400 text-xs font-bold uppercase tracking-wider z-10">
-              {selectedVariant?.badge || product.badge || 'Drop 01'} • True to Size
+              {selectedVariant?.badge || product.campaignLabel || 'Drop 01'} • True to Size
             </div>
           </div>
 
@@ -132,9 +132,23 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#DB2777] dark:text-pink-400 uppercase tracking-wider">
-                  {product.category}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-[#DB2777] dark:text-pink-400 uppercase tracking-wider">
+                    {product.category}
+                  </span>
+                  {product.badge && (
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                      product.badge === 'Bestseller'
+                        ? 'bg-[#FDF2F4] text-[#DB2777] border border-pink-300 dark:bg-pink-950/70 dark:text-pink-300 dark:border-pink-800'
+                        : product.badge === 'New'
+                        ? 'bg-amber-50 text-amber-800 border border-amber-300 dark:bg-amber-950/70 dark:text-amber-300 dark:border-amber-800'
+                        : 'bg-zinc-100 text-zinc-800 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-700'
+                    }`}>
+                      {product.badge === 'Bestseller' && <Sparkles className="w-2.5 h-2.5 text-[#DB2777] dark:text-pink-400" />}
+                      {product.badge}
+                    </span>
+                  )}
+                </div>
                 <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
                   <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                   <span>{product.rating}</span>

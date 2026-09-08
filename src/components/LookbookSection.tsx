@@ -8,7 +8,7 @@ interface LookbookSectionProps {
 
 export const LookbookSection: React.FC<LookbookSectionProps> = ({ onShopNow }) => {
   return (
-    <section className="relative py-16 sm:py-24 bg-[#FFF9FA] dark:bg-[#0A0A0D] border-t border-b border-pink-200/50 dark:border-zinc-800/80 overflow-hidden transition-colors duration-300">
+    <section className="relative py-12 sm:py-16 bg-[#FFF9FA] dark:bg-[#0A0A0D] border-t border-pink-200/50 dark:border-zinc-800/80 overflow-hidden transition-colors duration-300">
       
       {/* Background ambient light */}
       <div className="absolute top-1/2 right-10 -translate-y-1/2 w-96 h-96 bg-pink-100/60 dark:bg-pink-950/20 rounded-full blur-3xl pointer-events-none" />
@@ -103,7 +103,7 @@ export const LookbookSection: React.FC<LookbookSectionProps> = ({ onShopNow }) =
 
             <div className="space-y-4 text-sm sm:text-base text-[#18181B]/80 dark:text-zinc-300 leading-relaxed font-normal">
               <p>
-                Hax and Mahin started AESTHÉ STEPS right here in Dhaka with one frustration: every pretty heel or sparkly slide in town gave you brutal blisters after twenty minutes, or cost three times a student budget.
+                Hax &amp; Mahin started AESTHÉ STEPS right here in Dhaka with one frustration: every pretty heel or sparkly slide in town gave you brutal blisters after twenty minutes, or cost three times a student budget.
               </p>
               <p>
                 We rebuilt everyday sandals from the ground up: 180g featherlight memory foam insoles, cushioned arch contouring, and anti-slip ribbed grip so you can walk from university straight to evening café plans without thinking about your feet.

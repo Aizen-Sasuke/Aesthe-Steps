@@ -5,7 +5,7 @@ export const AboutSection: React.FC = () => {
   return (
     <section 
       id="about-section" 
-      className="relative py-16 sm:py-24 bg-[#FAF6F0] dark:bg-[#0A0A0D] border-t border-b border-pink-200/50 dark:border-zinc-800/80 transition-colors duration-300 overflow-hidden"
+      className="relative py-12 sm:py-16 bg-[#FAF6F0] dark:bg-[#0A0A0D] border-t border-pink-200/50 dark:border-zinc-800/80 transition-colors duration-300 overflow-hidden"
     >
       {/* Subtle ambient lighting */}
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-80 h-80 bg-pink-100/40 dark:bg-pink-950/20 rounded-full blur-3xl pointer-events-none -z-10" />
@@ -14,7 +14,7 @@ export const AboutSection: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Brand Story Header */}
-        <div className="max-w-3xl mx-auto text-center space-y-4 mb-14 sm:mb-16">
+        <div className="max-w-3xl mx-auto text-center space-y-4 mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 text-[#DB2777] dark:text-pink-400 text-xs font-bold uppercase tracking-widest">
             <Sparkles className="w-3.5 h-3.5" />
             Our Brand Story
@@ -28,7 +28,7 @@ export const AboutSection: React.FC = () => {
           </h2>
 
           <p className="text-base sm:text-lg text-[#18181B]/80 dark:text-zinc-300 leading-relaxed font-normal pt-1">
-            AESTHÉ STEPS is a Dhaka-based footwear brand founded by Hax and Mahin, built for Gen-Z women who want editorial-looking slides without the luxury price tag or endless import wait. We craft runway-ready silhouettes on ultra-cushioned soles engineered for university days, café hops, and city walks.
+            AESTHÉ STEPS is a Dhaka-based footwear brand founded by Hax &amp; Mahin, built for Gen-Z women who want editorial-looking slides without the luxury price tag or endless import wait. We craft runway-ready silhouettes on ultra-cushioned soles engineered for university days, café hops, and city walks.
           </p>
 
           <div className="pt-2 text-xs font-semibold uppercase tracking-wider text-[#DB2777] dark:text-pink-400">

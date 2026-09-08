@@ -21,11 +21,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide, onOpenPolicy })
   };
 
   return (
-    <footer className="bg-[#FFF9FA] dark:bg-[#08080A] border-t border-pink-200/80 dark:border-zinc-800 text-[#18181B] dark:text-zinc-300 pt-16 pb-12 transition-colors">
+    <footer className="bg-[#FFF9FA] dark:bg-[#08080A] border-t border-pink-200/80 dark:border-zinc-800 text-[#18181B] dark:text-zinc-300 pt-12 sm:pt-14 pb-10 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Newsletter & Dhaka Drop Alert */}
-        <div className="p-8 rounded-3xl bg-white dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 mb-16 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+        <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 mb-10 sm:mb-12 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
           <div className="space-y-1 text-center md:text-left">
             <div className="inline-flex items-center gap-1.5 text-xs text-[#DB2777] dark:text-pink-400 font-bold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" /> Next Dhaka Drop Alert
@@ -64,7 +64,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide, onOpenPolicy })
           <div className="space-y-4">
             <BrandLogo size="md" />
             <p className="text-xs text-[#18181B]/70 dark:text-zinc-400 leading-relaxed">
-              Footwear for Dhaka's urban Gen-Z. Founded by <strong className="text-[#18181B] dark:text-zinc-200 font-bold">Hax + Mahin</strong>. Elevated silhouettes, cloud-soft footbeds, and friendly prices.
+              Footwear for Dhaka's urban Gen-Z. Founded by <strong className="text-[#18181B] dark:text-zinc-200 font-bold">Hax &amp; Mahin</strong>. Elevated silhouettes, cloud-soft footbeds, and friendly prices.
             </p>
             <p className="text-xs font-semibold text-[#DB2777] dark:text-pink-400">
               Dhaka, Bangladesh • COD Across All Districts
@@ -164,7 +164,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide, onOpenPolicy })
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#18181B]/60 dark:text-zinc-500 font-medium">
-          <p>© 2026 AESTHÉ STEPS. Founded by Hax + Mahin. All rights reserved.</p>
+          <p>© 2026 AESTHÉ STEPS. Founded by Hax &amp; Mahin. All rights reserved.</p>
           
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <span className="flex items-center gap-1.5 text-[#DB2777] dark:text-pink-400 font-bold">

@@ -25,6 +25,7 @@ export interface Product {
   sizes: number[];
   variants?: ProductColorVariant[];
   badge?: 'Bestseller' | 'New' | 'Trending';
+  campaignLabel?: string;
   description: string;
   details: string[];
   inStock: boolean;

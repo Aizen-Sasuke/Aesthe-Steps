@@ -259,11 +259,11 @@ export default function App() {
       <div className="bg-[#FDF2F4] dark:bg-zinc-900 border-b border-pink-200/70 dark:border-zinc-800 py-2.5 px-4 text-center text-xs font-semibold text-[#18181B] dark:text-zinc-200 flex items-center justify-center gap-3 transition-colors duration-300">
         <span className="inline-block w-2 h-2 rounded-full bg-[#F472B6] animate-pulse" />
         <span>
-          AESTHÉ STEPS by <strong className="text-[#DB2777] dark:text-pink-400">Hax + Mahin</strong> — Cash on Delivery across Dhaka & all Bangladesh • Free 7-day swaps
+          AESTHÉ STEPS by <strong className="text-[#DB2777] dark:text-pink-400">Hax &amp; Mahin</strong> — Cash on Delivery across Dhaka & all Bangladesh • Free 7-day swaps
         </span>
         <span className="hidden md:inline text-pink-300 dark:text-zinc-700">|</span>
         <span className="hidden md:inline text-[11px] font-mono text-[#18181B]/70 dark:text-zinc-400">
-          Use code <span className="text-[#DB2777] dark:text-pink-400 font-bold">DHAKAGENZ</span> for 10% OFF
+          Use code <span className="text-[#DB2777] dark:text-pink-400 font-bold">DHAKAGENZ</span> for 10% OFF (up to ৳100)
         </span>
       </div>
 

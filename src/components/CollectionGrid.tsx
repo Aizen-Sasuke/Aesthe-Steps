@@ -62,7 +62,7 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
   };
 
   return (
-    <section id="collection-section" className="py-16 sm:py-24 bg-[#FAF6F0] dark:bg-[#0E0E12] relative overflow-hidden transition-colors duration-300">
+    <section id="collection-section" className="pt-10 sm:pt-14 pb-12 sm:pb-16 bg-[#FAF6F0] dark:bg-[#0E0E12] relative overflow-hidden transition-colors duration-300">
       
       {/* Background ambient blush wash - gentle open field, no boxes */}
       <div className="absolute top-10 left-1/4 w-96 h-96 bg-[#FDF2F4] dark:bg-pink-950/20 rounded-full blur-3xl pointer-events-none -z-10" />
@@ -71,7 +71,7 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header: Open Editorial Layout (No card boxes) */}
-        <div className="text-center space-y-3 mb-12 sm:mb-16">
+        <div className="text-center space-y-3 mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 text-[#DB2777] dark:text-pink-400 text-xs font-bold uppercase tracking-widest">
             <Sparkles className="w-3.5 h-3.5" />
             Complete Collection • Drops 01 & 02
@@ -87,7 +87,7 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
         </div>
 
         {/* Minimalist Filter Bar - Open & Unboxed */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-12 border-b border-pink-200/50 dark:border-zinc-800">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-5 mb-8 sm:mb-10 border-b border-pink-200/50 dark:border-zinc-800">
           
           {/* Category Tabs */}
           <div className="flex flex-wrap items-center gap-2">
@@ -166,22 +166,23 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
                 >
                   {/* Top Bar: Minimal Badge & Heart (Float freely, no card border) */}
                   <div className="w-full flex items-center justify-between px-1 mb-1.5 z-20 gap-1">
-                    {product.badge ? (
-                      <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider ${
-                        product.badge === 'Bestseller'
-                          ? 'bg-[#FDF2F4] text-[#DB2777] border border-pink-300 dark:bg-pink-950/70 dark:text-pink-300 dark:border-pink-800 shadow-2xs'
-                          : product.badge === 'New'
-                          ? 'bg-amber-50 text-amber-800 border border-amber-300 dark:bg-amber-950/70 dark:text-amber-300 dark:border-amber-800'
-                          : 'bg-zinc-100 text-zinc-800 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-700'
-                      }`}>
-                        {product.badge === 'Bestseller' && <Sparkles className="w-2.5 h-2.5 text-[#DB2777] dark:text-pink-400" />}
-                        {product.badge}
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      {product.badge && (
+                        <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider flex-shrink-0 ${
+                          product.badge === 'Bestseller'
+                            ? 'bg-[#FDF2F4] text-[#DB2777] border border-pink-300 dark:bg-pink-950/70 dark:text-pink-300 dark:border-pink-800 shadow-2xs'
+                            : product.badge === 'New'
+                            ? 'bg-amber-50 text-amber-800 border border-amber-300 dark:bg-amber-950/70 dark:text-amber-300 dark:border-amber-800'
+                            : 'bg-zinc-100 text-zinc-800 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-700'
+                        }`}>
+                          {product.badge === 'Bestseller' && <Sparkles className="w-2.5 h-2.5 text-[#DB2777] dark:text-pink-400" />}
+                          {product.badge}
+                        </span>
+                      )}
+                      <span className="text-[9px] sm:text-[11px] font-bold tracking-wider uppercase text-[#DB2777] dark:text-pink-400 truncate">
+                        {currentVariant?.badge || product.campaignLabel || 'Drop 01'}
                       </span>
-                    ) : (
-                      <span className="text-[9px] sm:text-[11px] font-bold tracking-wider uppercase text-[#DB2777] dark:text-pink-400 truncate max-w-[80px] sm:max-w-none">
-                        {currentVariant?.badge || 'Drop 01'}
-                      </span>
-                    )}
+                    </div>
 
                     <div className="flex items-center gap-1">
                       {/* On-Feet / Studio Toggle */}
@@ -318,11 +319,6 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
                         <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                       </button>
                     </div>
-
-                    {/* Dhaka Delivery Perk */}
-                    <p className="text-[9px] sm:text-[10px] text-[#18181B]/50 dark:text-zinc-500 font-medium">
-                      COD in Dhaka & BD
-                    </p>
                   </div>
 
                 </div>
