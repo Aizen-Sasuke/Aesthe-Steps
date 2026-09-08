@@ -296,7 +296,7 @@ export default function App() {
 
       {/* Main Page Body */}
       <main className="flex-1">
-        {/* 1. Hero Circular Arc Orbit Carousel (Matches Video) */}
+        {/* 1. Hero Circular Arc Orbit Carousel */}
         <HeroCarousel
           products={ALL_PRODUCTS}
           onSelectProduct={(p, v) => {
@@ -309,15 +309,7 @@ export default function App() {
           onScrollToCollection={handleScrollToCollection}
         />
 
-        {/* 2. Lookbook Section: "Comfort Awaits Everyday" (Matches Video) */}
-        <LookbookSection
-          onShopNow={handleScrollToCollection}
-        />
-
-        {/* Brand Story & Value Pillars */}
-        <AboutSection />
-
-        {/* 3. "Ultimate Collection" Bento Grid (Matches Video) */}
+        {/* 2. Collection Grid: Products shown immediately */}
         <CollectionGrid
           products={ALL_PRODUCTS}
           onSelectProduct={(p, v) => {
@@ -329,6 +321,14 @@ export default function App() {
           isFavorite={isFavorite}
           searchQuery={searchQuery}
         />
+
+        {/* 3. Lookbook Section: "Comfort Awaits Everyday" */}
+        <LookbookSection
+          onShopNow={handleScrollToCollection}
+        />
+
+        {/* 4. Brand Story & Value Pillars (at the very end of the page) */}
+        <AboutSection />
       </main>
 
       {/* Footer */}

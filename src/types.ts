@@ -13,7 +13,7 @@ export interface Product {
   tagline: string;
   category: string;
   priceBDT: number;
-  priceUSD: number;
+  priceUSD?: number;
   image: string;
   lifestyleImage?: string;
   colorScheme: {
@@ -24,7 +24,7 @@ export interface Product {
   };
   sizes: number[];
   variants?: ProductColorVariant[];
-  badge?: string;
+  badge?: 'Bestseller' | 'New' | 'Trending';
   description: string;
   details: string[];
   inStock: boolean;

@@ -150,9 +150,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <span className="text-2xl font-bold text-[#18181B] dark:text-zinc-100">
                   ৳ {product.priceBDT.toLocaleString()}
                 </span>
-                <span className="text-xs text-[#18181B]/50 dark:text-zinc-400 font-medium">
-                  (${product.priceUSD} USD)
-                </span>
               </div>
 
               <p className="text-xs sm:text-sm text-[#18181B]/80 dark:text-zinc-300 leading-relaxed font-normal">

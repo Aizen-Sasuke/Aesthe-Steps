@@ -20,7 +20,9 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
   isFavorite,
   onScrollToCollection
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Default hero to first Bestseller product
+  const bestsellerIndex = products.findIndex((p) => p.badge === 'Bestseller');
+  const [currentIndex, setCurrentIndex] = useState(bestsellerIndex >= 0 ? bestsellerIndex : 0);
   const [direction, setDirection] = useState(1);
   const [viewMode, setViewMode] = useState<'product' | 'feet'>('product');
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
@@ -276,9 +278,26 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
             {/* Active Shoe Details & Immediate BUY Pill */}
             <div className="mt-1 sm:mt-2 text-center space-y-1.5 z-20">
-              <h2 className="font-serif-display text-2xl sm:text-3xl font-normal text-[#18181B] dark:text-zinc-100 tracking-tight">
-                {currentProduct.name}
-              </h2>
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                <h2 className="font-serif-display text-2xl sm:text-3xl font-normal text-[#18181B] dark:text-zinc-100 tracking-tight">
+                  {currentProduct.name}
+                </h2>
+                {currentProduct.badge && (
+                  <span
+                    id={`hero-badge-${currentProduct.id}`}
+                    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                      currentProduct.badge === 'Bestseller'
+                        ? 'bg-[#FDF2F4] text-[#DB2777] border border-pink-300 dark:bg-pink-950/70 dark:text-pink-300 dark:border-pink-800 shadow-2xs'
+                        : currentProduct.badge === 'New'
+                        ? 'bg-amber-50 text-amber-800 border border-amber-300 dark:bg-amber-950/70 dark:text-amber-300 dark:border-amber-800'
+                        : 'bg-zinc-100 text-zinc-800 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-700'
+                    }`}
+                  >
+                    {currentProduct.badge === 'Bestseller' && <Sparkles className="w-3 h-3 text-[#DB2777] dark:text-pink-400" />}
+                    {currentProduct.badge}
+                  </span>
+                )}
+              </div>
 
               {/* Professional Colorway Swatch Bar */}
               {currentProduct.variants && currentProduct.variants.length > 0 && (
@@ -319,12 +338,9 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
               {/* Price & Buy Action */}
               <div className="flex items-center justify-center gap-3 pt-2">
-                <div className="flex items-baseline gap-1.5">
+                <div className="flex items-baseline">
                   <span className="text-xl sm:text-2xl font-bold text-[#18181B] dark:text-zinc-100">
                     ৳ {currentProduct.priceBDT.toLocaleString()}
-                  </span>
-                  <span className="text-xs text-[#18181B]/50 dark:text-zinc-400 font-medium">
-                    (${currentProduct.priceUSD} USD)
                   </span>
                 </div>
 
@@ -349,68 +365,6 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
           </div>
 
-        </div>
-
-        {/* Bottom Silhouette Selector - Open & Minimalist (Features ALL models in the lineup) */}
-        <div className="pt-6 pb-2 border-t border-pink-200/40 dark:border-zinc-800/80 mt-4">
-          <div className="flex items-center justify-between mb-3 px-1">
-            <span className="text-[11px] font-mono tracking-widest text-[#18181B]/70 dark:text-zinc-400 uppercase font-bold">
-              Lineup Silhouettes ({currentIndex + 1}/{total})
-            </span>
-            <span className="text-xs text-[#DB2777] dark:text-pink-400 font-semibold hidden sm:inline-block">
-              Tap any pair to inspect in orbit
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {products.map((shoe, idx) => {
-              const isSelected = idx === currentIndex;
-              return (
-                <div
-                  key={shoe.id}
-                  id={`preview-card-${shoe.id}`}
-                  onClick={() => handleSelect(idx)}
-                  className={`group relative p-2.5 rounded-xl cursor-pointer transition-all duration-200 flex items-center justify-between gap-2.5 border ${
-                    isSelected
-                      ? 'bg-pink-100/70 dark:bg-zinc-800/90 border-pink-300 dark:border-pink-500/50 shadow-sm'
-                      : 'bg-white/50 dark:bg-zinc-900/60 hover:bg-pink-50/60 dark:hover:bg-zinc-800/60 border-pink-200/40 dark:border-zinc-800'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    {/* Floating Silhouette Thumbnail (mix-blend-multiply with soft circular backdrop) */}
-                    <div className="w-12 h-12 rounded-full bg-white/90 dark:bg-white/95 flex items-center justify-center p-1 flex-shrink-0 group-hover:scale-110 transition-transform shadow-2xs">
-                      <img
-                        src={shoe.image}
-                        alt={shoe.name}
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-contain mix-blend-multiply"
-                      />
-                    </div>
-
-                    {/* Info */}
-                    <div className="text-left min-w-0">
-                      <p className={`text-xs font-bold transition-colors truncate ${isSelected ? 'text-[#DB2777] dark:text-pink-400' : 'text-[#18181B] dark:text-zinc-200'}`}>
-                        {shoe.name}
-                      </p>
-                      <p className="text-[10px] text-[#18181B]/60 dark:text-zinc-400 font-medium truncate">
-                        {shoe.tagline}
-                      </p>
-                      <p className="text-xs font-bold text-[#18181B] dark:text-zinc-100 pt-0.5">
-                        ৳ {shoe.priceBDT.toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Indicator Dot */}
-                  <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 transition-all ${
-                    isSelected
-                      ? 'bg-[#DB2777] dark:bg-pink-400 scale-125'
-                      : 'bg-pink-300/60 dark:bg-zinc-700 group-hover:bg-[#18181B] dark:group-hover:bg-white'
-                  }`} />
-                </div>
-              );
-            })}
-          </div>
         </div>
 
       </div>

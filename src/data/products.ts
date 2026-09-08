@@ -77,7 +77,7 @@ const INITIAL_PRODUCTS: Product[] = [
         badge: 'Warm Glow'
       }
     ],
-    badge: 'DROP 01 • 4 COLORWAYS',
+    badge: 'Bestseller',
     description: 'Our iconic silhouette. High-gloss patent footbed with crystal-encrusted midfoot strap and delicate toe loop. 180g featherlight cloud-cushioned footbed built for walking Dhaka all day without friction.',
     details: [
       'Real glass rhinestone heat-press (stays on)',
@@ -136,7 +136,6 @@ const INITIAL_PRODUCTS: Product[] = [
         badge: 'Copper Glow'
       }
     ],
-    badge: 'DHAKA NIGHTS • 4 COLORWAYS',
     description: 'Dual criss-cross straps thickly dusted in light-catching glitter shimmer. Soft micro-suede inner lining prevents any skin irritation, while the plush padded footbed offers all-night comfort.',
     details: [
       'Soft-lined inner straps (zero skin rubbing)',
@@ -195,7 +194,6 @@ const INITIAL_PRODUCTS: Product[] = [
         badge: 'High Contrast'
       }
     ],
-    badge: 'SUMMER DROP • 4 COLORWAYS',
     description: 'Chic woven canvas topped with our signature puffy knotted statement bow. The butter-cream cushioned base feels like stepping on foam mattresses from step one.',
     details: [
       'Puffy woven canvas statement bow',
@@ -236,7 +234,7 @@ export const NEW_PRODUCTS: Product[] = [
         badge: 'Bridal Exclusive'
       }
     ],
-    badge: 'NEW ARRIVAL',
+    badge: 'New',
     description: 'Elevate any evening look with this pristine white slip-on block heel, meticulously detailed with a pearl and rhinestone encrusted strap.',
     details: [
       'Hand-applied pearl and rhinestone strap',
@@ -291,7 +289,7 @@ export const NEW_PRODUCTS: Product[] = [
         image: blackNewBowSlide
       }
     ],
-    badge: 'FALL COLLECTION • 4 SHADES',
+    badge: 'Bestseller',
     description: 'A striking statement bow adorns this metallic block heel. Crafted from supple premium faux leather with a perfectly balanced 1.5-inch heel for all-day chic.',
     details: [
       'Prominent knotted statement bow',
