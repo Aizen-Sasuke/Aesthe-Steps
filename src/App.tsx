@@ -30,9 +30,9 @@ export default function App() {
   const [favorites, setFavorites] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem('aesthe_favs');
-      return saved ? JSON.parse(saved) : ['aesthe-pink-crystal'];
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return ['aesthe-pink-crystal'];
+      return [];
     }
   });
 
