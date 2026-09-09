@@ -3,6 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ================================================================= -->
+    <!-- TRACKING SCRIPTS CONFIGURATION:                                   -->
+    <!-- 1. Google Analytics 4 (GA4): Configured with G-S8B1N0T6C8         -->
+    <!-- 2. Meta Pixel: Configured with 931076139558314                    -->
+    <!-- ================================================================= -->
+
+    <!-- Google Analytics 4 (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S8B1N0T6C8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-S8B1N0T6C8');
+    </script>
+
+    <!-- Meta Pixel Code -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '931076139558314');
+      fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel Code -->
+
     <title>AESTHÉ STEPS — Walk Aesthetic</title>
     <meta name="description" content="Dhaka Gen-Z streetwear footwear brand by Hax & Mahin. Lightweight cloud-cushioned slides with real crystal detailing. Cash on delivery all over Bangladesh." />
     <meta property="og:title" content="AESTHÉ STEPS — Walk Aesthetic" />
@@ -24,6 +56,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400;1,9..144,600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   </head>
   <body class="bg-[#FAF6F0] text-[#18181B] antialiased selection:bg-[#F472B6] selection:text-white">
+    <!-- Meta Pixel NoScript Fallback -->
+    <noscript>
+      <img height="1" width="1" style="display:none" 
+        src="https://www.facebook.com/tr?id=931076139558314&ev=PageView&noscript=1" 
+        alt="" />
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

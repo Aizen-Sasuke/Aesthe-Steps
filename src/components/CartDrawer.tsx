@@ -14,6 +14,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { CartItem } from '../types';
+import { trackBeginCheckout, trackPurchase } from '../utils/analytics';
 
 /**
  * WhatsApp destination phone number for receiving orders.
@@ -132,6 +133,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     return message;
   };
 
+  const handleOpenCheckout = () => {
+    // Fire GA4 "begin_checkout" and Meta Pixel "InitiateCheckout"
+    trackBeginCheckout({
+      itemsCount: cartItems.reduce((sum, item) => sum + item.quantity, 0),
+      value: totalBDT,
+      currency: 'BDT',
+    });
+    setStep('checkout');
+  };
+
   /**
    * Handles checkout submission:
    * 1. Validates required fields
@@ -159,6 +170,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
     // Open WhatsApp in a new tab
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+
+    // Fire GA4 "purchase" and Meta Pixel "Purchase"
+    trackPurchase({
+      value: totalBDT,
+      currency: 'BDT',
+      itemsCount: cartItems.reduce((sum, item) => sum + item.quantity, 0),
+    });
 
     // Clear cart and reset states
     onClearCart();
@@ -580,7 +598,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <button
                     id="cart-place-order-btn"
                     type="button"
-                    onClick={() => setStep('checkout')}
+                    onClick={handleOpenCheckout}
                     className="w-full py-3.5 rounded-full bg-[#18181B] dark:bg-pink-600 hover:bg-[#F472B6] dark:hover:bg-pink-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
                   >
                     <span>Place Order</span>

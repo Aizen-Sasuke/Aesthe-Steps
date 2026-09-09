@@ -15,6 +15,7 @@ import { Footer } from './components/Footer';
 import { HERO_PRODUCTS, ALL_PRODUCTS } from './data/products';
 import { Product, CartItem, ActiveNavTab, ProductColorVariant } from './types';
 import { Check, Sparkles, Heart } from 'lucide-react';
+import { trackAddToCart } from './utils/analytics';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveNavTab>('home');
@@ -157,6 +158,15 @@ export default function App() {
     customEngraving?: string
   ) => {
     const activeVariant = variant || product.variants?.[0];
+
+    // Fire GA4 'add_to_cart' and Meta Pixel 'AddToCart'
+    trackAddToCart({
+      productId: product.id,
+      productName: product.name,
+      price: product.priceBDT,
+      quantity,
+      variant: activeVariant?.name,
+    });
 
     setCartItems((prev) => {
       const existingIndex = prev.findIndex(
