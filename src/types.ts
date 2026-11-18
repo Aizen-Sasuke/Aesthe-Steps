@@ -11,7 +11,7 @@ export interface Product {
   name: string;
   tagline: string;
   category: string;
-  priceBDT: number; // Retail price per pair in BDT
+  priceBDT: number;
   image: string;
   lifestyleImage?: string;
   colorScheme: {
@@ -36,8 +36,7 @@ export interface CartItem {
   product: Product;
   selectedSize: number | string;
   selectedVariant?: ProductColorVariant;
-  quantity: number; // Quantity in individual pairs
-  customEngraving?: string;
+  quantity: number;
 }
 
-export type ActiveNavTab = 'home' | 'shop' | 'collections' | 'customize' | 'favourites';
+export type ActiveNavTab = 'home' | 'collection' | 'lookbook' | 'about';

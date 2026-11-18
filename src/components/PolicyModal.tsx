@@ -141,7 +141,6 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
                   <li><strong>Full Name:</strong> Required on the parcel label for courier identification and doorstep handover.</li>
                   <li><strong>Phone Number:</strong> Essential for our team to verify your order on WhatsApp and for the delivery rider to contact you prior to arrival.</li>
                   <li><strong>Delivery Address &amp; District:</strong> Full street address, apartment details, and city/district for dispatch routing.</li>
-                  <li><strong>Optional Custom Inscription:</strong> Text for personalized laser engraving requests on select footbeds.</li>
                 </ul>
               </div>
 

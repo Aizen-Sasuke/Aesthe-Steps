@@ -4,6 +4,10 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   html.dark {
     color-scheme: dark;
   }
@@ -23,22 +27,25 @@
     font-family: 'Playfair Display', 'Fraunces', Georgia, serif;
     letter-spacing: 0.12em;
   }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    @apply outline-2 outline-offset-2 outline-[#DB2777] dark:outline-pink-400;
+  }
 }
 
-/* Subtle warm linen texture / dotted pattern */
-.bg-cream-dots {
-  background-image: radial-gradient(rgba(244, 114, 182, 0.25) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-:is(.dark .bg-cream-dots) {
-  background-image: radial-gradient(rgba(244, 114, 182, 0.12) 1px, transparent 1px);
-}
-
-.bg-soft-blush-gradient {
-  background: radial-gradient(circle at 50% 30%, #FDF2F4 0%, #FAF6F0 80%);
-}
-:is(.dark .bg-soft-blush-gradient) {
-  background: radial-gradient(circle at 50% 30%, #1c1c24 0%, #0E0E12 85%);
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Scrollbar: Hidden on mobile/touch devices to avoid persistent thick bars */
@@ -54,7 +61,7 @@
   }
 }
 
-/* Chic minimal scrollbar for desktop pointers */
+/* Minimal scrollbar for desktop pointers */
 @media (min-width: 768px) and (pointer: fine) {
   ::-webkit-scrollbar {
     width: 5px;
@@ -74,4 +81,3 @@
     background: #DB2777;
   }
 }
-

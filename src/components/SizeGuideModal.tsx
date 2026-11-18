@@ -21,15 +21,15 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-xs" onClick={onClose} />
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-black/55 backdrop-blur-xs" onClick={onClose} />
       
       <div className="relative w-full max-w-lg bg-[#FAF6F0] dark:bg-[#121217] border border-pink-200 dark:border-zinc-800 rounded-3xl p-6 z-10 shadow-2xl space-y-5 text-[#18181B] dark:text-zinc-100 transition-colors">
         <div className="flex items-center justify-between border-b border-pink-200/80 dark:border-zinc-800 pb-4">
           <div className="flex items-center gap-2">
             <Ruler className="w-5 h-5 text-[#DB2777] dark:text-pink-400" />
             <h3 className="text-lg font-bold text-[#18181B] dark:text-zinc-50 font-serif-display">
-              Size &amp; Fit Guide (6–11 &amp; Oversize)
+              Size &amp; Fit Guide
             </h3>
           </div>
           <button
@@ -42,14 +42,14 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
         </div>
 
         <p className="text-xs text-[#18181B]/75 dark:text-zinc-400 leading-relaxed">
-          Every silhouette in our collection runs true to Size 6–11 (corresponding to EU 36–41 sole stamps), with an Oversize option available for wider or longer fits.
+          All styles follow Size 6–11 grading (matching EU 36–41 sole stamps), plus a dedicated Oversize option for extended comfort.
         </p>
 
         <div className="overflow-x-auto bg-white dark:bg-zinc-900 rounded-2xl border border-pink-200 dark:border-zinc-800 p-2 shadow-2xs">
           <table className="w-full text-left text-xs tabular-nums">
             <thead>
               <tr className="border-b border-pink-200/60 dark:border-zinc-800 text-[#18181B]/60 dark:text-zinc-400 uppercase font-mono text-[11px]">
-                <th className="py-2.5 px-3">Store Size</th>
+                <th className="py-2.5 px-3">Size</th>
                 <th className="py-2.5 px-3">Sole Stamp</th>
                 <th className="py-2.5 px-3">Foot Length</th>
               </tr>
@@ -68,10 +68,18 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
 
         <div className="p-3.5 rounded-2xl bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 text-xs text-[#18181B] dark:text-zinc-200 space-y-1">
           <div className="font-bold flex items-center gap-1.5 text-[#DB2777] dark:text-pink-400">
-            <Check className="w-4 h-4 text-[#DB2777] dark:text-pink-400" /> Between Sizes?
+            <Check className="w-4 h-4 text-[#DB2777] dark:text-pink-400" /> Fit Tip
           </div>
           <p className="text-[11px] text-[#18181B]/75 dark:text-zinc-400 leading-relaxed">
-            For pointed heels and mules, we recommend sizing up if you have a wider forefoot. Message {STORE_CONTACT.partners} on {STORE_CONTACT.primaryPhone} / {STORE_CONTACT.secondaryPhone} for quick sizing advice.
+            Between sizes on pointed toes? We recommend sizing up for relaxed toe room. Need quick sizing help? Reach us on{' '}
+            <a
+              href={`https://wa.me/${STORE_CONTACT.whatsappNumber}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[#DB2777] dark:text-pink-400 underline underline-offset-2"
+            >
+              WhatsApp ({STORE_CONTACT.primaryPhone})
+            </a>.
           </p>
         </div>
       </div>

@@ -9,7 +9,6 @@ interface FavoritesModalProps {
   products: Product[];
   onToggleFavorite: (productId: string) => void;
   onSelectProduct: (product: Product, variant?: ProductColorVariant) => void;
-  onQuickBuy: (product: Product, variant?: ProductColorVariant) => void;
 }
 
 export const FavoritesModal: React.FC<FavoritesModalProps> = ({
@@ -18,8 +17,7 @@ export const FavoritesModal: React.FC<FavoritesModalProps> = ({
   favorites,
   products,
   onToggleFavorite,
-  onSelectProduct,
-  onQuickBuy
+  onSelectProduct
 }) => {
   if (!isOpen) return null;
 
@@ -34,7 +32,7 @@ export const FavoritesModal: React.FC<FavoritesModalProps> = ({
           <div className="flex items-center gap-2">
             <Heart className="w-5 h-5 fill-[#F472B6] text-[#F472B6]" />
             <h3 className="text-lg font-bold text-[#18181B] dark:text-zinc-50 font-serif-display">
-              Saved Wishlist ({favProducts.length})
+              Wishlist ({favProducts.length})
             </h3>
           </div>
           <button
@@ -49,7 +47,7 @@ export const FavoritesModal: React.FC<FavoritesModalProps> = ({
         <div className="flex-1 overflow-y-auto space-y-3">
           {favProducts.length === 0 ? (
             <div className="text-center py-12 text-[#18181B]/65 dark:text-zinc-400 text-xs">
-              No styles saved yet. Tap the heart icon on any silhouette to save your favorite pairs here.
+              Your wishlist is empty. Tap the heart icon on any silhouette to save it here.
             </div>
           ) : (
             favProducts.map((shoe) => (
@@ -77,7 +75,7 @@ export const FavoritesModal: React.FC<FavoritesModalProps> = ({
                       {shoe.name}
                     </h4>
                     <p className="text-xs text-[#DB2777] dark:text-pink-400 font-bold tabular-nums">
-                      ৳ {shoe.priceBDT.toLocaleString()} <span className="text-[#18181B]/55 dark:text-zinc-400 font-normal">per pair</span>
+                      ৳ {shoe.priceBDT.toLocaleString()}
                     </p>
                     
                     {shoe.variants && shoe.variants.length > 0 && (
@@ -101,20 +99,21 @@ export const FavoritesModal: React.FC<FavoritesModalProps> = ({
                 <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     onClick={() => {
-                      onQuickBuy(shoe, shoe.variants?.[0]);
+                      onSelectProduct(shoe, shoe.variants?.[0]);
                       onClose();
                     }}
-                    className="w-9 h-9 rounded-xl bg-[#18181B] dark:bg-pink-600 hover:bg-[#DB2777] dark:hover:bg-pink-500 text-white flex items-center justify-center transition-colors"
-                    title="Add Pair to Bag"
-                    aria-label="Add Pair to Bag"
+                    className="h-9 px-3 rounded-xl bg-[#18181B] dark:bg-pink-600 hover:bg-[#DB2777] dark:hover:bg-pink-500 text-white text-[11px] font-bold flex items-center gap-1.5 transition-colors whitespace-nowrap"
+                    title="Select Size & Add to Bag"
+                    aria-label={`Select size for ${shoe.name}`}
                   >
-                    <ShoppingBag className="w-4 h-4" />
+                    <ShoppingBag className="w-3.5 h-3.5" />
+                    <span>Select Size</span>
                   </button>
                   <button
                     onClick={() => onToggleFavorite(shoe.id)}
                     className="w-9 h-9 rounded-xl text-[#18181B]/45 dark:text-zinc-500 hover:text-rose-500 flex items-center justify-center transition-colors"
-                    title="Remove from favorites"
-                    aria-label="Remove from favorites"
+                    title="Remove from wishlist"
+                    aria-label="Remove from wishlist"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

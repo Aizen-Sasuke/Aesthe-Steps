@@ -64,14 +64,14 @@ export const ALL_PRODUCTS: Product[] = [
       }
     ],
     badge: 'Bestseller',
-    campaignLabel: '4 Colorways Available',
+    campaignLabel: 'Patent & Bow Edit',
     description:
-      'High-gloss patent pointed-toe heel finished with a structured bow and metallic monogram accent. Sold individually per pair in Sizes 6–11 with Oversize fit available.',
+      'High-gloss patent pointed-toe silhouette crowned with a sculpted bow and metallic monogram hardware. Cushioned inside for effortless evening poise.',
     details: [
-      'Sold per pair · Cash on Delivery nationwide',
+      'Glossy patent upper with sculpted bow hardware',
+      'Padded contoured insole for all-evening wear',
       'Sizes 6–11 (EU 36–41) · Oversize fit available',
-      'Soft padded footbed for all-evening comfort',
-      '4 classic shades: Maroon, Black, Chocolate Brown & Cream Ivory'
+      'Four finishes: Maroon, Black, Chocolate Brown & Cream Ivory'
     ],
     inStock: true,
     rating: 4.9,
@@ -113,14 +113,14 @@ export const ALL_PRODUCTS: Product[] = [
       }
     ],
     badge: 'New',
-    campaignLabel: '3 Suede Shades',
+    campaignLabel: 'Soft Suede Edit',
     description:
-      'Clean square-toe suede cross-strap slide set on an easy mid block heel. Lightweight slip-on construction crafted for campus runs, workdays, and weekend dinners.',
+      'Architectural square-toe slide with a wide, soft-suede cross strap set on a steady mid block heel. Built to take you from morning errands to dinner effortlessly.',
     details: [
-      'Sold per pair · Cash on Delivery nationwide',
+      'Velvety matte suede cross-strap upper',
+      'Stable mid-height block heel with cushioned sole',
       'Sizes 6–11 (EU 36–41) · Oversize fit available',
-      'Plush suede cross-strap upper with cushioned sole',
-      'Available in Tan Brown, Black Suede & Cream Beige'
+      'Three neutral shades: Tan Brown, Black Suede & Cream Beige'
     ],
     inStock: true,
     rating: 4.8,
@@ -168,14 +168,14 @@ export const ALL_PRODUCTS: Product[] = [
       }
     ],
     badge: 'Trending',
-    campaignLabel: '4 Patent Shades',
+    campaignLabel: 'Minimalist Mule',
     description:
-      'Sleek pointed-toe slip-on mule featuring slender dual straps and a dainty knotted patent bow. Effortlessly pairs with linen trousers, kurtis, and tailored dresses.',
+      'Sharp pointed-toe slip-on mule finished with slender dual straps and a delicate knotted bow. Pairs seamlessly with relaxed linen trousers, sarees, or tailored dresses.',
     details: [
-      'Sold per pair · Cash on Delivery nationwide',
+      'Slip-on pointed profile with dual slender straps',
+      'Cushioned footbed paired with a low walkable heel lift',
       'Sizes 6–11 (EU 36–41) · Oversize fit available',
-      'Cushioned footbed with low block heel lift',
-      'Available in Black, Cream Ivory, Chocolate Brown & Maroon'
+      'Four patent tones: Black, Cream Ivory, Chocolate Brown & Maroon'
     ],
     inStock: true,
     rating: 4.9,
@@ -211,14 +211,14 @@ export const ALL_PRODUCTS: Product[] = [
       }
     ],
     badge: 'New',
-    campaignLabel: '2 Crystal Finishes',
+    campaignLabel: 'Evening Sparkle',
     description:
-      'Double-strap open-toe heel trimmed with shimmering crystal rhinestone bands across both the front and instep straps for subtle evening sparkle.',
+      'Open-toe twin-strap block heel traced with fine crystal rhinestone trim across both bands—bringing understated shimmer to dinners, dawats, and festive nights.',
     details: [
-      'Sold per pair · Cash on Delivery nationwide',
+      'Hand-set twin crystal rhinestone bands across both straps',
+      'Balanced block heel for confident movement all night',
       'Sizes 6–11 (EU 36–41) · Oversize fit available',
-      'Hand-set twin crystal rhinestone trim straps',
-      'Available in Black Suede and Maroon Patent'
+      'Available in Black Suede & Maroon Patent'
     ],
     inStock: true,
     rating: 4.8,
@@ -248,14 +248,14 @@ export const ALL_PRODUCTS: Product[] = [
       }
     ],
     badge: 'New',
-    campaignLabel: 'Limited Blush Edition',
+    campaignLabel: 'Occasion Signature',
     description:
-      'Statement blush-pink pointed heel detailed with a crystal-center bow and supportive buckled ankle strap—designed for dawat nights, weddings, and dressed-up evenings.',
+      'Statement blush-pink pointed pump adorned with a sparkling crystal bow centerpiece and an adjustable buckled ankle strap for refined security at weddings and evening events.',
     details: [
-      'Sold per pair · Cash on Delivery nationwide',
+      'Crystal-encrusted bow centerpiece on a satin-smooth pointed toe',
+      'Adjustable buckled ankle strap for a secure custom fit',
       'Sizes 6–11 (EU 36–41) · Oversize fit available',
-      'Adjustable ankle strap with crystal bow centerpiece',
-      'Signature Blush Pink finish'
+      'Signature Blush Pink edition'
     ],
     inStock: true,
     rating: 4.9,
@@ -297,14 +297,14 @@ export const ALL_PRODUCTS: Product[] = [
       }
     ],
     badge: 'Bestseller',
-    campaignLabel: '3 Everyday Shades',
+    campaignLabel: 'Everyday Icon',
     description:
-      'Signature Aesthé Steps two-strap suede block heel with a soft scalloped cushioned footbed. Effortless balance of height, grip, and everyday ease.',
+      'Our signature two-strap suede block heel featuring a scalloped-edge cushioned footbed. Lightweight stability engineered for long campus hours and relaxed weekends.',
     details: [
-      'Sold per pair · Cash on Delivery nationwide',
+      'Scalloped-edge Aesthé Steps cushioned footbed',
+      'Plush matte suede dual straps for gentle hold',
       'Sizes 6–11 (EU 36–41) · Oversize fit available',
-      'Signature Aesthé Steps cushioned insole',
-      'Available in Tan Brown, Black Suede & Maroon Suede'
+      'Three core hues: Tan Brown, Black Suede & Maroon Suede'
     ],
     inStock: true,
     rating: 5.0,

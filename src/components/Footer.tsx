@@ -1,61 +1,57 @@
-import React, { useState } from 'react';
-import { MapPin, Phone, Mail, ArrowRight, Heart, ShieldCheck, RotateCcw, FileText } from 'lucide-react';
+import React from 'react';
+import { MapPin, Phone, Mail, Heart, ShieldCheck, RotateCcw, FileText, MessageCircle, Ruler } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
 import { ALL_PRODUCTS, STORE_CONTACT, DELIVERY_RATES } from '../data/products';
+import { Product } from '../types';
 
 interface FooterProps {
   onOpenSizeGuide: () => void;
+  onSelectProduct: (product: Product) => void;
   onOpenPolicy?: (policy: 'privacy' | 'refund' | 'terms') => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide, onOpenPolicy }) => {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setTimeout(() => setSubscribed(false), 4000);
-      setEmail('');
-    }
-  };
-
+export const Footer: React.FC<FooterProps> = ({
+  onOpenSizeGuide,
+  onSelectProduct,
+  onOpenPolicy
+}) => {
   return (
     <footer className="bg-[#FFF9FA] dark:bg-[#08080A] border-t border-pink-200/80 dark:border-zinc-800 text-[#18181B] dark:text-zinc-300 pt-12 sm:pt-14 pb-10 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Top Boutique Stock Alert */}
+        {/* Actionable Concierge Bar (No Fake Input Forms) */}
         <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 mb-10 sm:mb-12 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
           <div className="space-y-1 text-center md:text-left">
             <p className="text-xs text-[#DB2777] dark:text-pink-400 font-bold uppercase tracking-wider">
-              Aesthé Steps Boutique
+              Aesthé Steps Care
             </p>
             <h3 className="text-xl sm:text-2xl font-bold font-serif-display text-[#18181B] dark:text-zinc-50">
-              Stay Updated on New Drops
+              Need Sizing Advice or Shade Help?
             </h3>
             <p className="text-xs text-[#18181B]/70 dark:text-zinc-400">
-              Be the first to know when fresh silhouettes and limited shades arrive in Dhaka.
+              Check our quick size chart or message {STORE_CONTACT.partners} directly on WhatsApp.
             </p>
           </div>
 
-          <form onSubmit={handleSubscribe} className="w-full md:w-auto flex flex-col sm:flex-row gap-2.5">
-            <input
-              type="text"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your phone or email"
-              className="bg-[#FAF6F0] dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 rounded-full px-5 py-3 text-xs text-[#18181B] dark:text-zinc-100 placeholder-[#18181B]/40 dark:placeholder-zinc-500 focus:outline-none focus:border-[#F472B6] w-full sm:min-w-[240px]"
-            />
+          <div className="w-full md:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <button
-              type="submit"
-              className="px-6 py-3 rounded-full bg-[#18181B] dark:bg-pink-600 hover:bg-[#DB2777] dark:hover:bg-pink-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap shrink-0"
+              type="button"
+              onClick={onOpenSizeGuide}
+              className="px-6 py-3 rounded-full bg-[#FAF6F0] dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 hover:border-[#DB2777] text-xs font-bold uppercase tracking-wider text-[#18181B] dark:text-zinc-100 transition-colors flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
             >
-              <span>{subscribed ? 'Subscribed!' : 'Notify Me'}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <Ruler className="w-4 h-4 text-[#DB2777] dark:text-pink-400" />
+              <span>Size Guide</span>
             </button>
-          </form>
+            <a
+              href={`https://wa.me/${STORE_CONTACT.whatsappNumber}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 rounded-full bg-[#18181B] dark:bg-pink-600 hover:bg-[#DB2777] dark:hover:bg-pink-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap shrink-0"
+            >
+              <MessageCircle className="w-4 h-4 text-emerald-400 dark:text-white" />
+              <span>Chat on WhatsApp</span>
+            </a>
+          </div>
         </div>
 
         {/* Symmetric 4-Column Links Grid */}
@@ -65,14 +61,14 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide, onOpenPolicy })
           <div className="space-y-4">
             <BrandLogo size="md" />
             <p className="text-xs text-[#18181B]/75 dark:text-zinc-400 leading-relaxed">
-              Curated women&apos;s footwear in Dhaka by <strong className="text-[#18181B] dark:text-zinc-200 font-semibold">{STORE_CONTACT.partners}</strong>. Ordered piece by piece with Cash on Delivery across Bangladesh.
+              Contemporary women&apos;s footwear in Dhaka by <strong className="text-[#18181B] dark:text-zinc-200 font-semibold">{STORE_CONTACT.partners}</strong>, delivered across Bangladesh.
             </p>
             <p className="text-xs font-semibold text-[#DB2777] dark:text-pink-400">
               Sizes 6–11 &amp; Oversize · Nationwide COD
             </p>
           </div>
 
-          {/* Column 2: The Collection */}
+          {/* Column 2: Direct Product Shortcuts */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#18181B] dark:text-zinc-100">
               The Collection
@@ -80,10 +76,14 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide, onOpenPolicy })
             <ul className="space-y-2 text-xs text-[#18181B]/75 dark:text-zinc-400 font-medium tabular-nums">
               {ALL_PRODUCTS.map((item) => (
                 <li key={item.id}>
-                  <a href="#collection-section" className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors flex items-center justify-between gap-2 max-w-[230px]">
+                  <button
+                    type="button"
+                    onClick={() => onSelectProduct(item)}
+                    className="w-full max-w-[230px] hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors flex items-center justify-between gap-2 text-left cursor-pointer"
+                  >
                     <span className="truncate">{item.name}</span>
                     <span className="font-semibold text-[#18181B]/85 dark:text-zinc-300 shrink-0">৳ {item.priceBDT}</span>
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -100,7 +100,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide, onOpenPolicy })
                   onClick={onOpenSizeGuide} 
                   className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors text-left font-bold text-[#DB2777] dark:text-pink-400 cursor-pointer"
                 >
-                  Size Guide (Sizes 6–11 &amp; Oversize)
+                  Size Guide (6–11 &amp; Oversize)
                 </button>
               </li>
               <li>
@@ -150,11 +150,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSizeGuide, onOpenPolicy })
               </li>
               <li className="flex items-center gap-2 tabular-nums">
                 <Phone className="w-4 h-4 text-[#DB2777] dark:text-pink-400 shrink-0" />
-                <span>{STORE_CONTACT.primaryPhone}</span>
+                <a href={`tel:${STORE_CONTACT.primaryPhone.replace(/-/g, '')}`} className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors">
+                  {STORE_CONTACT.primaryPhone}
+                </a>
               </li>
               <li className="flex items-center gap-2 tabular-nums">
                 <Phone className="w-4 h-4 text-[#DB2777] dark:text-pink-400 shrink-0" />
-                <span>{STORE_CONTACT.secondaryPhone}</span>
+                <a href={`tel:${STORE_CONTACT.secondaryPhone}`} className="hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors">
+                  {STORE_CONTACT.secondaryPhone}
+                </a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#DB2777] dark:text-pink-400 shrink-0" />

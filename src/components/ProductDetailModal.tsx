@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Heart, ShoppingBag, Check, Truck, Phone, Star } from 'lucide-react';
+import { X, Heart, ShoppingBag, Check, Truck, Phone, Star, Ruler, Minus, Plus } from 'lucide-react';
 import { Product, ProductColorVariant } from '../types';
 import { STORE_CONTACT, DELIVERY_RATES } from '../data/products';
 
@@ -10,6 +10,7 @@ interface ProductDetailModalProps {
   onAddToCart: (product: Product, size: number | string, quantity: number, variant?: ProductColorVariant) => void;
   onToggleFavorite: (productId: string) => void;
   isFavorite: boolean;
+  onOpenSizeGuide: () => void;
 }
 
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
@@ -18,7 +19,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onClose,
   onAddToCart,
   onToggleFavorite,
-  isFavorite
+  isFavorite,
+  onOpenSizeGuide
 }) => {
   if (!product) return null;
 
@@ -45,7 +47,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     setTimeout(() => {
       setAddedAnimation(false);
       onClose();
-    }, 600);
+    }, 550);
   };
 
   return (
@@ -80,7 +82,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               )}
             </div>
 
-            {/* Main Picture Display */}
             <div className="relative z-10 w-full aspect-[4/3] my-5 rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-800 shadow-md">
               <img
                 src={activeImage}
@@ -90,14 +91,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               />
             </div>
 
-            {/* Footer caption */}
             <div className="w-full flex items-center justify-between text-[11px] font-medium text-[#18181B]/70 dark:text-zinc-400">
-              <span>{product.campaignLabel || 'Curated Lineup'}</span>
-              <span className="text-[#DB2777] dark:text-pink-400 font-semibold">Sold per pair</span>
+              <span>{product.campaignLabel || 'Curated Edit'}</span>
+              <span className="text-[#DB2777] dark:text-pink-400 font-semibold">Sizes 6–11 &amp; Oversize</span>
             </div>
           </div>
 
-          {/* Right Column: Specs, Sizing, and Add to Bag */}
+          {/* Right Column: Details, Size Guide & Bag Action */}
           <div className="md:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-5 bg-[#FAF6F0] dark:bg-[#121217]">
             
             <div className="space-y-3.5">
@@ -116,12 +116,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 {product.name}
               </h3>
 
-              {/* Retail Price Breakdown */}
+              {/* Retail Price & Flat Delivery Row */}
               <div className="p-3.5 rounded-2xl bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 flex items-center justify-between">
                 <div>
-                  <span className="block text-[10px] font-bold uppercase tracking-wider text-[#DB2777] dark:text-pink-400">
-                    Price Per Pair
-                  </span>
                   <span className="text-2xl font-bold text-[#18181B] dark:text-zinc-100 tabular-nums">
                     ৳ {product.priceBDT.toLocaleString()}
                   </span>
@@ -136,7 +133,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 {product.description}
               </p>
 
-              {/* Colorway Swatch Selector */}
+              {/* Colorway Selector */}
               {product.variants && product.variants.length > 0 && (
                 <div className="pt-3 border-t border-pink-200/60 dark:border-zinc-800">
                   <div className="flex justify-between items-center mb-2">
@@ -171,10 +168,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </div>
               )}
 
-              {/* Craft & Fit Highlights */}
+              {/* Craft Details */}
               <div className="space-y-1.5 pt-3 border-t border-pink-200/60 dark:border-zinc-800">
                 <span className="text-[11px] font-bold text-[#18181B]/70 dark:text-zinc-400 uppercase tracking-wider">
-                  Details &amp; Craft:
+                  Craft &amp; Fit Notes:
                 </span>
                 <ul className="space-y-1 text-xs text-[#18181B]/80 dark:text-zinc-300 font-medium">
                   {product.details.map((detail, idx) => (
@@ -186,13 +183,20 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </ul>
               </div>
 
-              {/* Size Selector */}
+              {/* Size Selector + In-Context Size Guide Trigger */}
               <div className="pt-2">
                 <div className="flex justify-between items-center mb-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-[#18181B] dark:text-zinc-200">
-                    Select Your Size
+                    Select Size
                   </label>
-                  <span className="text-[11px] text-[#DB2777] dark:text-pink-400 font-semibold">Sizes 6–11 · Oversize</span>
+                  <button
+                    type="button"
+                    onClick={onOpenSizeGuide}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-[#DB2777] dark:text-pink-400 hover:underline underline-offset-2 cursor-pointer"
+                  >
+                    <Ruler className="w-3.5 h-3.5" />
+                    <span>Size Guide</span>
+                  </button>
                 </div>
                 <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
                   {product.sizes.map((size) => (
@@ -212,24 +216,46 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Bar with Quantity Stepper + Add to Bag */}
             <div className="space-y-3 pt-3 border-t border-pink-200/60 dark:border-zinc-800">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="flex items-center h-11 px-2 rounded-full bg-white dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 tabular-nums shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-[#18181B]/70 dark:text-zinc-300 hover:bg-pink-50 dark:hover:bg-zinc-700"
+                    aria-label="Decrease quantity"
+                  >
+                    <Minus className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="w-7 text-center text-xs font-bold text-[#18181B] dark:text-zinc-100">
+                    {quantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => q + 1)}
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-[#18181B]/70 dark:text-zinc-300 hover:bg-pink-50 dark:hover:bg-zinc-700"
+                    aria-label="Increase quantity"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
                 <button
                   id="modal-add-to-cart-btn"
                   onClick={handleAdd}
                   disabled={addedAnimation}
-                  className={`flex-1 py-3.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-sm ${
+                  className={`flex-1 h-11 px-4 rounded-full font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-sm whitespace-nowrap ${
                     addedAnimation
                       ? 'bg-emerald-600 text-white'
                       : 'bg-[#18181B] dark:bg-pink-600 text-white hover:bg-[#DB2777] dark:hover:bg-pink-500'
                   }`}
                 >
-                  <ShoppingBag className="w-4 h-4" />
-                  <span>
+                  <ShoppingBag className="w-4 h-4 shrink-0" />
+                  <span className="truncate">
                     {addedAnimation
                       ? 'Added to Bag!'
-                      : `Add to Bag (${selectedVariant?.name || 'Selected'})`}
+                      : `Add · ৳ ${(product.priceBDT * quantity).toLocaleString()}`}
                   </span>
                 </button>
 
@@ -245,11 +271,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
               <div className="flex items-center justify-between text-[11px] text-[#18181B]/70 dark:text-zinc-400 px-1 font-medium">
                 <span className="flex items-center gap-1.5">
-                  <Truck className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" /> Cash on Delivery Nationwide
+                  <Truck className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" /> Inspect Before Paying (COD)
                 </span>
-                <span className="flex items-center gap-1.5 tabular-nums">
+                <a
+                  href={`https://wa.me/${STORE_CONTACT.whatsappNumber}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 tabular-nums hover:text-[#DB2777] dark:hover:text-pink-400"
+                >
                   <Phone className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" /> {STORE_CONTACT.primaryPhone}
-                </span>
+                </a>
               </div>
             </div>
 

@@ -13,7 +13,6 @@ interface NavbarProps {
   onOpenFavorites: () => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  onOpenCustomize: () => void;
   isDarkMode?: boolean;
   toggleDarkMode?: () => void;
 }
@@ -27,7 +26,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenFavorites,
   searchQuery,
   onSearchChange,
-  onOpenCustomize,
   isDarkMode = false,
   toggleDarkMode
 }) => {
@@ -36,25 +34,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks: { id: ActiveNavTab; label: string }[] = [
     { id: 'home', label: 'Home' },
-    { id: 'shop', label: 'Shop' },
-    { id: 'collections', label: 'Collection' },
-    { id: 'customize', label: 'Custom Studio' },
-    { id: 'favourites', label: 'Wishlist' },
+    { id: 'collection', label: 'Collection' },
+    { id: 'lookbook', label: 'Lookbook' },
+    { id: 'about', label: 'Our Story' },
   ];
 
   const handleNavClick = (id: ActiveNavTab) => {
-    if (id === 'customize') {
-      onOpenCustomize();
-    } else if (id === 'favourites') {
-      onOpenFavorites();
-    } else {
-      onTabChange(id);
-    }
+    onTabChange(id);
     setMobileMenuOpen(false);
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#FAF6F0]/92 dark:bg-zinc-950/92 backdrop-blur-md border-b border-pink-200/50 dark:border-zinc-800 transition-colors duration-300">
+    <header className="sticky top-0 z-40 w-full bg-[#FAF6F0]/92 dark:bg-zinc-950/92 backdrop-blur-md border-b border-pink-200/50 dark:border-zinc-800 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-[72px] flex items-center justify-between gap-4 lg:gap-8">
         
         {/* Zone 1: Brand Wordmark */}
@@ -68,8 +59,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           <BrandLogo size="md" showSubtitle={false} />
         </button>
 
-        {/* Zone 2: Clean Single-Line Typographic Nav Links */}
-        <nav className="hidden md:flex items-center justify-center gap-6 lg:gap-8">
+        {/* Zone 2: Clean 4-Link Typographic Nav */}
+        <nav className="hidden md:flex items-center justify-center gap-7 lg:gap-9" aria-label="Primary Navigation">
           {navLinks.map((link) => {
             const isActive = activeTab === link.id;
             return (
@@ -77,21 +68,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 key={link.id}
                 id={`nav-link-${link.id}`}
                 onClick={() => handleNavClick(link.id)}
-                className={`relative py-2 text-sm font-medium transition-colors duration-200 whitespace-nowrap shrink-0 flex items-center gap-1.5 select-none ${
+                className={`relative py-2 text-sm font-medium transition-colors duration-200 whitespace-nowrap shrink-0 select-none ${
                   isActive
                     ? 'text-[#DB2777] dark:text-pink-400 font-semibold'
                     : 'text-[#18181B]/75 dark:text-zinc-300 hover:text-[#18181B] dark:hover:text-white'
                 }`}
               >
                 <span>{link.label}</span>
-                {link.id === 'favourites' && favoritesCount > 0 && (
-                  <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold rounded-full bg-[#F472B6] text-white tabular-nums">
-                    {favoritesCount}
-                  </span>
-                )}
-                {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-[#DB2777] dark:bg-pink-400" />
-                )}
+                <span
+                  className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-[#DB2777] dark:bg-pink-400 transition-transform duration-200 origin-center ${
+                    isActive ? 'scale-x-100' : 'scale-x-0'
+                  }`}
+                />
               </button>
             );
           })}
@@ -100,7 +88,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Zone 3: Balanced Utility & Bag Actions */}
         <div className="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0">
           
-          {/* Dark Mode Toggle */}
           {toggleDarkMode && (
             <button
               onClick={toggleDarkMode}
@@ -112,7 +99,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
-          {/* Search Toggle */}
           {showSearchInput ? (
             <div className="relative flex items-center animate-fadeIn">
               <input
@@ -146,12 +132,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
-          {/* Wishlist Icon */}
           <button
             id="nav-favourites-btn"
             onClick={onOpenFavorites}
             className="relative w-9 h-9 rounded-full flex items-center justify-center text-[#18181B]/75 dark:text-zinc-300 hover:text-[#DB2777] dark:hover:text-pink-400 hover:bg-pink-100/60 dark:hover:bg-zinc-800/70 transition-colors"
-            title="Saved Wishlist"
+            title="Wishlist"
             aria-label="Open Wishlist"
           >
             <Heart className={`w-4 h-4 ${favoritesCount > 0 ? 'fill-[#F472B6] text-[#F472B6]' : ''}`} />
@@ -162,7 +147,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
-          {/* Primary Action: Bag Button */}
           <button
             id="nav-cart-btn"
             onClick={onOpenCart}
@@ -179,7 +163,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
-          {/* Mobile Menu Button */}
           <button
             id="mobile-menu-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -205,15 +188,24 @@ export const Navbar: React.FC<NavbarProps> = ({
               }`}
             >
               <span>{link.label}</span>
-              {link.id === 'favourites' && favoritesCount > 0 && (
-                <span className="text-xs bg-[#F472B6] text-white px-2 py-0.5 rounded-full font-bold tabular-nums">
-                  {favoritesCount}
-                </span>
-              )}
             </button>
           ))}
+          <button
+            onClick={() => {
+              onOpenFavorites();
+              setMobileMenuOpen(false);
+            }}
+            className="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-between text-[#18181B] dark:text-zinc-200 hover:bg-pink-50 dark:hover:bg-zinc-900"
+          >
+            <span>Wishlist</span>
+            {favoritesCount > 0 && (
+              <span className="text-xs bg-[#F472B6] text-white px-2 py-0.5 rounded-full font-bold tabular-nums">
+                {favoritesCount}
+              </span>
+            )}
+          </button>
           <div className="pt-3 mt-2 border-t border-pink-200/40 dark:border-zinc-800 flex items-center justify-between text-xs text-[#18181B]/70 dark:text-zinc-400 px-2">
-            <span>Cash on Delivery Nationwide</span>
+            <span>Dhaka &amp; Nationwide COD</span>
             <span className="text-[#DB2777] dark:text-pink-400 font-semibold">By {STORE_CONTACT.partners}</span>
           </div>
         </div>
