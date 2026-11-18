@@ -1,325 +1,324 @@
 import { Product } from '../types';
 
-// Isolated Base Cutouts
-import pinkCrystalIsolated from '../assets/images/pink_crystal_isolated_1788758971009.jpg';
-import blackCrystalToe from '../assets/images/black_crystal_toe_1788760722626.jpg';
-import whiteCrystalToe from '../assets/images/white_crystal_toe_1788760735173.jpg';
-import peachCrystalToe from '../assets/images/peach_crystal_toe_1788760783470.jpg';
+import yslHeelImg from '../assets/images/batch2026/as_030_ysl_heel.jpg';
+import strapSlideImg from '../assets/images/batch2026/as_031_strap_slide.jpg';
+import pointedToeMuleImg from '../assets/images/batch2026/as_032_pointed_toe_mule.jpg';
+import crystalStrapImg from '../assets/images/batch2026/as_033_crystal_strap.jpg';
+import platformAnkleStrapImg from '../assets/images/batch2026/as_034_platform_ankle_strap.jpg';
+import twoStrapBlockHeelImg from '../assets/images/batch2026/as_035_two_strap_block_heel.jpg';
 
-import blackGlitterIsolated from '../assets/images/black_glitter_isolated_1788758986595.jpg';
-import silverCrossSlide from '../assets/images/silver_crisscross_slide_1788760748592.jpg';
-import goldCrossSlide from '../assets/images/gold_crisscross_slide_1788760770325.jpg';
-import roseCrossSlide from '../assets/images/rose_crisscross_slide_1788760850215.jpg';
+export const STORE_CONTACT = {
+  partners: 'Hax, Mahin & Mahadi',
+  primaryPhone: '01613-817630',
+  secondaryPhone: '01618007003',
+  whatsappNumber: '8801613817630',
+  location: 'Dhaka, Bangladesh',
+  email: 'aesthesteps@gmail.com',
+};
 
-import oliveBowIsolated from '../assets/images/olive_bow_isolated_1788759008077.jpg';
-import caramelBowSlide from '../assets/images/caramel_bow_slide_1788760666127.jpg';
-import creamBowSlide from '../assets/images/cream_bow_slide_1788760685768.jpg';
-import blackBowSlide from '../assets/images/black_bow_slide_1788760700426.jpg';
+export const DELIVERY_RATES = {
+  insideDhaka: 70,
+  outsideDhaka: 120,
+};
 
-// Lifestyle / Lookbook Images
-import feetPinkImg from '../assets/images/feet_pink_rhinestone_slide_1788758041451.jpg';
-import feetBlackImg from '../assets/images/feet_black_shimmer_slide_1788758058098.jpg';
-import feetOliveImg from '../assets/images/feet_olive_bow_slide_1788758072989.jpg';
-import campaignBannerImg from '../assets/images/campaign_dhaka_girls_slides_1788758089570.jpg';
-import sandalsPaletteImg from '../assets/images/sandals_color_palette_1788760801656.jpg';
-
-// New Drops
-import pearlRhinestoneSlide from '../assets/images/pearl_rhinestone_slide_1788761807920.jpg';
-import roseGoldBowSlide from '../assets/images/rose_gold_bow_slide_1788761834885.jpg';
-import silverBowSlide from '../assets/images/silver_bow_slide_1788761856060.jpg';
-import blackNewBowSlide from '../assets/images/black_bow_slide_1788761884766.jpg';
-import pinkNewBowSlide from '../assets/images/pink_bow_slide_1788761907540.jpg';
-
-const INITIAL_PRODUCTS: Product[] = [
+export const ALL_PRODUCTS: Product[] = [
   {
-    id: 'aesthe-pink-crystal',
-    name: 'Aesthé Crystal Dn',
-    tagline: 'Embellished Toe-Ring Flat Slide',
-    category: "Crystal Toe-Ring",
-    priceBDT: 2450,
-    priceUSD: 22,
-    image: pinkCrystalIsolated,
-    lifestyleImage: feetPinkImg,
+    id: 'ysl-heel',
+    name: 'YSL Heel',
+    tagline: 'Patent pointed mule with bow & gold monogram hardware',
+    category: 'Pointed Heels',
+    priceBDT: 920,
+    image: yslHeelImg,
     colorScheme: {
-      primary: '#f472b6',
-      accent: '#db2777',
-      glow: '#fdf2f4',
-      ringColor: 'from-pink-400 to-rose-300'
+      primary: '#7F1D1D',
+      accent: '#DB2777',
+      glow: '#FDF2F4',
+      ringColor: 'from-rose-900 to-pink-500'
     },
-    sizes: [36, 37, 38, 39, 40, 41],
+    sizes: [6, 7, 8, 9, 10, 11, 'Oversize'],
+    oversizeAvailable: true,
     variants: [
       {
-        id: 'blush-pink',
-        name: 'Blush Pink',
-        colorHex: '#F472B6',
-        image: pinkCrystalIsolated,
-        badge: 'Viral Hit'
+        id: 'ysl-heel-maroon',
+        name: 'Maroon Patent',
+        colorHex: '#7F1D1D',
+        image: yslHeelImg,
       },
       {
-        id: 'obsidian-noir',
-        name: 'Obsidian Noir',
+        id: 'ysl-heel-black',
+        name: 'Black Patent',
         colorHex: '#18181B',
-        image: blackCrystalToe,
-        badge: 'Diamond Cluster'
+        image: yslHeelImg,
       },
       {
-        id: 'pearl-ivory',
-        name: 'Pearl Ivory',
-        colorHex: '#F5F5F0',
-        image: whiteCrystalToe,
-        badge: 'Pure Pavé'
+        id: 'ysl-heel-brown',
+        name: 'Chocolate Brown',
+        colorHex: '#4A2C2A',
+        image: yslHeelImg,
       },
       {
-        id: 'champagne-peach',
-        name: 'Champagne Peach',
-        colorHex: '#F0B2A6',
-        image: peachCrystalToe,
-        badge: 'Warm Glow'
+        id: 'ysl-heel-cream',
+        name: 'Cream Ivory',
+        colorHex: '#F3ECE1',
+        image: yslHeelImg,
       }
     ],
     badge: 'Bestseller',
-    campaignLabel: 'DROP 01 • 4 COLORWAYS',
-    description: 'Our iconic silhouette. High-gloss patent footbed with crystal-encrusted midfoot strap and delicate toe loop. 180g featherlight cloud-cushioned footbed built for walking Dhaka all day without friction.',
+    campaignLabel: '4 Colorways Available',
+    description:
+      'High-gloss patent pointed-toe heel finished with a structured bow and metallic monogram accent. Sold individually per pair in Sizes 6–11 with Oversize fit available.',
     details: [
-      'Real glass rhinestone heat-press (stays on)',
-      '180g featherlight cloud foam footbed',
-      'Square-toe chunky edge with toe grip',
-      'Wipes clean easily with damp cloth',
-      'Available in 4 curated shades'
+      'Sold per pair · Cash on Delivery nationwide',
+      'Sizes 6–11 (EU 36–41) · Oversize fit available',
+      'Soft padded footbed for all-evening comfort',
+      '4 classic shades: Maroon, Black, Chocolate Brown & Cream Ivory'
     ],
     inStock: true,
     rating: 4.9,
-    reviewsCount: 128
+    reviewsCount: 64
   },
   {
-    id: 'aesthe-midnight-glitter',
-    name: 'Aesthé Midnight Shimmer',
-    tagline: 'Criss-Cross Glitter Mule Slide',
-    category: "Criss-Cross Shimmer",
-    priceBDT: 2650,
-    priceUSD: 24,
-    image: blackGlitterIsolated,
-    lifestyleImage: feetBlackImg,
+    id: 'strap-slide',
+    name: 'Strap Slide',
+    tagline: 'Square-toe suede wide-strap block heel for everyday wear',
+    category: 'Block Slides',
+    priceBDT: 750,
+    image: strapSlideImg,
     colorScheme: {
-      primary: '#18181b',
-      accent: '#f472b6',
-      glow: '#faf6f0',
-      ringColor: 'from-zinc-900 to-pink-500'
+      primary: '#9A5B25',
+      accent: '#18181B',
+      glow: '#FAF6F0',
+      ringColor: 'from-amber-700 to-zinc-800'
     },
-    sizes: [36, 37, 38, 39, 40, 41],
+    sizes: [6, 7, 8, 9, 10, 11, 'Oversize'],
+    oversizeAvailable: true,
     variants: [
       {
-        id: 'onyx-silver',
-        name: 'Onyx & Silver',
+        id: 'strap-slide-tan',
+        name: 'Tan Brown',
+        colorHex: '#9A5B25',
+        image: strapSlideImg,
+      },
+      {
+        id: 'strap-slide-black',
+        name: 'Black Suede',
         colorHex: '#18181B',
-        image: blackGlitterIsolated,
-        badge: 'Dhaka Nights'
+        image: strapSlideImg,
       },
       {
-        id: 'sterling-silver',
-        name: 'Sterling Silver',
-        colorHex: '#D1D5DB',
-        image: silverCrossSlide,
-        badge: 'Ice Diamond'
-      },
-      {
-        id: 'champagne-gold',
-        name: 'Champagne Gold',
-        colorHex: '#D4AF37',
-        image: goldCrossSlide,
-        badge: 'Starlight Gold'
-      },
-      {
-        id: 'rose-bronze',
-        name: 'Rose Bronze',
-        colorHex: '#B76E79',
-        image: roseCrossSlide,
-        badge: 'Copper Glow'
-      }
-    ],
-    campaignLabel: 'DHAKA NIGHTS • 4 COLORWAYS',
-    description: 'Dual criss-cross straps thickly dusted in light-catching glitter shimmer. Soft micro-suede inner lining prevents any skin irritation, while the plush padded footbed offers all-night comfort.',
-    details: [
-      'Soft-lined inner straps (zero skin rubbing)',
-      'Dual criss-cross arch-hug design',
-      'Anti-slip textured rubber base',
-      'Low 1-inch chunky platform lift',
-      'Available in 4 lustrous metallics'
-    ],
-    inStock: true,
-    rating: 4.8,
-    reviewsCount: 94
-  },
-  {
-    id: 'aesthe-olive-ribbon',
-    name: 'Aesthé Ribbon Bow Slider',
-    tagline: 'Sculpted Canvas Knot Bow Slide',
-    category: "Bow Slides",
-    priceBDT: 2350,
-    priceUSD: 21,
-    image: oliveBowIsolated,
-    lifestyleImage: feetOliveImg,
-    colorScheme: {
-      primary: '#65a30d',
-      accent: '#f472b6',
-      glow: '#fdfbf7',
-      ringColor: 'from-lime-600 to-pink-400'
-    },
-    sizes: [36, 37, 38, 39, 40, 41],
-    variants: [
-      {
-        id: 'sage-olive',
-        name: 'Sage Olive',
-        colorHex: '#65A30D',
-        image: oliveBowIsolated,
-        badge: 'Original'
-      },
-      {
-        id: 'caramel-tan',
-        name: 'Caramel Tan',
-        colorHex: '#B37D4E',
-        image: caramelBowSlide,
-        badge: 'Warm Biscuit'
-      },
-      {
-        id: 'oatmeal-cream',
-        name: 'Oatmeal Cream',
-        colorHex: '#E5DAC8',
-        image: creamBowSlide,
-        badge: 'Butter Nude'
-      },
-      {
-        id: 'onyx-noir',
-        name: 'Onyx Noir',
-        colorHex: '#18181B',
-        image: blackBowSlide,
-        badge: 'High Contrast'
-      }
-    ],
-    campaignLabel: 'SUMMER DROP • 4 COLORWAYS',
-    description: 'Chic woven canvas topped with our signature puffy knotted statement bow. The butter-cream cushioned base feels like stepping on foam mattresses from step one.',
-    details: [
-      'Puffy woven canvas statement bow',
-      'Butter-cream double-cushioned footbed',
-      'Clean contrast perimeter stitch',
-      'Lightweight shock-absorbing sole',
-      'Available in 4 versatile neutrals'
-    ],
-    inStock: true,
-    rating: 5.0,
-    reviewsCount: 76
-  }
-];
-
-export const NEW_PRODUCTS: Product[] = [
-  {
-    id: 'lumiere-pearl-block',
-    name: 'Lumière Pearl Slip-on',
-    tagline: 'Bridal & Evening Ready Block Heel',
-    category: 'Embellished Heels',
-    priceBDT: 3200,
-    priceUSD: 29,
-    image: pearlRhinestoneSlide,
-    lifestyleImage: feetPinkImg,
-    colorScheme: {
-      primary: '#FDF2F4',
-      accent: '#9CA3AF',
-      glow: '#F3F4F6',
-      ringColor: 'from-gray-100 to-gray-300'
-    },
-    sizes: [36, 37, 38, 39, 40],
-    variants: [
-      {
-        id: 'ivory-pearl',
-        name: 'Ivory Pearl',
-        colorHex: '#F3F4F6',
-        image: pearlRhinestoneSlide,
-        badge: 'Bridal Exclusive'
+        id: 'strap-slide-cream',
+        name: 'Cream Beige',
+        colorHex: '#D8C3AD',
+        image: strapSlideImg,
       }
     ],
     badge: 'New',
-    campaignLabel: 'NEW ARRIVAL',
-    description: 'Elevate any evening look with this pristine white slip-on block heel, meticulously detailed with a pearl and rhinestone encrusted strap.',
+    campaignLabel: '3 Suede Shades',
+    description:
+      'Clean square-toe suede cross-strap slide set on an easy mid block heel. Lightweight slip-on construction crafted for campus runs, workdays, and weekend dinners.',
     details: [
-      'Hand-applied pearl and rhinestone strap',
-      'Comfortable 1.5-inch block heel',
-      'Premium faux-leather footbed',
-      'Anti-slip resin outsole'
+      'Sold per pair · Cash on Delivery nationwide',
+      'Sizes 6–11 (EU 36–41) · Oversize fit available',
+      'Plush suede cross-strap upper with cushioned sole',
+      'Available in Tan Brown, Black Suede & Cream Beige'
+    ],
+    inStock: true,
+    rating: 4.8,
+    reviewsCount: 42
+  },
+  {
+    id: 'pointed-toe-mule',
+    name: 'Pointed Toe Mule',
+    tagline: 'Glossy patent mule with delicate tied bow & dual straps',
+    category: 'Mules',
+    priceBDT: 850,
+    image: pointedToeMuleImg,
+    colorScheme: {
+      primary: '#18181B',
+      accent: '#7F1D1D',
+      glow: '#FDF2F4',
+      ringColor: 'from-zinc-900 to-rose-900'
+    },
+    sizes: [6, 7, 8, 9, 10, 11, 'Oversize'],
+    oversizeAvailable: true,
+    variants: [
+      {
+        id: 'pointed-mule-black',
+        name: 'Black Patent',
+        colorHex: '#18181B',
+        image: pointedToeMuleImg,
+      },
+      {
+        id: 'pointed-mule-cream',
+        name: 'Cream Ivory',
+        colorHex: '#F3ECE1',
+        image: pointedToeMuleImg,
+      },
+      {
+        id: 'pointed-mule-brown',
+        name: 'Chocolate Brown',
+        colorHex: '#523228',
+        image: pointedToeMuleImg,
+      },
+      {
+        id: 'pointed-mule-maroon',
+        name: 'Maroon Patent',
+        colorHex: '#7F1D1D',
+        image: pointedToeMuleImg,
+      }
+    ],
+    badge: 'Trending',
+    campaignLabel: '4 Patent Shades',
+    description:
+      'Sleek pointed-toe slip-on mule featuring slender dual straps and a dainty knotted patent bow. Effortlessly pairs with linen trousers, kurtis, and tailored dresses.',
+    details: [
+      'Sold per pair · Cash on Delivery nationwide',
+      'Sizes 6–11 (EU 36–41) · Oversize fit available',
+      'Cushioned footbed with low block heel lift',
+      'Available in Black, Cream Ivory, Chocolate Brown & Maroon'
     ],
     inStock: true,
     rating: 4.9,
-    reviewsCount: 24
+    reviewsCount: 51
   },
   {
-    id: 'chloe-bow-block-heel',
-    name: 'Chloé Bow Block Heel',
-    tagline: 'Signature Leather Bow Slide',
-    category: 'Leather Block Heels',
-    priceBDT: 2850,
-    priceUSD: 26,
-    image: roseGoldBowSlide,
-    lifestyleImage: feetOliveImg,
+    id: 'crystal-strap',
+    name: 'Crystal Strap',
+    tagline: 'Twin rhinestone band block heel slide in suede & patent',
+    category: 'Block Slides',
+    priceBDT: 790,
+    image: crystalStrapImg,
     colorScheme: {
-      primary: '#FCA5A5',
-      accent: '#EF4444',
-      glow: '#FEE2E2',
-      ringColor: 'from-rose-300 to-pink-200'
+      primary: '#7F1D1D',
+      accent: '#18181B',
+      glow: '#FDF2F4',
+      ringColor: 'from-rose-900 to-zinc-800'
     },
-    sizes: [36, 37, 38, 39, 40, 41],
+    sizes: [6, 7, 8, 9, 10, 11, 'Oversize'],
+    oversizeAvailable: true,
     variants: [
       {
-        id: 'rose-gold',
-        name: 'Rose Gold',
-        colorHex: '#FBB6CE',
-        image: roseGoldBowSlide,
-        badge: 'Best Seller'
+        id: 'crystal-strap-black',
+        name: 'Black Suede',
+        colorHex: '#18181B',
+        image: crystalStrapImg,
       },
       {
-        id: 'metallic-silver',
-        name: 'Metallic Silver',
-        colorHex: '#E5E7EB',
-        image: silverBowSlide
-      },
+        id: 'crystal-strap-maroon',
+        name: 'Maroon Patent',
+        colorHex: '#7F1D1D',
+        image: crystalStrapImg,
+      }
+    ],
+    badge: 'New',
+    campaignLabel: '2 Crystal Finishes',
+    description:
+      'Double-strap open-toe heel trimmed with shimmering crystal rhinestone bands across both the front and instep straps for subtle evening sparkle.',
+    details: [
+      'Sold per pair · Cash on Delivery nationwide',
+      'Sizes 6–11 (EU 36–41) · Oversize fit available',
+      'Hand-set twin crystal rhinestone trim straps',
+      'Available in Black Suede and Maroon Patent'
+    ],
+    inStock: true,
+    rating: 4.8,
+    reviewsCount: 37
+  },
+  {
+    id: 'platform-ankle-strap',
+    name: 'Platform Ankle Strap',
+    tagline: 'Pointed blush pump with crystal bow & ankle buckle',
+    category: 'Pointed Heels',
+    priceBDT: 990,
+    image: platformAnkleStrapImg,
+    colorScheme: {
+      primary: '#F472B6',
+      accent: '#DB2777',
+      glow: '#FDF2F4',
+      ringColor: 'from-pink-400 to-rose-400'
+    },
+    sizes: [6, 7, 8, 9, 10, 11, 'Oversize'],
+    oversizeAvailable: true,
+    variants: [
       {
-        id: 'blush-pink',
+        id: 'platform-ankle-pink',
         name: 'Blush Pink',
         colorHex: '#F472B6',
-        image: pinkNewBowSlide
+        image: platformAnkleStrapImg,
+      }
+    ],
+    badge: 'New',
+    campaignLabel: 'Limited Blush Edition',
+    description:
+      'Statement blush-pink pointed heel detailed with a crystal-center bow and supportive buckled ankle strap—designed for dawat nights, weddings, and dressed-up evenings.',
+    details: [
+      'Sold per pair · Cash on Delivery nationwide',
+      'Sizes 6–11 (EU 36–41) · Oversize fit available',
+      'Adjustable ankle strap with crystal bow centerpiece',
+      'Signature Blush Pink finish'
+    ],
+    inStock: true,
+    rating: 4.9,
+    reviewsCount: 29
+  },
+  {
+    id: 'two-strap-block-heel',
+    name: '2 Strap Block Heel',
+    tagline: 'Scalloped-edge cushioned slide in soft matte suede',
+    category: 'Block Slides',
+    priceBDT: 690,
+    image: twoStrapBlockHeelImg,
+    colorScheme: {
+      primary: '#8C5028',
+      accent: '#6B1D2F',
+      glow: '#FAF6F0',
+      ringColor: 'from-amber-800 to-rose-900'
+    },
+    sizes: [6, 7, 8, 9, 10, 11, 'Oversize'],
+    oversizeAvailable: true,
+    variants: [
+      {
+        id: 'two-strap-brown',
+        name: 'Tan Brown',
+        colorHex: '#8C5028',
+        image: twoStrapBlockHeelImg,
       },
       {
-        id: 'obsidian-black',
-        name: 'Obsidian Black',
+        id: 'two-strap-black',
+        name: 'Black Suede',
         colorHex: '#18181B',
-        image: blackNewBowSlide
+        image: twoStrapBlockHeelImg,
+      },
+      {
+        id: 'two-strap-maroon',
+        name: 'Maroon Suede',
+        colorHex: '#6B1D2F',
+        image: twoStrapBlockHeelImg,
       }
     ],
     badge: 'Bestseller',
-    campaignLabel: 'FALL COLLECTION • 4 SHADES',
-    description: 'A striking statement bow adorns this metallic block heel. Crafted from supple premium faux leather with a perfectly balanced 1.5-inch heel for all-day chic.',
+    campaignLabel: '3 Everyday Shades',
+    description:
+      'Signature Aesthé Steps two-strap suede block heel with a soft scalloped cushioned footbed. Effortless balance of height, grip, and everyday ease.',
     details: [
-      'Prominent knotted statement bow',
-      '1.5-inch block heel for perfect elevation',
-      'Metallic and matte finish options',
-      'Breathable ultra-soft lining'
+      'Sold per pair · Cash on Delivery nationwide',
+      'Sizes 6–11 (EU 36–41) · Oversize fit available',
+      'Signature Aesthé Steps cushioned insole',
+      'Available in Tan Brown, Black Suede & Maroon Suede'
     ],
     inStock: true,
     rating: 5.0,
-    reviewsCount: 112
+    reviewsCount: 73
   }
 ];
 
-export const ALL_PRODUCTS: Product[] = [...INITIAL_PRODUCTS, ...NEW_PRODUCTS];
 export const HERO_PRODUCTS: Product[] = ALL_PRODUCTS;
 
-export const CAMPAIGN_BANNER_IMG = campaignBannerImg;
-export const PALETTE_LOOKBOOK_IMG = sandalsPaletteImg;
-
 export const LOOKBOOK_IMAGES = {
-  lookbook1: feetPinkImg,
-  lookbook2: feetBlackImg,
-  lookbook3: feetOliveImg,
-  lookbook4: sandalsPaletteImg,
-  paletteLookbook: sandalsPaletteImg,
-  campaignHero: campaignBannerImg
+  lookbook1: yslHeelImg,
+  lookbook2: pointedToeMuleImg,
+  lookbook3: twoStrapBlockHeelImg,
+  lookbook4: strapSlideImg,
+  paletteLookbook: crystalStrapImg,
+  campaignHero: yslHeelImg
 };
-

@@ -12,9 +12,9 @@ import { SizeGuideModal } from './components/SizeGuideModal';
 import { PolicyModal, PolicyType } from './components/PolicyModal';
 import { Footer } from './components/Footer';
 
-import { HERO_PRODUCTS, ALL_PRODUCTS } from './data/products';
+import { HERO_PRODUCTS, ALL_PRODUCTS, STORE_CONTACT, DELIVERY_RATES } from './data/products';
 import { Product, CartItem, ActiveNavTab, ProductColorVariant } from './types';
-import { Check, Sparkles, Heart } from 'lucide-react';
+import { Check, ShoppingBag } from 'lucide-react';
 import { trackAddToCart } from './utils/analytics';
 
 export default function App() {
@@ -22,7 +22,10 @@ export default function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('aesthe_cart');
-      return saved ? JSON.parse(saved) : [];
+      if (!saved) return [];
+      const parsed: CartItem[] = JSON.parse(saved);
+      const validIds = new Set(ALL_PRODUCTS.map((p) => p.id));
+      return parsed.filter((item) => validIds.has(item.product?.id));
     } catch {
       return [];
     }
@@ -31,7 +34,10 @@ export default function App() {
   const [favorites, setFavorites] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem('aesthe_favs');
-      return saved ? JSON.parse(saved) : [];
+      if (!saved) return [];
+      const parsed: string[] = JSON.parse(saved);
+      const validIds = new Set(ALL_PRODUCTS.map((p) => p.id));
+      return parsed.filter((id) => validIds.has(id));
     } catch {
       return [];
     }
@@ -100,7 +106,7 @@ export default function App() {
     }, 3200);
   };
 
-  // Route & Hash detection for legal/policy pages (e.g. #privacy-policy, /privacy-policy)
+  // Route & Hash detection for legal/policy pages
   useEffect(() => {
     const handleUrlRoute = () => {
       const hash = window.location.hash.toLowerCase();
@@ -149,10 +155,10 @@ export default function App() {
     }
   };
 
-  // Cart operations
+  // Cart operations (per pair)
   const handleAddToCart = (
     product: Product,
-    selectedSize: number,
+    selectedSize: number | string,
     quantity: number = 1,
     variant?: ProductColorVariant,
     customEngraving?: string
@@ -195,13 +201,13 @@ export default function App() {
 
   const handleQuickBuy = (product: Product, variant?: ProductColorVariant) => {
     const activeVariant = variant || product.variants?.[0];
-    handleAddToCart(product, product.sizes[0] || 38, 1, activeVariant);
+    handleAddToCart(product, product.sizes[0] || 6, 1, activeVariant);
     setIsCartOpen(true);
   };
 
   const handleUpdateQuantity = (
     productId: string,
-    size: number,
+    size: number | string,
     quantity: number,
     variantId?: string
   ) => {
@@ -220,7 +226,7 @@ export default function App() {
     );
   };
 
-  const handleRemoveItem = (productId: string, size: number, variantId?: string) => {
+  const handleRemoveItem = (productId: string, size: number | string, variantId?: string) => {
     setCartItems((prev) =>
       prev.filter(
         (item) =>
@@ -242,10 +248,10 @@ export default function App() {
     setFavorites((prev) => {
       const exists = prev.includes(productId);
       if (exists) {
-        showToast('Removed from favourites');
+        showToast('Removed from wishlist');
         return prev.filter((id) => id !== productId);
       } else {
-        showToast('Saved to your favourites list');
+        showToast('Saved to your wishlist');
         return [...prev, productId];
       }
     });
@@ -265,15 +271,10 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#FAF6F0] text-[#18181B] dark:bg-zinc-950 dark:text-zinc-100 flex flex-col selection:bg-[#F472B6] selection:text-white transition-colors duration-300">
       
-      {/* Top Banner: Dhaka Delivery & Brand Founders Notice */}
-      <div className="bg-[#FDF2F4] dark:bg-zinc-900 border-b border-pink-200/70 dark:border-zinc-800 py-2.5 px-4 text-center text-xs font-semibold text-[#18181B] dark:text-zinc-200 flex items-center justify-center gap-3 transition-colors duration-300">
-        <span className="inline-block w-2 h-2 rounded-full bg-[#F472B6] animate-pulse" />
-        <span>
-          AESTHÉ STEPS by <strong className="text-[#DB2777] dark:text-pink-400">Hax &amp; Mahin</strong> — Cash on Delivery across Dhaka & all Bangladesh • Free 7-day swaps
-        </span>
-        <span className="hidden md:inline text-pink-300 dark:text-zinc-700">|</span>
-        <span className="hidden md:inline text-[11px] font-mono text-[#18181B]/70 dark:text-zinc-400">
-          Use code <span className="text-[#DB2777] dark:text-pink-400 font-bold">DHAKAGENZ</span> for 10% OFF (up to ৳100)
+      {/* Slim Top Announcement Strip (<= 38px) */}
+      <div className="bg-[#FDF2F4] dark:bg-zinc-900 border-b border-pink-200/70 dark:border-zinc-800 py-2 px-4 text-center text-xs font-medium text-[#18181B] dark:text-zinc-200 flex items-center justify-center gap-2 transition-colors duration-300 tabular-nums">
+        <span className="truncate">
+          By <strong className="text-[#DB2777] dark:text-pink-400 font-semibold">{STORE_CONTACT.partners}</strong> · Cash on Delivery across Bangladesh · Delivery ৳{DELIVERY_RATES.insideDhaka} Dhaka / ৳{DELIVERY_RATES.outsideDhaka} Outside
         </span>
       </div>
 
@@ -306,7 +307,7 @@ export default function App() {
 
       {/* Main Page Body */}
       <main className="flex-1">
-        {/* 1. Hero Circular Arc Orbit Carousel */}
+        {/* 1. Hero Showcase */}
         <HeroCarousel
           products={ALL_PRODUCTS}
           onSelectProduct={(p, v) => {
@@ -319,7 +320,7 @@ export default function App() {
           onScrollToCollection={handleScrollToCollection}
         />
 
-        {/* 2. Collection Grid: Products shown immediately */}
+        {/* 2. Collection Grid */}
         <CollectionGrid
           products={ALL_PRODUCTS}
           onSelectProduct={(p, v) => {
@@ -332,12 +333,12 @@ export default function App() {
           searchQuery={searchQuery}
         />
 
-        {/* 3. Lookbook Section: "Comfort Awaits Everyday" */}
+        {/* 3. Lookbook & Fit Care */}
         <LookbookSection
           onShopNow={handleScrollToCollection}
         />
 
-        {/* 4. Brand Story & Value Pillars (at the very end of the page) */}
+        {/* 4. Brand Story & Pillars */}
         <AboutSection />
       </main>
 
@@ -347,14 +348,15 @@ export default function App() {
         onOpenPolicy={handleOpenPolicy}
       />
 
-      {/* Floating Quick Bag Trigger for Mobile / Easy Access */}
+      {/* Floating Quick Bag Trigger */}
       {totalCartCount > 0 && !isCartOpen && (
         <button
           onClick={() => setIsCartOpen(true)}
-          className="fixed bottom-6 right-6 z-40 p-4 rounded-full bg-[#18181B] dark:bg-pink-600 text-white shadow-xl hover:bg-[#F472B6] dark:hover:bg-pink-500 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 border-2 border-white dark:border-zinc-800"
+          className="fixed bottom-5 right-5 z-40 px-4 py-3 rounded-full bg-[#18181B] dark:bg-pink-600 text-white shadow-xl hover:bg-[#DB2777] dark:hover:bg-pink-500 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 border-2 border-white dark:border-zinc-800"
         >
-          <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">Bag</span>
-          <span className="w-5 h-5 bg-[#F472B6] text-white rounded-full text-xs font-extrabold flex items-center justify-center">
+          <ShoppingBag className="w-4 h-4" />
+          <span className="text-xs font-bold uppercase tracking-wider">Bag</span>
+          <span className="min-w-[20px] h-5 px-1 bg-[#F472B6] dark:bg-white text-white dark:text-[#18181B] rounded-full text-xs font-extrabold flex items-center justify-center tabular-nums">
             {totalCartCount}
           </span>
         </button>
@@ -362,7 +364,7 @@ export default function App() {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-full bg-[#18181B] dark:bg-zinc-800 border border-pink-400 dark:border-pink-500/50 text-white text-xs font-bold shadow-2xl flex items-center gap-2 animate-bounce">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-full bg-[#18181B] dark:bg-zinc-800 border border-pink-400 dark:border-pink-500/50 text-white text-xs font-bold shadow-2xl flex items-center gap-2">
           <Check className="w-4 h-4 text-[#F472B6]" />
           <span>{toastMessage}</span>
         </div>

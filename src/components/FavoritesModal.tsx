@@ -37,15 +37,19 @@ export const FavoritesModal: React.FC<FavoritesModalProps> = ({
               Saved Wishlist ({favProducts.length})
             </h3>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-full text-[#18181B]/60 dark:text-zinc-400 hover:text-[#18181B] dark:hover:text-zinc-100">
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#18181B]/60 dark:text-zinc-400 hover:text-[#18181B] dark:hover:text-zinc-100 hover:bg-pink-100/50 dark:hover:bg-zinc-800"
+            aria-label="Close wishlist"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto space-y-3">
           {favProducts.length === 0 ? (
-            <div className="text-center py-12 text-[#18181B]/60 dark:text-zinc-400 text-xs">
-              No pairs saved yet. Click the heart icon on any silhouette to add it to your wishlist.
+            <div className="text-center py-12 text-[#18181B]/65 dark:text-zinc-400 text-xs">
+              No styles saved yet. Tap the heart icon on any silhouette to save your favorite pairs here.
             </div>
           ) : (
             favProducts.map((shoe) => (
@@ -60,19 +64,22 @@ export const FavoritesModal: React.FC<FavoritesModalProps> = ({
                   }}
                   className="flex items-center gap-3 cursor-pointer flex-1 min-w-0"
                 >
-                  <div className="w-14 h-14 rounded-xl bg-[#FFF5F7] dark:bg-zinc-800 p-1 flex items-center justify-center border border-pink-100 dark:border-zinc-700 flex-shrink-0">
+                  <div className="w-16 h-12 rounded-xl overflow-hidden bg-[#FFF5F7] dark:bg-zinc-800 border border-pink-100 dark:border-zinc-700 shrink-0">
                     <img
                       src={shoe.image}
                       alt={shoe.name}
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="text-xs font-bold text-[#18181B] dark:text-zinc-100 font-serif-display truncate">{shoe.name}</h4>
-                    <p className="text-[11px] text-[#DB2777] dark:text-pink-400 font-bold">৳ {shoe.priceBDT.toLocaleString()}</p>
+                    <h4 className="text-xs font-bold text-[#18181B] dark:text-zinc-100 font-serif-display truncate">
+                      {shoe.name}
+                    </h4>
+                    <p className="text-xs text-[#DB2777] dark:text-pink-400 font-bold tabular-nums">
+                      ৳ {shoe.priceBDT.toLocaleString()} <span className="text-[#18181B]/55 dark:text-zinc-400 font-normal">per pair</span>
+                    </p>
                     
-                    {/* Variant swatch pills */}
                     {shoe.variants && shoe.variants.length > 0 && (
                       <div className="flex items-center gap-1 pt-1">
                         {shoe.variants.map((v) => (
@@ -84,30 +91,32 @@ export const FavoritesModal: React.FC<FavoritesModalProps> = ({
                           />
                         ))}
                         <span className="text-[10px] text-[#18181B]/60 dark:text-zinc-400 ml-1 font-medium">
-                          {shoe.variants.length} shades
+                          {shoe.variants.length} {shoe.variants.length === 1 ? 'shade' : 'shades'}
                         </span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 flex-shrink-0">
+                <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     onClick={() => {
                       onQuickBuy(shoe, shoe.variants?.[0]);
                       onClose();
                     }}
-                    className="p-2.5 rounded-xl bg-[#18181B] dark:bg-pink-600 hover:bg-[#F472B6] dark:hover:bg-pink-500 text-white text-xs font-bold flex items-center gap-1 transition-colors"
-                    title="Quick Buy"
+                    className="w-9 h-9 rounded-xl bg-[#18181B] dark:bg-pink-600 hover:bg-[#DB2777] dark:hover:bg-pink-500 text-white flex items-center justify-center transition-colors"
+                    title="Add Pair to Bag"
+                    aria-label="Add Pair to Bag"
                   >
-                    <ShoppingBag className="w-3.5 h-3.5" />
+                    <ShoppingBag className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => onToggleFavorite(shoe.id)}
-                    className="p-2.5 rounded-xl text-[#18181B]/40 dark:text-zinc-500 hover:text-rose-500 transition-colors"
+                    className="w-9 h-9 rounded-xl text-[#18181B]/45 dark:text-zinc-500 hover:text-rose-500 flex items-center justify-center transition-colors"
                     title="Remove from favorites"
+                    aria-label="Remove from favorites"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>

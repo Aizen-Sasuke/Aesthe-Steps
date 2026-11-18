@@ -1,5 +1,6 @@
 import React from 'react';
-import { Gem, Feather, Truck, Sparkles } from 'lucide-react';
+import { Sparkles, Ruler, Truck } from 'lucide-react';
+import { STORE_CONTACT, DELIVERY_RATES } from '../data/products';
 
 export const AboutSection: React.FC = () => {
   return (
@@ -14,67 +15,66 @@ export const AboutSection: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Brand Story Header */}
-        <div className="max-w-3xl mx-auto text-center space-y-4 mb-8 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 text-[#DB2777] dark:text-pink-400 text-xs font-bold uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5" />
-            Our Brand Story
-          </div>
+        <div className="max-w-3xl mx-auto text-center space-y-4 mb-10 sm:mb-12">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#DB2777] dark:text-pink-400">
+            Our Dhaka Boutique
+          </p>
 
-          <h2 className="font-serif-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#18181B] dark:text-zinc-50 tracking-tight leading-[1.15]">
-            Editorial Footwear, <br className="hidden sm:inline" />
+          <h2 className="font-serif-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#18181B] dark:text-zinc-50 tracking-tight leading-[1.15] [text-wrap:balance]">
+            AESTHÉ STEPS <br className="hidden sm:inline" />
             <span className="italic font-normal text-[#DB2777] dark:text-pink-400">
-              Made for Dhaka.
+              Curated in Dhaka.
             </span>
           </h2>
 
           <p className="text-base sm:text-lg text-[#18181B]/80 dark:text-zinc-300 leading-relaxed font-normal pt-1">
-            AESTHÉ STEPS is a Dhaka-based footwear brand founded by Hax &amp; Mahin, built for Gen-Z women who want editorial-looking slides without the luxury price tag or endless import wait. We craft runway-ready silhouettes on ultra-cushioned soles engineered for university days, café hops, and city walks.
+            Co-founded by {STORE_CONTACT.partners}, AESTHÉ STEPS brings boutique pointed heels, sleek mules, crystal straps, and cushioned suede block slides straight to your doorstep—ordered by the pair with Cash on Delivery across Bangladesh.
           </p>
 
-          <div className="pt-2 text-xs font-semibold uppercase tracking-wider text-[#DB2777] dark:text-pink-400">
-            Founded by Hax &amp; Mahin • Designed in Dhaka, Bangladesh
+          <div className="pt-1 text-xs font-semibold uppercase tracking-wider text-[#DB2777] dark:text-pink-400">
+            By {STORE_CONTACT.partners} · {STORE_CONTACT.location}
           </div>
         </div>
 
-        {/* 3 Trust & Value Pillars */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+        {/* Equal-Height 3 Boutique Pillars */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch">
           
-          {/* Pillar 1: Real Crystal Detailing */}
-          <div className="p-6 sm:p-7 rounded-2xl bg-white/70 dark:bg-zinc-900/60 border border-pink-200/70 dark:border-zinc-800 hover:border-[#F472B6] dark:hover:border-pink-500/60 transition-all duration-300 group shadow-xs">
-            <div className="w-12 h-12 rounded-xl bg-[#FDF2F4] dark:bg-zinc-800/80 border border-pink-200 dark:border-zinc-700/60 flex items-center justify-center text-[#DB2777] dark:text-pink-400 mb-4 group-hover:scale-105 transition-transform duration-300">
-              <Gem className="w-5 h-5" />
+          {/* Pillar 1: Boutique Retail Per Pair */}
+          <div className="p-6 sm:p-7 rounded-2xl bg-white/80 dark:bg-zinc-900/60 border border-pink-200/70 dark:border-zinc-800 hover:border-[#F472B6] dark:hover:border-pink-500/60 transition-all duration-300 group shadow-xs flex flex-col h-full">
+            <div className="w-12 h-12 rounded-xl bg-[#FDF2F4] dark:bg-zinc-800/80 border border-pink-200 dark:border-zinc-700/60 flex items-center justify-center text-[#DB2777] dark:text-pink-400 mb-4 group-hover:scale-105 transition-transform duration-300 shrink-0">
+              <Sparkles className="w-5 h-5" />
             </div>
             <h3 className="text-base sm:text-lg font-bold text-[#18181B] dark:text-zinc-100 mb-2">
-              Real Crystal Detailing
+              Handpicked Silhouettes
             </h3>
-            <p className="text-xs sm:text-sm text-[#18181B]/70 dark:text-zinc-400 leading-relaxed">
-              Hand-set pavé clusters and genuine faceted crystals that maintain their brilliant luster through everyday wear.
+            <p className="text-xs sm:text-sm text-[#18181B]/75 dark:text-zinc-400 leading-relaxed flex-1">
+              Every silhouette—from glossy patent mules to twin crystal slides—is priced individually between ৳690 and ৳990 with zero minimum order requirements.
             </p>
           </div>
 
-          {/* Pillar 2: Cloud-Cushioned Comfort */}
-          <div className="p-6 sm:p-7 rounded-2xl bg-white/70 dark:bg-zinc-900/60 border border-pink-200/70 dark:border-zinc-800 hover:border-[#F472B6] dark:hover:border-pink-500/60 transition-all duration-300 group shadow-xs">
-            <div className="w-12 h-12 rounded-xl bg-[#FDF2F4] dark:bg-zinc-800/80 border border-pink-200 dark:border-zinc-700/60 flex items-center justify-center text-[#DB2777] dark:text-pink-400 mb-4 group-hover:scale-105 transition-transform duration-300">
-              <Feather className="w-5 h-5" />
+          {/* Pillar 2: Inclusive Fit (Sizes 6–11 + Oversize) */}
+          <div className="p-6 sm:p-7 rounded-2xl bg-white/80 dark:bg-zinc-900/60 border border-pink-200/70 dark:border-zinc-800 hover:border-[#F472B6] dark:hover:border-pink-500/60 transition-all duration-300 group shadow-xs flex flex-col h-full">
+            <div className="w-12 h-12 rounded-xl bg-[#FDF2F4] dark:bg-zinc-800/80 border border-pink-200 dark:border-zinc-700/60 flex items-center justify-center text-[#DB2777] dark:text-pink-400 mb-4 group-hover:scale-105 transition-transform duration-300 shrink-0">
+              <Ruler className="w-5 h-5" />
             </div>
             <h3 className="text-base sm:text-lg font-bold text-[#18181B] dark:text-zinc-100 mb-2">
-              Cloud-Cushioned Comfort
+              Sizes 6–11 &amp; Oversize
             </h3>
-            <p className="text-xs sm:text-sm text-[#18181B]/70 dark:text-zinc-400 leading-relaxed">
-              180g featherlight high-rebound foam soles contoured with anatomical arch support for all-day zero-blister wear.
+            <p className="text-xs sm:text-sm text-[#18181B]/75 dark:text-zinc-400 leading-relaxed flex-1">
+              Complete sizing across Sizes 6–11 (EU 36–41) plus dedicated Oversize fits available across all six silhouettes in our current lineup.
             </p>
           </div>
 
-          {/* Pillar 3: Cash on Delivery, Nationwide */}
-          <div className="p-6 sm:p-7 rounded-2xl bg-white/70 dark:bg-zinc-900/60 border border-pink-200/70 dark:border-zinc-800 hover:border-[#F472B6] dark:hover:border-pink-500/60 transition-all duration-300 group shadow-xs">
-            <div className="w-12 h-12 rounded-xl bg-[#FDF2F4] dark:bg-zinc-800/80 border border-pink-200 dark:border-zinc-700/60 flex items-center justify-center text-[#DB2777] dark:text-pink-400 mb-4 group-hover:scale-105 transition-transform duration-300">
+          {/* Pillar 3: Nationwide Cash on Delivery & Care */}
+          <div className="p-6 sm:p-7 rounded-2xl bg-white/80 dark:bg-zinc-900/60 border border-pink-200/70 dark:border-zinc-800 hover:border-[#F472B6] dark:hover:border-pink-500/60 transition-all duration-300 group shadow-xs flex flex-col h-full">
+            <div className="w-12 h-12 rounded-xl bg-[#FDF2F4] dark:bg-zinc-800/80 border border-pink-200 dark:border-zinc-700/60 flex items-center justify-center text-[#DB2777] dark:text-pink-400 mb-4 group-hover:scale-105 transition-transform duration-300 shrink-0">
               <Truck className="w-5 h-5" />
             </div>
             <h3 className="text-base sm:text-lg font-bold text-[#18181B] dark:text-zinc-100 mb-2">
-              Cash on Delivery, Nationwide
+              Doorstep COD &amp; Support
             </h3>
-            <p className="text-xs sm:text-sm text-[#18181B]/70 dark:text-zinc-400 leading-relaxed">
-              Direct doorstep delivery across all districts in Bangladesh with zero advance payment and hassle-free size swaps.
+            <p className="text-xs sm:text-sm text-[#18181B]/75 dark:text-zinc-400 leading-relaxed flex-1">
+              Flat ৳{DELIVERY_RATES.insideDhaka} inside Dhaka &amp; ৳{DELIVERY_RATES.outsideDhaka} nationwide delivery. Need help choosing a fit? Reach {STORE_CONTACT.partners} on {STORE_CONTACT.primaryPhone}.
             </p>
           </div>
 

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { X, Heart, ShoppingBag, Check, Truck, RefreshCw, Star, Footprints, Eye, Sparkles } from 'lucide-react';
+import { X, Heart, ShoppingBag, Check, Truck, Phone, Star } from 'lucide-react';
 import { Product, ProductColorVariant } from '../types';
+import { STORE_CONTACT, DELIVERY_RATES } from '../data/products';
 
 interface ProductDetailModalProps {
   product: Product | null;
   initialVariant?: ProductColorVariant;
   onClose: () => void;
-  onAddToCart: (product: Product, size: number, quantity: number, variant?: ProductColorVariant) => void;
+  onAddToCart: (product: Product, size: number | string, quantity: number, variant?: ProductColorVariant) => void;
   onToggleFavorite: (productId: string) => void;
   isFavorite: boolean;
 }
@@ -21,23 +22,22 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 }) => {
   if (!product) return null;
 
-  const [selectedSize, setSelectedSize] = useState<number>(product.sizes[0] || 38);
+  const [selectedSize, setSelectedSize] = useState<number | string>(product.sizes[0] || 6);
   const [selectedVariant, setSelectedVariant] = useState<ProductColorVariant | undefined>(
     initialVariant || product.variants?.[0]
   );
   const [quantity, setQuantity] = useState<number>(1);
   const [addedAnimation, setAddedAnimation] = useState(false);
-  const [photoView, setPhotoView] = useState<'shoe' | 'feet'>('shoe');
 
   useEffect(() => {
     if (product) {
-      setSelectedSize(product.sizes[0] || 38);
+      setSelectedSize(product.sizes[0] || 6);
       setSelectedVariant(initialVariant || product.variants?.[0]);
-      setPhotoView('shoe');
+      setQuantity(1);
     }
   }, [product, initialVariant]);
 
-  const activeImage = (photoView === 'shoe' && selectedVariant) ? selectedVariant.image : product.image;
+  const activeImage = selectedVariant ? selectedVariant.image : product.image;
 
   const handleAdd = () => {
     onAddToCart(product, selectedSize, quantity, selectedVariant);
@@ -52,7 +52,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/55 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
@@ -62,108 +62,74 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 dark:bg-zinc-800/90 border border-pink-200 dark:border-zinc-700 text-[#18181B]/70 dark:text-zinc-300 hover:text-[#18181B] dark:hover:text-white transition-colors shadow-sm"
+          className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-white/90 dark:bg-zinc-800/90 border border-pink-200 dark:border-zinc-700 text-[#18181B]/70 dark:text-zinc-300 hover:text-[#18181B] dark:hover:text-white flex items-center justify-center transition-colors shadow-sm"
+          aria-label="Close product details"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
-        <div className="grid grid-cols-1 md:grid-cols-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 items-stretch">
           
-          {/* Left Column: Image & On-Feet Stage */}
+          {/* Left Column: Product Photography */}
           <div className="md:col-span-6 p-6 sm:p-8 bg-[#FFF5F7] dark:bg-zinc-950/60 flex flex-col items-center justify-between relative overflow-hidden border-b md:border-b-0 md:border-r border-pink-200/80 dark:border-zinc-800">
             
-            {/* View Switcher Pill */}
-            <div className="flex items-center gap-1.5 p-1 bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 rounded-full text-xs font-bold shadow-2xs z-10 self-start">
-              <button
-                onClick={() => setPhotoView('shoe')}
-                className={`px-3 py-1 rounded-full transition-colors flex items-center gap-1 ${
-                  photoView === 'shoe'
-                    ? 'bg-[#18181B] dark:bg-pink-600 text-white'
-                    : 'text-[#18181B]/70 dark:text-zinc-300 hover:text-[#18181B] dark:hover:text-white'
-                }`}
-              >
-                <Eye className="w-3.5 h-3.5" />
-                <span>Shoe</span>
-              </button>
-              <button
-                onClick={() => setPhotoView('feet')}
-                className={`px-3 py-1 rounded-full transition-colors flex items-center gap-1 ${
-                  photoView === 'feet'
-                    ? 'bg-[#18181B] dark:bg-pink-600 text-white'
-                    : 'text-[#18181B]/70 dark:text-zinc-300 hover:text-[#18181B] dark:hover:text-white'
-                }`}
-              >
-                <Footprints className="w-3.5 h-3.5" />
-                <span>On Feet</span>
-              </button>
-            </div>
-
-            {/* Main Picture Display */}
-            <div className="relative z-10 w-64 h-64 sm:w-72 sm:h-72 my-4 flex items-center justify-center transition-all duration-300">
-              {/* Soft halo in dark mode */}
-              <div className="absolute inset-2 rounded-full bg-radial from-white/90 via-white/70 to-transparent dark:from-white/95 dark:via-white/80 dark:to-transparent blur-xl pointer-events-none opacity-80 dark:opacity-90" />
-              {photoView === 'shoe' ? (
-                <img
-                  src={activeImage}
-                  alt={selectedVariant ? `${product.name} in ${selectedVariant.name}` : product.name}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-contain mix-blend-multiply filter drop-shadow-lg relative z-10"
-                />
-              ) : (
-                <div className="w-full h-full rounded-2xl overflow-hidden shadow-md relative z-10">
-                  <img
-                    src={product.lifestyleImage || product.image}
-                    alt={`${product.name} on feet`}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+            <div className="w-full flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#DB2777] dark:text-pink-400">
+              <span>{product.category}</span>
+              {product.badge && (
+                <span className="text-[#18181B]/70 dark:text-zinc-300">{product.badge}</span>
               )}
             </div>
 
-            {/* Badge */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 text-[#DB2777] dark:text-pink-400 text-xs font-bold uppercase tracking-wider z-10">
-              {selectedVariant?.badge || product.campaignLabel || 'Drop 01'} • True to Size
+            {/* Main Picture Display */}
+            <div className="relative z-10 w-full aspect-[4/3] my-5 rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-800 shadow-md">
+              <img
+                src={activeImage}
+                alt={selectedVariant ? `${product.name} in ${selectedVariant.name}` : product.name}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Footer caption */}
+            <div className="w-full flex items-center justify-between text-[11px] font-medium text-[#18181B]/70 dark:text-zinc-400">
+              <span>{product.campaignLabel || 'Curated Lineup'}</span>
+              <span className="text-[#DB2777] dark:text-pink-400 font-semibold">Sold per pair</span>
             </div>
           </div>
 
-          {/* Right Column: Specs, Sizing, and Order */}
-          <div className="md:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-4 bg-[#FAF6F0] dark:bg-[#121217]">
+          {/* Right Column: Specs, Sizing, and Add to Bag */}
+          <div className="md:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-5 bg-[#FAF6F0] dark:bg-[#121217]">
             
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-[#DB2777] dark:text-pink-400 uppercase tracking-wider">
-                    {product.category}
-                  </span>
-                  {product.badge && (
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
-                      product.badge === 'Bestseller'
-                        ? 'bg-[#FDF2F4] text-[#DB2777] border border-pink-300 dark:bg-pink-950/70 dark:text-pink-300 dark:border-pink-800'
-                        : product.badge === 'New'
-                        ? 'bg-amber-50 text-amber-800 border border-amber-300 dark:bg-amber-950/70 dark:text-amber-300 dark:border-amber-800'
-                        : 'bg-zinc-100 text-zinc-800 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-700'
-                    }`}>
-                      {product.badge === 'Bestseller' && <Sparkles className="w-2.5 h-2.5 text-[#DB2777] dark:text-pink-400" />}
-                      {product.badge}
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
+            <div className="space-y-3.5">
+              <div className="flex items-center justify-between pr-8">
+                <div className="flex items-center gap-1 text-amber-500 text-xs font-bold tabular-nums">
                   <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                   <span>{product.rating}</span>
                   <span className="text-[#18181B]/60 dark:text-zinc-400 font-normal">({product.reviewsCount} reviews)</span>
                 </div>
+                <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
+                  In Stock
+                </span>
               </div>
 
-              <h3 className="font-serif-display text-2xl sm:text-3xl font-bold text-[#18181B] dark:text-zinc-50">
+              <h3 className="font-serif-display text-2xl sm:text-3xl font-bold text-[#18181B] dark:text-zinc-50 leading-tight">
                 {product.name}
               </h3>
 
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-[#18181B] dark:text-zinc-100">
-                  ৳ {product.priceBDT.toLocaleString()}
-                </span>
+              {/* Retail Price Breakdown */}
+              <div className="p-3.5 rounded-2xl bg-[#FDF2F4] dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 flex items-center justify-between">
+                <div>
+                  <span className="block text-[10px] font-bold uppercase tracking-wider text-[#DB2777] dark:text-pink-400">
+                    Price Per Pair
+                  </span>
+                  <span className="text-2xl font-bold text-[#18181B] dark:text-zinc-100 tabular-nums">
+                    ৳ {product.priceBDT.toLocaleString()}
+                  </span>
+                </div>
+                <div className="text-right text-[11px] text-[#18181B]/70 dark:text-zinc-400 tabular-nums">
+                  <div className="font-semibold text-[#18181B] dark:text-zinc-200">Delivery</div>
+                  <div>৳{DELIVERY_RATES.insideDhaka} Dhaka · ৳{DELIVERY_RATES.outsideDhaka} Outside</div>
+                </div>
               </div>
 
               <p className="text-xs sm:text-sm text-[#18181B]/80 dark:text-zinc-300 leading-relaxed font-normal">
@@ -172,16 +138,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
               {/* Colorway Swatch Selector */}
               {product.variants && product.variants.length > 0 && (
-                <div className="pt-2 border-t border-pink-200/60 dark:border-zinc-800">
+                <div className="pt-3 border-t border-pink-200/60 dark:border-zinc-800">
                   <div className="flex justify-between items-center mb-2">
                     <label className="text-xs font-bold uppercase tracking-wider text-[#18181B] dark:text-zinc-200">
-                      Colorway: <span className="text-[#DB2777] dark:text-pink-400 font-semibold">{selectedVariant?.name}</span>
+                      Color: <span className="text-[#DB2777] dark:text-pink-400 font-semibold">{selectedVariant?.name}</span>
                     </label>
-                    {selectedVariant?.badge && (
-                      <span className="text-[10px] uppercase font-bold text-[#DB2777] dark:text-pink-400 bg-[#FDF2F4] dark:bg-zinc-800 px-2 py-0.5 rounded-full border border-pink-200 dark:border-zinc-700">
-                        {selectedVariant.badge}
-                      </span>
-                    )}
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     {product.variants.map((variant) => {
@@ -189,10 +150,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       return (
                         <button
                           key={variant.id}
-                          onClick={() => {
-                            setSelectedVariant(variant);
-                            setPhotoView('shoe');
-                          }}
+                          onClick={() => setSelectedVariant(variant)}
                           className={`p-2 rounded-xl text-left border transition-all flex items-center gap-2 ${
                             isSelected
                               ? 'border-[#DB2777] dark:border-pink-400 bg-white dark:bg-zinc-800 ring-2 ring-[#DB2777]/20 shadow-2xs'
@@ -200,7 +158,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                           }`}
                         >
                           <span
-                            className="w-4 h-4 rounded-full border border-black/10 dark:border-white/20 flex-shrink-0"
+                            className="w-4 h-4 rounded-full border border-black/10 dark:border-white/20 shrink-0"
                             style={{ backgroundColor: variant.colorHex }}
                           />
                           <span className="text-[11px] font-semibold text-[#18181B] dark:text-zinc-200 truncate">
@@ -213,15 +171,15 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </div>
               )}
 
-              {/* Craft Specifications */}
-              <div className="space-y-1.5 pt-2 border-t border-pink-200/60 dark:border-zinc-800">
+              {/* Craft & Fit Highlights */}
+              <div className="space-y-1.5 pt-3 border-t border-pink-200/60 dark:border-zinc-800">
                 <span className="text-[11px] font-bold text-[#18181B]/70 dark:text-zinc-400 uppercase tracking-wider">
-                  Construction Specs:
+                  Details &amp; Craft:
                 </span>
                 <ul className="space-y-1 text-xs text-[#18181B]/80 dark:text-zinc-300 font-medium">
                   {product.details.map((detail, idx) => (
                     <li key={idx} className="flex items-center gap-2">
-                      <Check className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400 flex-shrink-0" />
+                      <Check className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400 shrink-0" />
                       <span>{detail}</span>
                     </li>
                   ))}
@@ -232,16 +190,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <div className="pt-2">
                 <div className="flex justify-between items-center mb-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-[#18181B] dark:text-zinc-200">
-                    Select Size (EU)
+                    Select Your Size
                   </label>
-                  <span className="text-[11px] text-[#DB2777] dark:text-pink-400 font-semibold">Standard Fit</span>
+                  <span className="text-[11px] text-[#DB2777] dark:text-pink-400 font-semibold">Sizes 6–11 · Oversize</span>
                 </div>
-                <div className="grid grid-cols-6 gap-2">
+                <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
                   {product.sizes.map((size) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`py-2 rounded-xl text-xs font-bold transition-all ${
+                      className={`py-2 px-1 rounded-xl text-[11px] font-bold transition-all tabular-nums ${
                         selectedSize === size
                           ? 'bg-[#18181B] dark:bg-pink-600 text-white shadow-sm'
                           : 'bg-white dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 text-[#18181B]/80 dark:text-zinc-200 hover:bg-pink-50 dark:hover:bg-zinc-700'
@@ -264,28 +222,33 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   className={`flex-1 py-3.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-sm ${
                     addedAnimation
                       ? 'bg-emerald-600 text-white'
-                      : 'bg-[#18181B] dark:bg-pink-600 text-white hover:bg-[#F472B6] dark:hover:bg-pink-500'
+                      : 'bg-[#18181B] dark:bg-pink-600 text-white hover:bg-[#DB2777] dark:hover:bg-pink-500'
                   }`}
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  <span>{addedAnimation ? 'Added to Bag!' : `Bag It (${selectedVariant?.name || 'Selected'})`}</span>
+                  <span>
+                    {addedAnimation
+                      ? 'Added to Bag!'
+                      : `Add to Bag (${selectedVariant?.name || 'Selected'})`}
+                  </span>
                 </button>
 
                 <button
                   onClick={() => onToggleFavorite(product.id)}
-                  className="p-3.5 rounded-full bg-white dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 text-[#18181B] dark:text-zinc-200 hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors shadow-2xs"
+                  className="w-11 h-11 rounded-full bg-white dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 text-[#18181B] dark:text-zinc-200 hover:text-[#DB2777] dark:hover:text-pink-400 flex items-center justify-center transition-colors shadow-2xs shrink-0"
                   title="Save to Wishlist"
+                  aria-label="Save to Wishlist"
                 >
                   <Heart className={`w-5 h-5 ${isFavorite ? 'fill-[#F472B6] text-[#F472B6]' : ''}`} />
                 </button>
               </div>
 
-              <div className="flex items-center justify-between text-[11px] text-[#18181B]/70 dark:text-zinc-400 px-1 pt-1 font-medium">
-                <span className="flex items-center gap-1">
-                  <Truck className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" /> Cash on Delivery (All BD)
+              <div className="flex items-center justify-between text-[11px] text-[#18181B]/70 dark:text-zinc-400 px-1 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <Truck className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" /> Cash on Delivery Nationwide
                 </span>
-                <span className="flex items-center gap-1">
-                  <RefreshCw className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" /> 7-Day Size Exchange
+                <span className="flex items-center gap-1.5 tabular-nums">
+                  <Phone className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" /> {STORE_CONTACT.primaryPhone}
                 </span>
               </div>
             </div>
@@ -298,4 +261,3 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     </div>
   );
 };
-

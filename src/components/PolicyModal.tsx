@@ -156,7 +156,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   <div className="p-3.5 rounded-2xl bg-white dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-800 text-xs">
                     <strong className="block text-[#DB2777] dark:text-pink-400 mb-1">WhatsApp Order Fulfillment</strong>
-                    Pre-populate the formatted order dispatch summary sent directly to our official WhatsApp helpline (+880 1735-765566).
+                    Pre-populate the formatted order dispatch summary sent directly to our official WhatsApp helpline (01613-817630 / 01618007003).
                   </div>
                   <div className="p-3.5 rounded-2xl bg-white dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-800 text-xs">
                     <strong className="block text-[#DB2777] dark:text-pink-400 mb-1">Courier Logistics</strong>
@@ -181,7 +181,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
                   4. Data Rights &amp; Contact
                 </h4>
                 <p className="text-xs sm:text-sm">
-                  You have the right to request deletion of your order records or update your contact details at any point by messaging our support line on WhatsApp at <strong>+880 1735-765566</strong> or emailing <strong>aesthesteps@gmail.com</strong>.
+                  You have the right to request deletion of your order records or update your contact details at any point by messaging our support line on WhatsApp at <strong>01613-817630 / 01618007003</strong> or emailing <strong>aesthesteps@gmail.com</strong>.
                 </p>
               </div>
             </div>
@@ -211,7 +211,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
                   We understand that finding the dream fit is essential. You may exchange any purchased pair within <strong>7 days of delivery</strong> for:
                 </p>
                 <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
-                  <li>A different size (from EU 36 up to EU 41).</li>
+                  <li>A different size (Sizes 6–11 or Oversize).</li>
                   <li>An alternative silhouette or colorway of equal value (or settle the difference for higher-priced designs).</li>
                 </ul>
               </div>
@@ -247,7 +247,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
                   4. How to Initiate an Exchange
                 </h4>
                 <p className="text-xs sm:text-sm">
-                  Simply send a message to our WhatsApp team at <strong>+880 1735-765566</strong> with your order name and desired replacement size. Inside Dhaka, our courier handles direct doorstep swaps (delivering the new pair while retrieving the original). Outside Dhaka, return pickup is coordinated via local express parcel hubs.
+                  Simply send a message to our WhatsApp team at <strong>01613-817630 / 01618007003</strong> with your order name and desired replacement size. Inside Dhaka, our courier handles direct doorstep swaps (delivering the new parcel while retrieving the original). Outside Dhaka, return pickup is coordinated via local express parcel hubs.
                 </p>
               </div>
             </div>
@@ -288,7 +288,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
                 </p>
                 <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
                   <li><strong>Dhaka Metropolitan Area:</strong> 70 BDT flat delivery charge.</li>
-                  <li><strong>Nationwide (Outside Dhaka):</strong> 130 BDT flat delivery charge covering all 64 districts.</li>
+                  <li><strong>Nationwide (Outside Dhaka):</strong> 120 BDT flat delivery charge covering all 64 districts.</li>
                 </ul>
               </div>
 
@@ -328,7 +328,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
                   5. Intellectual Property &amp; Brand Rights
                 </h4>
                 <p className="text-xs sm:text-sm">
-                  All trademarks, wordmarks ("AESTHÉ STEPS"), footwear designs, lifestyle photography, and editorial copy are the intellectual property of founders Hax &amp; Mahin. Any unauthorized commercial reproduction, imitation, or redistribution is strictly prohibited.
+                  All trademarks, wordmarks ("AESTHÉ STEPS"), footwear designs, lifestyle photography, and editorial copy are the intellectual property of partners Hax, Mahin &amp; Mahadi. Any unauthorized commercial reproduction, imitation, or redistribution is strictly prohibited.
                 </p>
               </div>
             </div>
@@ -341,7 +341,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
           <div className="flex items-center gap-3 text-[#18181B]/70 dark:text-zinc-400">
             <span className="flex items-center gap-1.5 font-medium">
               <Phone className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" />
-              +880 1735-765566
+              01613-817630 / 01618007003
             </span>
             <span className="text-pink-300 dark:text-zinc-700">•</span>
             <span className="flex items-center gap-1.5 font-medium">

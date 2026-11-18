@@ -4,7 +4,6 @@ export interface ProductColorVariant {
   colorHex: string;
   secondaryHex?: string;
   image: string;
-  badge?: string;
 }
 
 export interface Product {
@@ -12,8 +11,7 @@ export interface Product {
   name: string;
   tagline: string;
   category: string;
-  priceBDT: number;
-  priceUSD?: number;
+  priceBDT: number; // Retail price per pair in BDT
   image: string;
   lifestyleImage?: string;
   colorScheme: {
@@ -22,7 +20,8 @@ export interface Product {
     glow: string;
     ringColor: string;
   };
-  sizes: number[];
+  sizes: (number | string)[];
+  oversizeAvailable?: boolean;
   variants?: ProductColorVariant[];
   badge?: 'Bestseller' | 'New' | 'Trending';
   campaignLabel?: string;
@@ -35,9 +34,9 @@ export interface Product {
 
 export interface CartItem {
   product: Product;
-  selectedSize: number;
+  selectedSize: number | string;
   selectedVariant?: ProductColorVariant;
-  quantity: number;
+  quantity: number; // Quantity in individual pairs
   customEngraving?: string;
 }
 
