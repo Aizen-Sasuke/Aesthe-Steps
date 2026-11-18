@@ -1,11 +1,13 @@
 import { Product } from '../types';
 
-import yslHeelImg from '../assets/images/batch2026/as_030_ysl_heel.jpg';
-import strapSlideImg from '../assets/images/batch2026/as_031_strap_slide.jpg';
-import pointedToeMuleImg from '../assets/images/batch2026/as_032_pointed_toe_mule.jpg';
-import crystalStrapImg from '../assets/images/batch2026/as_033_crystal_strap.jpg';
-import platformAnkleStrapImg from '../assets/images/batch2026/as_034_platform_ankle_strap.jpg';
-import twoStrapBlockHeelImg from '../assets/images/batch2026/as_035_two_strap_block_heel.jpg';
+import {
+  yslHeelImg,
+  strapSlideImg,
+  pointedToeMuleImg,
+  crystalStrapImg,
+  platformAnkleStrapImg,
+  twoStrapBlockHeelImg,
+} from './batch2026Images';
 
 export const STORE_CONTACT = {
   partners: 'Hax, Mahin & Mahadi',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowRight, MapPin } from 'lucide-react';
-import { LOOKBOOK_IMAGES, STORE_CONTACT } from '../data/products';
+import { LOOKBOOK_IMAGES } from '../data/products';
 import { Product } from '../types';
 
 interface LookbookSectionProps {
@@ -93,7 +93,7 @@ export const LookbookSection: React.FC<LookbookSectionProps> = ({
                 Built around balanced mid-heels, clean square-toe profiles, and cushioned insoles—every silhouette transitions smoothly from daily errands to formal evenings.
               </p>
               <p>
-                Styled and overseen by {STORE_CONTACT.partners} for effortless wardrobe pairing across neutral suedes and high-shine patents.
+                Styled by us for effortless wardrobe pairing across neutral suedes and high-shine patents.
               </p>
             </div>
 

@@ -198,20 +198,26 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     <span>Size Guide</span>
                   </button>
                 </div>
-                <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
-                  {product.sizes.map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={`py-2 px-1 rounded-xl text-[11px] font-bold transition-all tabular-nums ${
-                        selectedSize === size
-                          ? 'bg-[#18181B] dark:bg-pink-600 text-white shadow-sm'
-                          : 'bg-white dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 text-[#18181B]/80 dark:text-zinc-200 hover:bg-pink-50 dark:hover:bg-zinc-700'
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
+                <div className="grid grid-cols-4 gap-2">
+                  {product.sizes.map((size) => {
+                    const isWide = String(size).length > 3;
+                    return (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => setSelectedSize(size)}
+                        className={`${
+                          isWide ? 'col-span-2 px-3' : 'px-2'
+                        } py-2 rounded-xl text-[11px] font-bold transition-all tabular-nums whitespace-nowrap text-center ${
+                          selectedSize === size
+                            ? 'bg-[#18181B] dark:bg-pink-600 text-white shadow-sm'
+                            : 'bg-white dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 text-[#18181B]/80 dark:text-zinc-200 hover:bg-pink-50 dark:hover:bg-zinc-700'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>

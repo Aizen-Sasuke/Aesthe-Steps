@@ -560,7 +560,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <div className="p-3 rounded-2xl bg-[#FFF5F7] dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 flex items-start gap-2.5 text-[11px] text-[#18181B]/75 dark:text-zinc-400">
                     <MessageCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                     <p className="leading-relaxed">
-                      Submitting opens WhatsApp directly with {STORE_CONTACT.partners}&apos;s dispatch team ({STORE_CONTACT.primaryPhone}) to confirm availability.
+                      Submitting opens WhatsApp directly with us ({STORE_CONTACT.primaryPhone}) to confirm availability.
                     </p>
                   </div>
                 </form>

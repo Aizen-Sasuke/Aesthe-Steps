@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Heart, Eye, ShoppingBag, Filter, ArrowUpDown, X } from 'lucide-react';
 import { Product, ProductColorVariant } from '../types';
-import { STORE_CONTACT } from '../data/products';
 
 interface CollectionGridProps {
   products: Product[];
@@ -101,7 +100,7 @@ export const CollectionGrid: React.FC<CollectionGridProps> = ({
           </h2>
 
           <p className="text-sm sm:text-base text-[#18181B]/70 dark:text-zinc-400 max-w-lg mx-auto leading-relaxed">
-            Defined silhouettes, cushioned insoles, and versatile tones curated by {STORE_CONTACT.partners}.
+            Defined silhouettes, cushioned insoles, and versatile tones curated by us for effortless daily wear.
           </p>
         </div>
 

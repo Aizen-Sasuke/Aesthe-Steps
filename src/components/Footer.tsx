@@ -29,7 +29,7 @@ export const Footer: React.FC<FooterProps> = ({
               Need Sizing Advice or Shade Help?
             </h3>
             <p className="text-xs text-[#18181B]/70 dark:text-zinc-400">
-              Check our quick size chart or message {STORE_CONTACT.partners} directly on WhatsApp.
+              Check our quick size chart or message us directly on WhatsApp.
             </p>
           </div>
 
@@ -61,7 +61,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="space-y-4">
             <BrandLogo size="md" />
             <p className="text-xs text-[#18181B]/75 dark:text-zinc-400 leading-relaxed">
-              Contemporary women&apos;s footwear in Dhaka by <strong className="text-[#18181B] dark:text-zinc-200 font-semibold">{STORE_CONTACT.partners}</strong>, delivered across Bangladesh.
+              Contemporary women&apos;s footwear curated by us in Dhaka, delivered across Bangladesh.
             </p>
             <p className="text-xs font-semibold text-[#DB2777] dark:text-pink-400">
               Sizes 6–11 &amp; Oversize · Nationwide COD

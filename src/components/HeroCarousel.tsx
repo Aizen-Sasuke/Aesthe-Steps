@@ -95,7 +95,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
             </h1>
 
             <p className="text-sm sm:text-base text-[#18181B]/80 dark:text-zinc-300 max-w-md leading-relaxed">
-              Modern pointed silhouettes, soft suede slides, and crystal-trimmed heels cushioned for all-day ease—curated in Dhaka by Hax, Mahin &amp; Mahadi.
+              Modern pointed silhouettes, soft suede slides, and crystal-trimmed heels cushioned for all-day ease—curated by us in Dhaka.
             </p>
 
             <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-medium text-[#18181B]/65 dark:text-zinc-400">

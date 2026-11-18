@@ -11,7 +11,7 @@ import { SizeGuideModal } from './components/SizeGuideModal';
 import { PolicyModal, PolicyType } from './components/PolicyModal';
 import { Footer } from './components/Footer';
 
-import { ALL_PRODUCTS, STORE_CONTACT, DELIVERY_RATES } from './data/products';
+import { ALL_PRODUCTS, DELIVERY_RATES } from './data/products';
 import { Product, CartItem, ActiveNavTab, ProductColorVariant } from './types';
 import { Check, ShoppingBag } from 'lucide-react';
 import { trackAddToCart } from './utils/analytics';
@@ -331,7 +331,7 @@ export default function App() {
       {/* Slim Top Announcement Strip */}
       <div className="bg-[#FDF2F4] dark:bg-zinc-900 border-b border-pink-200/70 dark:border-zinc-800 py-2 px-4 text-center text-xs font-medium text-[#18181B] dark:text-zinc-200 flex items-center justify-center gap-2 transition-colors duration-300 tabular-nums">
         <span className="truncate">
-          AESTHÉ STEPS · By <strong className="text-[#DB2777] dark:text-pink-400 font-semibold">{STORE_CONTACT.partners}</strong> · Cash on Delivery ৳{DELIVERY_RATES.insideDhaka} Dhaka / ৳{DELIVERY_RATES.outsideDhaka} Outside
+          AESTHÉ STEPS · Curated in Dhaka · Cash on Delivery ৳{DELIVERY_RATES.insideDhaka} Dhaka / ৳{DELIVERY_RATES.outsideDhaka} Outside
         </span>
       </div>
 

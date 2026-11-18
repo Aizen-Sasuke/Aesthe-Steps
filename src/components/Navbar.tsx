@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { ShoppingBag, Search, Heart, X, Menu, Sun, Moon } from 'lucide-react';
 import { ActiveNavTab } from '../types';
 import { BrandLogo } from './BrandLogo';
-import { STORE_CONTACT } from '../data/products';
 
 interface NavbarProps {
   activeTab: ActiveNavTab;
@@ -206,7 +205,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
           <div className="pt-3 mt-2 border-t border-pink-200/40 dark:border-zinc-800 flex items-center justify-between text-xs text-[#18181B]/70 dark:text-zinc-400 px-2">
             <span>Dhaka &amp; Nationwide COD</span>
-            <span className="text-[#DB2777] dark:text-pink-400 font-semibold">By {STORE_CONTACT.partners}</span>
+            <span className="text-[#DB2777] dark:text-pink-400 font-semibold">Curated by Us</span>
           </div>
         </div>
       )}
