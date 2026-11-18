@@ -1,13 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" width="240" height="48" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 110" width="360" height="110" fill="none">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,500&amp;display=swap');
-    .logo-wordmark {
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&amp;display=swap');
+    .wordmark {
       font-family: 'Playfair Display', Georgia, serif;
-      font-weight: 500;
-      font-size: 32px;
-      fill: #C24178;
-      letter-spacing: -0.01em;
+      font-weight: 400;
+      font-size: 42px;
+      fill: #C93674;
+      letter-spacing: -0.015em;
     }
   </style>
-  <text x="120" y="34" text-anchor="middle" class="logo-wordmark">Aesthé Steps</text>
+  <g transform="translate(8, 8) scale(0.6)" fill="#C93674">
+    <circle cx="106.5" cy="11.5" r="8.8" />
+    <path d="M 106 41 C 98 39.5, 89 41, 81 52 C 73 63, 68 82, 62 102 C 56 124, 49 145, 31 151 C 11 154, 0 140, 1 124 C 1.5 116, 3.5 113, 4.5 113 C 2.5 120, 2.5 134, 11 140 C 22 147, 40 146, 51 133 C 61 120, 67 98, 74 78 C 80 60, 87 49, 97 48 C 91 72, 85 102, 85 132 C 85.5 144, 87 151, 88.5 151 C 88.5 136, 90 110, 94 82 C 98 62, 103 48, 106 41 Z" />
+    <path d="M 27.5 100 C 20 101, 16 104, 17.5 107.5 C 19.5 110.5, 28 110, 34 108.5 C 28 108.5, 21 108.5, 19.5 106.5 C 18.5 104.5, 22 102, 27.5 100 Z" />
+  </g>
+  <text x="94" y="70" class="wordmark">Aesthé Steps</text>
 </svg>
