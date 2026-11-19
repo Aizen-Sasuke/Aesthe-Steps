@@ -1,4 +1,4 @@
-import { Product } from '../types';
+import { Product, PromoRule, StoreConfig } from '../types';
 
 import {
   yslHeelImg,
@@ -12,7 +12,7 @@ import {
 export const STORE_CONTACT = {
   partners: 'Hax, Mahin & Mahadi',
   primaryPhone: '01613-817630',
-  secondaryPhone: '01618007003',
+  secondaryPhone: '01618-007003',
   whatsappNumber: '8801613817630',
   location: 'Dhaka, Bangladesh',
   email: 'aesthesteps@gmail.com',
@@ -21,6 +21,36 @@ export const STORE_CONTACT = {
 export const DELIVERY_RATES = {
   insideDhaka: 70,
   outsideDhaka: 120,
+};
+
+export const DEFAULT_PROMO_CODES: PromoRule[] = [
+  {
+    code: 'DHAKAGENZ',
+    type: 'percent',
+    value: 10,
+    maxDiscountBDT: 100,
+    label: '10% off up to ৳100',
+    active: true,
+  },
+  {
+    code: 'HAXMAHIN',
+    type: 'fixed',
+    value: 200,
+    label: '৳200 off',
+    active: true,
+  },
+];
+
+export const DEFAULT_STORE_CONFIG: StoreConfig = {
+  insideDhakaFee: DELIVERY_RATES.insideDhaka,
+  outsideDhakaFee: DELIVERY_RATES.outsideDhaka,
+  primaryPhone: STORE_CONTACT.primaryPhone,
+  secondaryPhone: STORE_CONTACT.secondaryPhone,
+  whatsappNumber: STORE_CONTACT.whatsappNumber,
+  email: STORE_CONTACT.email,
+  location: STORE_CONTACT.location,
+  partners: STORE_CONTACT.partners,
+  promoCodes: DEFAULT_PROMO_CODES,
 };
 
 export const ALL_PRODUCTS: Product[] = [
@@ -35,10 +65,11 @@ export const ALL_PRODUCTS: Product[] = [
       primary: '#7F1D1D',
       accent: '#DB2777',
       glow: '#FDF2F4',
-      ringColor: 'from-rose-900 to-pink-500'
+      ringColor: 'from-rose-900 to-pink-500',
     },
-    sizes: [6, 7, 8, 9, 10, 11, 'Oversize'],
-    oversizeAvailable: true,
+    sizes: [6, 7, 8, 9, 10, 11],
+    outOfStockSizes: [],
+    oversizeAvailable: false,
     variants: [
       {
         id: 'ysl-heel-maroon',
@@ -63,25 +94,27 @@ export const ALL_PRODUCTS: Product[] = [
         name: 'Cream Ivory',
         colorHex: '#F3ECE1',
         image: yslHeelImg,
-      }
+      },
     ],
-    badge: 'Bestseller',
+    badge: 'Popular Pick',
     campaignLabel: 'Patent & Bow Edit',
     description:
       'High-gloss patent pointed-toe silhouette crowned with a sculpted bow and metallic monogram hardware. Cushioned inside for effortless evening poise.',
     details: [
       'Glossy patent upper with sculpted bow hardware',
       'Padded contoured insole for all-evening wear',
-      'Sizes 6–11 (EU 36–41) · Oversize fit available',
-      'Four finishes: Maroon, Black, Chocolate Brown & Cream Ivory'
+      'UK Sizes 6–11 available',
+      'Four finishes: Maroon, Black, Chocolate Brown & Cream Ivory',
     ],
     inStock: true,
+    isPublished: true,
     rating: 4.9,
-    reviewsCount: 64
+    reviewsCount: 64,
+    sortOrder: 0,
   },
   {
     id: 'strap-slide',
-    name: 'Strap Slide',
+    name: 'Cross Strap Slide',
     tagline: 'Square-toe suede wide-strap block heel for everyday wear',
     category: 'Block Slides',
     priceBDT: 750,
@@ -90,10 +123,11 @@ export const ALL_PRODUCTS: Product[] = [
       primary: '#9A5B25',
       accent: '#18181B',
       glow: '#FAF6F0',
-      ringColor: 'from-amber-700 to-zinc-800'
+      ringColor: 'from-amber-700 to-zinc-800',
     },
-    sizes: [6, 7, 8, 9, 10, 11, 'Oversize'],
-    oversizeAvailable: true,
+    sizes: [6, 7, 8, 9, 10, 11],
+    outOfStockSizes: [],
+    oversizeAvailable: false,
     variants: [
       {
         id: 'strap-slide-tan',
@@ -112,7 +146,7 @@ export const ALL_PRODUCTS: Product[] = [
         name: 'Cream Beige',
         colorHex: '#D8C3AD',
         image: strapSlideImg,
-      }
+      },
     ],
     badge: 'New',
     campaignLabel: 'Soft Suede Edit',
@@ -121,12 +155,14 @@ export const ALL_PRODUCTS: Product[] = [
     details: [
       'Velvety matte suede cross-strap upper',
       'Stable mid-height block heel with cushioned sole',
-      'Sizes 6–11 (EU 36–41) · Oversize fit available',
-      'Three neutral shades: Tan Brown, Black Suede & Cream Beige'
+      'UK Sizes 6–11 available',
+      'Three neutral shades: Tan Brown, Black Suede & Cream Beige',
     ],
     inStock: true,
+    isPublished: true,
     rating: 4.8,
-    reviewsCount: 42
+    reviewsCount: 42,
+    sortOrder: 1,
   },
   {
     id: 'pointed-toe-mule',
@@ -139,10 +175,11 @@ export const ALL_PRODUCTS: Product[] = [
       primary: '#18181B',
       accent: '#7F1D1D',
       glow: '#FDF2F4',
-      ringColor: 'from-zinc-900 to-rose-900'
+      ringColor: 'from-zinc-900 to-rose-900',
     },
-    sizes: [6, 7, 8, 9, 10, 11, 'Oversize'],
-    oversizeAvailable: true,
+    sizes: [6, 7, 8, 9, 10, 11],
+    outOfStockSizes: [],
+    oversizeAvailable: false,
     variants: [
       {
         id: 'pointed-mule-black',
@@ -167,21 +204,23 @@ export const ALL_PRODUCTS: Product[] = [
         name: 'Maroon Patent',
         colorHex: '#7F1D1D',
         image: pointedToeMuleImg,
-      }
+      },
     ],
-    badge: 'Trending',
+    badge: 'Popular Pick',
     campaignLabel: 'Minimalist Mule',
     description:
       'Sharp pointed-toe slip-on mule finished with slender dual straps and a delicate knotted bow. Pairs seamlessly with relaxed linen trousers, sarees, or tailored dresses.',
     details: [
       'Slip-on pointed profile with dual slender straps',
       'Cushioned footbed paired with a low walkable heel lift',
-      'Sizes 6–11 (EU 36–41) · Oversize fit available',
-      'Four patent tones: Black, Cream Ivory, Chocolate Brown & Maroon'
+      'UK Sizes 6–11 available',
+      'Four patent tones: Black, Cream Ivory, Chocolate Brown & Maroon',
     ],
     inStock: true,
+    isPublished: true,
     rating: 4.9,
-    reviewsCount: 51
+    reviewsCount: 51,
+    sortOrder: 2,
   },
   {
     id: 'crystal-strap',
@@ -194,10 +233,11 @@ export const ALL_PRODUCTS: Product[] = [
       primary: '#7F1D1D',
       accent: '#18181B',
       glow: '#FDF2F4',
-      ringColor: 'from-rose-900 to-zinc-800'
+      ringColor: 'from-rose-900 to-zinc-800',
     },
-    sizes: [6, 7, 8, 9, 10, 11, 'Oversize'],
-    oversizeAvailable: true,
+    sizes: [6, 7, 8, 9, 10, 11],
+    outOfStockSizes: [],
+    oversizeAvailable: false,
     variants: [
       {
         id: 'crystal-strap-black',
@@ -210,7 +250,7 @@ export const ALL_PRODUCTS: Product[] = [
         name: 'Maroon Patent',
         colorHex: '#7F1D1D',
         image: crystalStrapImg,
-      }
+      },
     ],
     badge: 'New',
     campaignLabel: 'Evening Sparkle',
@@ -219,17 +259,19 @@ export const ALL_PRODUCTS: Product[] = [
     details: [
       'Hand-set twin crystal rhinestone bands across both straps',
       'Balanced block heel for confident movement all night',
-      'Sizes 6–11 (EU 36–41) · Oversize fit available',
-      'Available in Black Suede & Maroon Patent'
+      'UK Sizes 6–11 available',
+      'Available in Black Suede & Maroon Patent',
     ],
     inStock: true,
+    isPublished: true,
     rating: 4.8,
-    reviewsCount: 37
+    reviewsCount: 37,
+    sortOrder: 3,
   },
   {
     id: 'platform-ankle-strap',
     name: 'Platform Ankle Strap',
-    tagline: 'Pointed blush pump with crystal bow & ankle buckle',
+    tagline: 'Blush pink platform heel with crystal bow & ankle buckle',
     category: 'Pointed Heels',
     priceBDT: 990,
     image: platformAnkleStrapImg,
@@ -237,31 +279,34 @@ export const ALL_PRODUCTS: Product[] = [
       primary: '#F472B6',
       accent: '#DB2777',
       glow: '#FDF2F4',
-      ringColor: 'from-pink-400 to-rose-400'
+      ringColor: 'from-pink-400 to-rose-400',
     },
-    sizes: [6, 7, 8, 9, 10, 11, 'Oversize'],
-    oversizeAvailable: true,
+    sizes: [6, 7, 8, 9, 10, 11],
+    outOfStockSizes: [],
+    oversizeAvailable: false,
     variants: [
       {
         id: 'platform-ankle-pink',
         name: 'Blush Pink',
         colorHex: '#F472B6',
         image: platformAnkleStrapImg,
-      }
+      },
     ],
     badge: 'New',
     campaignLabel: 'Occasion Signature',
     description:
-      'Statement blush-pink pointed pump adorned with a sparkling crystal bow centerpiece and an adjustable buckled ankle strap for refined security at weddings and evening events.',
+      'Platform ankle strap in blush pink with crystal bow and ankle buckle.',
     details: [
-      'Crystal-encrusted bow centerpiece on a satin-smooth pointed toe',
+      'Crystal-encrusted bow centerpiece on a blush pink upper',
       'Adjustable buckled ankle strap for a secure custom fit',
-      'Sizes 6–11 (EU 36–41) · Oversize fit available',
-      'Signature Blush Pink edition'
+      'UK Sizes 6–11 available',
+      'Signature Blush Pink edition',
     ],
     inStock: true,
+    isPublished: true,
     rating: 4.9,
-    reviewsCount: 29
+    reviewsCount: 29,
+    sortOrder: 4,
   },
   {
     id: 'two-strap-block-heel',
@@ -274,10 +319,11 @@ export const ALL_PRODUCTS: Product[] = [
       primary: '#8C5028',
       accent: '#6B1D2F',
       glow: '#FAF6F0',
-      ringColor: 'from-amber-800 to-rose-900'
+      ringColor: 'from-amber-800 to-rose-900',
     },
-    sizes: [6, 7, 8, 9, 10, 11, 'Oversize'],
-    oversizeAvailable: true,
+    sizes: [6, 7, 8, 9, 10, 11],
+    outOfStockSizes: [],
+    oversizeAvailable: false,
     variants: [
       {
         id: 'two-strap-brown',
@@ -296,22 +342,24 @@ export const ALL_PRODUCTS: Product[] = [
         name: 'Maroon Suede',
         colorHex: '#6B1D2F',
         image: twoStrapBlockHeelImg,
-      }
+      },
     ],
-    badge: 'Bestseller',
+    badge: 'Popular Pick',
     campaignLabel: 'Everyday Icon',
     description:
       'Our signature two-strap suede block heel featuring a scalloped-edge cushioned footbed. Lightweight stability engineered for long campus hours and relaxed weekends.',
     details: [
       'Scalloped-edge Aesthé Steps cushioned footbed',
       'Plush matte suede dual straps for gentle hold',
-      'Sizes 6–11 (EU 36–41) · Oversize fit available',
-      'Three core hues: Tan Brown, Black Suede & Maroon Suede'
+      'UK Sizes 6–11 available',
+      'Three core hues: Tan Brown, Black Suede & Maroon Suede',
     ],
     inStock: true,
+    isPublished: true,
     rating: 5.0,
-    reviewsCount: 73
-  }
+    reviewsCount: 73,
+    sortOrder: 5,
+  },
 ];
 
 export const HERO_PRODUCTS: Product[] = ALL_PRODUCTS;
@@ -322,5 +370,5 @@ export const LOOKBOOK_IMAGES = {
   lookbook3: twoStrapBlockHeelImg,
   lookbook4: strapSlideImg,
   paletteLookbook: crystalStrapImg,
-  campaignHero: yslHeelImg
+  campaignHero: yslHeelImg,
 };

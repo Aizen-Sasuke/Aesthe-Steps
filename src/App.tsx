@@ -10,28 +10,38 @@ import { FavoritesModal } from './components/FavoritesModal';
 import { SizeGuideModal } from './components/SizeGuideModal';
 import { PolicyModal, PolicyType } from './components/PolicyModal';
 import { Footer } from './components/Footer';
+import { AdminDashboard } from './components/AdminDashboard';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
-import { ALL_PRODUCTS, DELIVERY_RATES } from './data/products';
-import { Product, CartItem, ActiveNavTab, ProductColorVariant } from './types';
+import { ALL_PRODUCTS, DEFAULT_STORE_CONFIG } from './data/products';
+import { Product, CartItem, ActiveNavTab, ProductColorVariant, StoreConfig } from './types';
 import { Check, ShoppingBag } from 'lucide-react';
 import { trackAddToCart } from './utils/analytics';
+import { testConnection } from './lib/firebase';
+import { subscribePublishedProducts, subscribeStoreConfig } from './lib/storeService';
 
-export default function App() {
+function isUrlAdminRoute(): boolean {
+  try {
+    const path = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    return path === '/admin' || path.startsWith('/admin/') || hash === '#admin';
+  } catch {
+    return false;
+  }
+}
+
+function StorefrontApp() {
+  const [isAdminRoute, setIsAdminRoute] = useState<boolean>(isUrlAdminRoute);
+  const [products, setProducts] = useState<Product[]>(ALL_PRODUCTS);
+  const [storeConfig, setStoreConfig] = useState<StoreConfig>(DEFAULT_STORE_CONFIG);
   const [activeTab, setActiveTab] = useState<ActiveNavTab>('home');
+
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('aesthe_cart');
       if (!saved) return [];
       const parsed: CartItem[] = JSON.parse(saved);
-      const validIds = new Set(ALL_PRODUCTS.map((p) => p.id));
-      return parsed
-        .filter((item) => validIds.has(item.product?.id))
-        .map(({ product, selectedSize, quantity, selectedVariant }) => ({
-          product,
-          selectedSize,
-          quantity,
-          selectedVariant,
-        }));
+      return parsed.filter((item) => item?.product?.id);
     } catch {
       return [];
     }
@@ -41,9 +51,7 @@ export default function App() {
     try {
       const saved = localStorage.getItem('aesthe_favs');
       if (!saved) return [];
-      const parsed: string[] = JSON.parse(saved);
-      const validIds = new Set(ALL_PRODUCTS.map((p) => p.id));
-      return parsed.filter((id) => validIds.has(id));
+      return JSON.parse(saved);
     } catch {
       return [];
     }
@@ -84,6 +92,23 @@ export default function App() {
     }
   }, [isDarkMode]);
 
+  // Boot Firestore connection check & public storefront listeners
+  useEffect(() => {
+    testConnection();
+    const unsubProducts = subscribePublishedProducts((liveProducts) => {
+      if (liveProducts.length > 0) {
+        setProducts(liveProducts);
+      }
+    });
+    const unsubConfig = subscribeStoreConfig((liveConfig) => {
+      setStoreConfig(liveConfig);
+    });
+    return () => {
+      unsubProducts();
+      unsubConfig();
+    };
+  }, []);
+
   // Toast notification state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -113,6 +138,7 @@ export default function App() {
 
   // Scroll-spy syncing active navbar indicator with viewport section
   useEffect(() => {
+    if (isAdminRoute) return;
     const handleScrollSpy = () => {
       const collectionEl = document.getElementById('collection-section');
       const lookbookEl = document.getElementById('lookbook-section');
@@ -140,13 +166,21 @@ export default function App() {
     handleScrollSpy();
     window.addEventListener('scroll', handleScrollSpy, { passive: true });
     return () => window.removeEventListener('scroll', handleScrollSpy);
-  }, []);
+  }, [isAdminRoute]);
 
-  // Route & Hash detection for legal/policy pages
+  // Route & Hash detection for Admin Console and legal/policy pages
   useEffect(() => {
     const handleUrlRoute = () => {
       const hash = window.location.hash.toLowerCase();
       const path = window.location.pathname.toLowerCase();
+
+      if (path === '/admin' || path.startsWith('/admin/') || hash === '#admin') {
+        setIsAdminRoute(true);
+        setActivePolicyModal(null);
+        return;
+      }
+
+      setIsAdminRoute(false);
 
       if (hash.includes('privacy') || path.includes('privacy')) {
         setActivePolicyModal('privacy');
@@ -170,6 +204,26 @@ export default function App() {
       window.removeEventListener('popstate', handleUrlRoute);
     };
   }, []);
+
+  const handleOpenAdmin = () => {
+    setIsAdminRoute(true);
+    try {
+      window.history.pushState(null, '', '/admin');
+    } catch {
+      window.location.hash = '#admin';
+    }
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
+
+  const handleBackToStore = () => {
+    setIsAdminRoute(false);
+    try {
+      window.history.pushState(null, '', '/');
+    } catch {
+      window.location.hash = '';
+    }
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
 
   const handleOpenPolicy = (policy: PolicyType) => {
     setActivePolicyModal(policy);
@@ -200,7 +254,6 @@ export default function App() {
   ) => {
     const activeVariant = variant || product.variants?.[0];
 
-    // Fire GA4 'add_to_cart' and Meta Pixel 'AddToCart'
     trackAddToCart({
       productId: product.id,
       productName: product.name,
@@ -233,7 +286,7 @@ export default function App() {
     });
 
     const variantLabel = activeVariant ? ` (${activeVariant.name})` : '';
-    showToast(`Added ${product.name}${variantLabel} — Size ${selectedSize} to bag`);
+    showToast(`Added ${product.name}${variantLabel} — UK Size ${selectedSize} to bag`);
   };
 
   const handleQuickBuy = (
@@ -325,13 +378,21 @@ export default function App() {
     }
   };
 
+  if (isAdminRoute) {
+    return (
+      <AdminDashboard
+        onBackToStore={handleBackToStore}
+        isDarkMode={isDarkMode}
+        toggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FAF6F0] text-[#18181B] dark:bg-zinc-950 dark:text-zinc-100 flex flex-col selection:bg-[#F472B6] selection:text-white transition-colors duration-300">
-      
-      {/* Slim Top Announcement Strip */}
       <div className="bg-[#FDF2F4] dark:bg-zinc-900 border-b border-pink-200/70 dark:border-zinc-800 py-2 px-4 text-center text-xs font-medium text-[#18181B] dark:text-zinc-200 flex items-center justify-center gap-2 transition-colors duration-300 tabular-nums">
         <span className="truncate">
-          AESTHÉ STEPS · Curated in Dhaka · Cash on Delivery ৳{DELIVERY_RATES.insideDhaka} Dhaka / ৳{DELIVERY_RATES.outsideDhaka} Outside
+          AESTHÉ STEPS · Dhaka Women&apos;s Footwear · Cash on Delivery ৳{storeConfig.insideDhakaFee} Dhaka / ৳{storeConfig.outsideDhakaFee} Outside
         </span>
       </div>
 
@@ -356,9 +417,8 @@ export default function App() {
 
       {/* Main Page Body */}
       <main className="flex-1">
-        {/* 1. Hero Showcase */}
         <HeroCarousel
-          products={ALL_PRODUCTS}
+          products={products}
           onSelectProduct={(p, v) => {
             setSelectedProductForDetail(p);
             setSelectedProductVariant(v);
@@ -367,12 +427,11 @@ export default function App() {
           onToggleFavorite={handleToggleFavorite}
           isFavorite={isFavorite}
           onScrollToCollection={handleScrollToCollection}
-          onSizeNeeded={(name) => showToast(`Please pick a size for ${name} first`)}
+          onSizeNeeded={(name) => showToast(`Please pick an available size for ${name} first`)}
         />
 
-        {/* 2. Collection Grid */}
         <CollectionGrid
-          products={ALL_PRODUCTS}
+          products={products}
           onSelectProduct={(p, v) => {
             setSelectedProductForDetail(p);
             setSelectedProductVariant(v);
@@ -382,12 +441,11 @@ export default function App() {
           isFavorite={isFavorite}
           searchQuery={searchQuery}
           onClearSearch={() => setSearchQuery('')}
-          onSizeNeeded={(name) => showToast(`Please pick a size for ${name} first`)}
+          onSizeNeeded={(name) => showToast(`Please pick an available size for ${name} first`)}
         />
 
-        {/* 3. Lookbook & Styling */}
         <LookbookSection
-          products={ALL_PRODUCTS}
+          products={products}
           onSelectProduct={(p) => {
             setSelectedProductForDetail(p);
             setSelectedProductVariant(p.variants?.[0]);
@@ -395,18 +453,20 @@ export default function App() {
           onShopNow={handleScrollToCollection}
         />
 
-        {/* 4. Brand Story & Pillars */}
-        <AboutSection />
+        <AboutSection storeConfig={storeConfig} />
       </main>
 
       {/* Footer */}
       <Footer
+        products={products}
+        storeConfig={storeConfig}
         onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
         onSelectProduct={(p) => {
           setSelectedProductForDetail(p);
           setSelectedProductVariant(p.variants?.[0]);
         }}
         onOpenPolicy={handleOpenPolicy}
+        onOpenAdmin={handleOpenAdmin}
       />
 
       {/* Floating Quick Bag Trigger */}
@@ -436,6 +496,7 @@ export default function App() {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cartItems={cartItems}
+        storeConfig={storeConfig}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onClearCart={handleClearCart}
@@ -445,6 +506,7 @@ export default function App() {
       <ProductDetailModal
         product={selectedProductForDetail}
         initialVariant={selectedProductVariant}
+        storeConfig={storeConfig}
         onClose={() => {
           setSelectedProductForDetail(null);
           setSelectedProductVariant(undefined);
@@ -459,7 +521,7 @@ export default function App() {
         isOpen={isFavoritesOpen}
         onClose={() => setIsFavoritesOpen(false)}
         favorites={favorites}
-        products={ALL_PRODUCTS}
+        products={products}
         onToggleFavorite={handleToggleFavorite}
         onSelectProduct={(p, v) => {
           setSelectedProductForDetail(p);
@@ -469,6 +531,7 @@ export default function App() {
 
       <SizeGuideModal
         isOpen={isSizeGuideOpen}
+        storeConfig={storeConfig}
         onClose={() => setIsSizeGuideOpen(false)}
       />
 
@@ -485,7 +548,14 @@ export default function App() {
           }
         }}
       />
-
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <StorefrontApp />
+    </ErrorBoundary>
   );
 }

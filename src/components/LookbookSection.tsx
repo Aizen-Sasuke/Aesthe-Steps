@@ -19,11 +19,18 @@ export const LookbookSection: React.FC<LookbookSectionProps> = ({
     if (found) onSelectProduct(found);
   };
 
-  const triptychItems = [
+  const triptychBase = [
     { id: 'ysl-heel', name: 'YSL Heel', price: 920, image: LOOKBOOK_IMAGES.lookbook1 },
     { id: 'pointed-toe-mule', name: 'Pointed Toe Mule', price: 850, image: LOOKBOOK_IMAGES.lookbook2 },
     { id: 'two-strap-block-heel', name: '2 Strap Block Heel', price: 690, image: LOOKBOOK_IMAGES.lookbook3 },
   ];
+
+  const triptychItems = triptychBase.map((base) => {
+    const live = products.find((p) => p.id === base.id);
+    return live
+      ? { id: live.id, name: live.name, price: live.priceBDT, image: live.image || base.image }
+      : base;
+  });
 
   const crystalProduct = products.find((p) => p.id === 'crystal-strap');
 
@@ -212,7 +219,7 @@ export const LookbookSection: React.FC<LookbookSectionProps> = ({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent lg:hidden" />
                 <div className="absolute bottom-4 left-4 lg:bottom-6 lg:left-6 px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xs text-[#18181B] dark:text-zinc-100 text-[11px] font-bold shadow-md border border-pink-200/50 dark:border-zinc-700 tabular-nums">
-                  Crystal Strap · ৳ 790
+                  {crystalProduct?.name || 'Crystal Strap'} · ৳ {crystalProduct?.priceBDT ?? 790}
                 </div>
               </button>
 

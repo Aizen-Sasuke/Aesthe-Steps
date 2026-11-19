@@ -1,0 +1,225 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global safety net: deny everything by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ---------- Shared Primitives ----------
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn()
+        && request.auth.token.email is string
+        && request.auth.token.email_verified == true;
+    }
+
+    function authEmailKey() {
+      return request.auth.token.email.lower().replace('[^a-z0-9]', '_');
+    }
+
+    function isPrimaryFounder() {
+      return isEmailVerified()
+        && request.auth.token.email.lower() == 'brightdiamondhax@gmail.com';
+    }
+
+    function isAdmin() {
+      return isPrimaryFounder()
+        || (isEmailVerified()
+          && exists(/databases/$(database)/documents/adminAllowlist/$(authEmailKey())));
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isNonEmptyString(val, maxLen) {
+      return val is string && val.size() >= 1 && val.size() <= maxLen;
+    }
+
+    function isOptionalString(data, key, maxLen) {
+      return !(key in data) || (data[key] is string && data[key].size() <= maxLen);
+    }
+
+    function isBoundedNumber(val, minVal, maxVal) {
+      return (val is int || val is float) && val >= minVal && val <= maxVal;
+    }
+
+    // ---------- Entity Validators ----------
+    function isValidProduct(data) {
+      return data.keys().hasAll([
+          'id', 'name', 'tagline', 'category', 'priceBDT', 'image',
+          'sizes', 'description', 'details', 'inStock', 'isPublished',
+          'rating', 'reviewsCount', 'sortOrder', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'id', 'name', 'tagline', 'category', 'priceBDT', 'image',
+          'sizes', 'outOfStockSizes', 'oversizeAvailable', 'variants',
+          'badge', 'campaignLabel', 'description', 'details', 'inStock',
+          'isPublished', 'rating', 'reviewsCount', 'sortOrder', 'updatedAt'
+        ])
+        && isValidId(data.id)
+        && isNonEmptyString(data.name, 100)
+        && isNonEmptyString(data.tagline, 180)
+        && isNonEmptyString(data.category, 60)
+        && isBoundedNumber(data.priceBDT, 0, 500000)
+        && isNonEmptyString(data.image, 400000)
+        && data.sizes is list && data.sizes.size() >= 1 && data.sizes.size() <= 12
+        && (!('outOfStockSizes' in data) || (data.outOfStockSizes is list && data.outOfStockSizes.size() <= 12))
+        && (!('oversizeAvailable' in data) || data.oversizeAvailable is bool)
+        && (!('variants' in data) || (data.variants is list && data.variants.size() <= 12))
+        && isOptionalString(data, 'badge', 40)
+        && isOptionalString(data, 'campaignLabel', 80)
+        && isNonEmptyString(data.description, 1000)
+        && data.details is list && data.details.size() >= 1 && data.details.size() <= 12
+        && data.inStock is bool
+        && data.isPublished is bool
+        && isBoundedNumber(data.rating, 0, 5)
+        && isBoundedNumber(data.reviewsCount, 0, 1000000)
+        && isBoundedNumber(data.sortOrder, 0, 100000)
+        && data.updatedAt == request.time;
+    }
+
+    function isValidStoreConfig(data) {
+      return data.keys().hasAll([
+          'insideDhakaFee', 'outsideDhakaFee', 'primaryPhone', 'secondaryPhone',
+          'whatsappNumber', 'email', 'location', 'partners', 'promoCodes', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'insideDhakaFee', 'outsideDhakaFee', 'primaryPhone', 'secondaryPhone',
+          'whatsappNumber', 'email', 'location', 'partners', 'promoCodes', 'updatedAt'
+        ])
+        && isBoundedNumber(data.insideDhakaFee, 0, 5000)
+        && isBoundedNumber(data.outsideDhakaFee, 0, 5000)
+        && isNonEmptyString(data.primaryPhone, 30)
+        && isNonEmptyString(data.secondaryPhone, 30)
+        && isNonEmptyString(data.whatsappNumber, 25)
+        && isNonEmptyString(data.email, 120)
+        && isNonEmptyString(data.location, 120)
+        && isNonEmptyString(data.partners, 120)
+        && data.promoCodes is list && data.promoCodes.size() <= 20
+        && data.updatedAt == request.time;
+    }
+
+    function isValidOrderStatus(s) {
+      return s in ['pending', 'confirmed', 'dispatched', 'delivered', 'cancelled'];
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll([
+          'orderCode', 'customerName', 'customerPhone', 'customerAddress',
+          'deliveryArea', 'deliveryFee', 'discountBDT', 'subtotalBDT',
+          'totalBDT', 'items', 'status', 'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'orderCode', 'customerName', 'customerPhone', 'customerAddress',
+          'customerNote', 'deliveryArea', 'deliveryFee', 'promoCode',
+          'discountBDT', 'subtotalBDT', 'totalBDT', 'items', 'status',
+          'createdAt', 'updatedAt'
+        ])
+        && isValidId(data.orderCode)
+        && isNonEmptyString(data.customerName, 100)
+        && data.customerPhone is string && data.customerPhone.size() >= 6 && data.customerPhone.size() <= 30
+        && data.customerAddress is string && data.customerAddress.size() >= 4 && data.customerAddress.size() <= 400
+        && isOptionalString(data, 'customerNote', 400)
+        && data.deliveryArea in ['inside_dhaka', 'outside_dhaka']
+        && isBoundedNumber(data.deliveryFee, 0, 5000)
+        && isOptionalString(data, 'promoCode', 40)
+        && isBoundedNumber(data.discountBDT, 0, 500000)
+        && isBoundedNumber(data.subtotalBDT, 0, 5000000)
+        && isBoundedNumber(data.totalBDT, 0, 5000000)
+        && data.items is list && data.items.size() >= 1 && data.items.size() <= 50
+        && data.items[0] is map
+        && isValidOrderStatus(data.status)
+        && data.updatedAt == request.time;
+    }
+
+    function isValidAllowlistEntry(data) {
+      return data.keys().hasAll(['email', 'displayName', 'role', 'addedAt', 'addedBy'])
+        && data.keys().hasOnly(['email', 'displayName', 'role', 'addedAt', 'addedBy'])
+        && data.email is string && data.email.size() >= 5 && data.email.size() <= 120
+        && isNonEmptyString(data.displayName, 80)
+        && data.role in ['partner', 'owner']
+        && data.addedAt is timestamp
+        && data.addedBy is string && data.addedBy.size() >= 5 && data.addedBy.size() <= 120;
+    }
+
+    // ---------- Collections ----------
+    match /test/{docId} {
+      allow get: if docId == 'connection';
+    }
+
+    match /products/{productId} {
+      allow get: if isValidId(productId) && (existing().isPublished == true || isAdmin());
+      allow list: if existing().isPublished == true || isAdmin();
+      allow create: if isValidId(productId)
+        && isAdmin()
+        && isValidProduct(incoming())
+        && incoming().id == productId;
+      allow update: if isValidId(productId)
+        && isAdmin()
+        && isValidProduct(incoming())
+        && incoming().id == existing().id;
+      allow delete: if isValidId(productId) && isAdmin();
+    }
+
+    match /storeConfig/{configId} {
+      allow get: if isValidId(configId) && (configId == 'main' || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isValidId(configId) && configId == 'main' && isAdmin() && isValidStoreConfig(incoming());
+      allow update: if isValidId(configId) && configId == 'main' && isAdmin() && isValidStoreConfig(incoming());
+      allow delete: if false;
+    }
+
+    match /orders/{orderId} {
+      // PII-protected: only verified partners can inspect or modify orders
+      allow get: if isValidId(orderId) && isAdmin();
+      allow list: if isAdmin();
+
+      // Guests and signed-in customers can create a pending COD order cleanly
+      allow create: if isValidId(orderId)
+        && isValidOrder(incoming())
+        && incoming().status == 'pending'
+        && incoming().createdAt == request.time;
+
+      // Only partners can update order statuses or notes; createdAt stays immutable
+      allow update: if isValidId(orderId)
+        && isAdmin()
+        && isValidOrder(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt', 'customerNote']);
+
+      allow delete: if isValidId(orderId) && isAdmin();
+    }
+
+    match /adminAllowlist/{emailId} {
+      // Users may check only their own sanitized email entry to confirm partner authorization
+      allow get: if isValidId(emailId)
+        && ((isEmailVerified() && authEmailKey() == emailId) || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isValidId(emailId)
+        && isAdmin()
+        && isValidAllowlistEntry(incoming())
+        && incoming().email.lower().replace('[^a-z0-9]', '_') == emailId
+        && incoming().addedAt == request.time;
+      allow update: if isValidId(emailId)
+        && isAdmin()
+        && isValidAllowlistEntry(incoming())
+        && incoming().email == existing().email
+        && incoming().addedAt == existing().addedAt;
+      allow delete: if isValidId(emailId) && isAdmin();
+    }
+  }
+}

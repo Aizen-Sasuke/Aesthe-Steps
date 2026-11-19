@@ -205,7 +205,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
           <div className="pt-3 mt-2 border-t border-pink-200/40 dark:border-zinc-800 flex items-center justify-between text-xs text-[#18181B]/70 dark:text-zinc-400 px-2">
             <span>Dhaka &amp; Nationwide COD</span>
-            <span className="text-[#DB2777] dark:text-pink-400 font-semibold">Curated by Us</span>
+            {/* Change: replaced 'Curated by Us' to limit 'curated' usage across page */}
+            <span className="text-[#DB2777] dark:text-pink-400 font-semibold">Designed for Dhaka</span>
           </div>
         </div>
       )}

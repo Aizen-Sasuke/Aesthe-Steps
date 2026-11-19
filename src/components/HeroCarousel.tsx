@@ -20,17 +20,24 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
   onToggleFavorite,
   isFavorite,
   onScrollToCollection,
-  onSizeNeeded
+  onSizeNeeded,
 }) => {
-  const bestsellerIndex = products.findIndex((p) => p.badge === 'Bestseller');
-  const [currentIndex, setCurrentIndex] = useState(bestsellerIndex >= 0 ? bestsellerIndex : 0);
+  const popularIndex = products.findIndex((p) => p.badge === 'Popular Pick');
+  const [currentIndex, setCurrentIndex] = useState(popularIndex >= 0 ? popularIndex : 0);
   const [direction, setDirection] = useState(1);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<number | string | null>(null);
   const [needsSizePrompt, setNeedsSizePrompt] = useState(false);
 
-  const currentProduct = products[currentIndex];
+  const safeIndex = products.length > 0 ? currentIndex % products.length : 0;
+  const currentProduct = products[safeIndex];
   const total = products.length;
+
+  useEffect(() => {
+    if (currentIndex >= products.length && products.length > 0) {
+      setCurrentIndex(0);
+    }
+  }, [products.length, currentIndex]);
 
   useEffect(() => {
     if (currentProduct?.variants && currentProduct.variants.length > 0) {
@@ -40,10 +47,15 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
     }
     setSelectedSize(null);
     setNeedsSizePrompt(false);
-  }, [currentIndex, currentProduct]);
+  }, [safeIndex, currentProduct?.id]);
 
-  const activeVariant = currentProduct.variants?.find((v) => v.id === selectedVariantId) || currentProduct.variants?.[0];
-  const displayImage = activeVariant ? activeVariant.image : currentProduct.image;
+  if (!currentProduct || total === 0) return null;
+
+  const activeVariant =
+    currentProduct.variants?.find((v) => v.id === selectedVariantId) || currentProduct.variants?.[0];
+  const displayImage = activeVariant?.image || currentProduct.image;
+  const outOfStockSet = new Set((currentProduct.outOfStockSizes || []).map(String));
+  const isProductInStock = currentProduct.inStock !== false;
 
   const handlePrev = () => {
     setDirection(-1);
@@ -56,7 +68,8 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
   };
 
   const handleHeroAdd = () => {
-    if (!selectedSize) {
+    if (!isProductInStock) return;
+    if (!selectedSize || outOfStockSet.has(String(selectedSize))) {
       setNeedsSizePrompt(true);
       onSizeNeeded?.(currentProduct.name);
       return;
@@ -64,8 +77,8 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
     onQuickBuy(currentProduct, selectedSize, activeVariant);
   };
 
-  const prevIndex = (currentIndex - 1 + total) % total;
-  const nextIndex = (currentIndex + 1) % total;
+  const prevIndex = (safeIndex - 1 + total) % total;
+  const nextIndex = (safeIndex + 1) % total;
   const prevProduct = products[prevIndex];
   const nextProduct = products[nextIndex];
 
@@ -80,7 +93,6 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-          
           {/* Left Column: Editorial Story */}
           <div className="lg:col-span-5 flex flex-col justify-center text-left space-y-5 z-20">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#DB2777] dark:text-pink-400">
@@ -95,13 +107,13 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
             </h1>
 
             <p className="text-sm sm:text-base text-[#18181B]/80 dark:text-zinc-300 max-w-md leading-relaxed">
-              Modern pointed silhouettes, soft suede slides, and crystal-trimmed heels cushioned for all-day ease—curated by us in Dhaka.
+              Modern pointed silhouettes, soft suede slides, and crystal-trimmed heels cushioned for all-day ease—selected by us in Dhaka.
             </p>
 
             <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-medium text-[#18181B]/65 dark:text-zinc-400">
               <span>Patent &amp; Soft Suede</span>
               <span aria-hidden="true">·</span>
-              <span>Sizes 6–11 &amp; Oversize</span>
+              <span>UK Sizes 6–11</span>
               <span aria-hidden="true">·</span>
               <span>Nationwide COD</span>
             </div>
@@ -129,41 +141,42 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
           {/* Right Column: Interactive Showcase */}
           <div className="lg:col-span-7 relative flex flex-col items-center justify-center">
-            
             <div className="relative w-full max-w-xl flex items-center justify-center z-20">
-              
               {/* Symmetric Left Preview */}
-              <button
-                type="button"
-                onClick={handlePrev}
-                className="hidden md:block absolute -left-4 lg:-left-6 top-1/2 -translate-y-1/2 scale-90 opacity-45 hover:opacity-95 hover:scale-95 transition-all duration-200 z-10"
-                title={`Previous: ${prevProduct.name}`}
-                aria-label={`Preview previous style: ${prevProduct.name}`}
-              >
-                <div className="w-24 h-20 rounded-2xl overflow-hidden shadow-md border border-pink-200/70 dark:border-zinc-800 rotate-[-6deg] bg-white dark:bg-zinc-900">
-                  <img
-                    src={prevProduct.image}
-                    alt={prevProduct.name}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </button>
+              {total > 1 && (
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  className="hidden md:block absolute -left-4 lg:-left-6 top-1/2 -translate-y-1/2 scale-90 opacity-45 hover:opacity-95 hover:scale-95 transition-all duration-200 z-10"
+                  title={`Previous: ${prevProduct.name}`}
+                  aria-label={`Preview previous style: ${prevProduct.name}`}
+                >
+                  <div className="w-24 h-20 rounded-2xl overflow-hidden shadow-md border border-pink-200/70 dark:border-zinc-800 rotate-[-6deg] bg-white dark:bg-zinc-900">
+                    <img
+                      src={prevProduct.image}
+                      alt={prevProduct.name}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </button>
+              )}
 
               {/* Center Featured Stage */}
               <div className="relative w-full max-w-[330px] sm:max-w-[400px] md:max-w-[440px] flex items-center justify-center">
-                
-                <button
-                  id="hero-carousel-prev"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePrev();
-                  }}
-                  className="absolute -left-4 sm:-left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#FAF6F0]/95 dark:bg-zinc-900/95 backdrop-blur-md border border-pink-200/80 dark:border-zinc-700 text-[#18181B] dark:text-zinc-200 hover:bg-[#18181B] dark:hover:bg-white hover:text-white dark:hover:text-[#18181B] flex items-center justify-center shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 z-30"
-                  aria-label="Previous style"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
+                {total > 1 && (
+                  <button
+                    id="hero-carousel-prev"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePrev();
+                    }}
+                    className="absolute -left-4 sm:-left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#FAF6F0]/95 dark:bg-zinc-900/95 backdrop-blur-md border border-pink-200/80 dark:border-zinc-700 text-[#18181B] dark:text-zinc-200 hover:bg-[#18181B] dark:hover:bg-white hover:text-white dark:hover:text-[#18181B] flex items-center justify-center shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 z-30"
+                    aria-label="Previous style"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                )}
 
                 <AnimatePresence mode="wait" custom={direction}>
                   <motion.div
@@ -181,7 +194,9 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                         src={displayImage}
                         alt={currentProduct.name}
                         referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                          !isProductInStock ? 'opacity-65 grayscale-[30%]' : ''
+                        }`}
                       />
                     </div>
 
@@ -191,36 +206,40 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                   </motion.div>
                 </AnimatePresence>
 
-                <button
-                  id="hero-carousel-next"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleNext();
-                  }}
-                  className="absolute -right-4 sm:-right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#FAF6F0]/95 dark:bg-zinc-900/95 backdrop-blur-md border border-pink-200/80 dark:border-zinc-700 text-[#18181B] dark:text-zinc-200 hover:bg-[#18181B] dark:hover:bg-white hover:text-white dark:hover:text-[#18181B] flex items-center justify-center shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 z-30"
-                  aria-label="Next style"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
+                {total > 1 && (
+                  <button
+                    id="hero-carousel-next"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNext();
+                    }}
+                    className="absolute -right-4 sm:-right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#FAF6F0]/95 dark:bg-zinc-900/95 backdrop-blur-md border border-pink-200/80 dark:border-zinc-700 text-[#18181B] dark:text-zinc-200 hover:bg-[#18181B] dark:hover:bg-white hover:text-white dark:hover:text-[#18181B] flex items-center justify-center shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 z-30"
+                    aria-label="Next style"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                )}
               </div>
 
               {/* Symmetric Right Preview */}
-              <button
-                type="button"
-                onClick={handleNext}
-                className="hidden md:block absolute -right-4 lg:-right-6 top-1/2 -translate-y-1/2 scale-90 opacity-45 hover:opacity-95 hover:scale-95 transition-all duration-200 z-10"
-                title={`Next: ${nextProduct.name}`}
-                aria-label={`Preview next style: ${nextProduct.name}`}
-              >
-                <div className="w-24 h-20 rounded-2xl overflow-hidden shadow-md border border-pink-200/70 dark:border-zinc-800 rotate-[6deg] bg-white dark:bg-zinc-900">
-                  <img
-                    src={nextProduct.image}
-                    alt={nextProduct.name}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </button>
+              {total > 1 && (
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="hidden md:block absolute -right-4 lg:-right-6 top-1/2 -translate-y-1/2 scale-90 opacity-45 hover:opacity-95 hover:scale-95 transition-all duration-200 z-10"
+                  title={`Next: ${nextProduct.name}`}
+                  aria-label={`Preview next style: ${nextProduct.name}`}
+                >
+                  <div className="w-24 h-20 rounded-2xl overflow-hidden shadow-md border border-pink-200/70 dark:border-zinc-800 rotate-[6deg] bg-white dark:bg-zinc-900">
+                    <img
+                      src={nextProduct.image}
+                      alt={nextProduct.name}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </button>
+              )}
             </div>
 
             {/* Active Shoe Metadata, Inline Shade & Size Selector, CTA */}
@@ -228,12 +247,17 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#DB2777] dark:text-pink-400">
                   <span>{currentProduct.category}</span>
-                  {currentProduct.badge && (
+                  {!isProductInStock ? (
+                    <>
+                      <span aria-hidden="true">·</span>
+                      <span className="text-rose-600 dark:text-rose-400">Sold Out</span>
+                    </>
+                  ) : currentProduct.badge ? (
                     <>
                       <span aria-hidden="true">·</span>
                       <span>{currentProduct.badge}</span>
                     </>
-                  )}
+                  ) : null}
                 </div>
                 <h2 className="font-serif-display text-2xl sm:text-3xl font-normal text-[#18181B] dark:text-zinc-100 tracking-tight">
                   {currentProduct.name}
@@ -281,31 +305,35 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                   }`}
                 >
                   {currentProduct.sizes.map((size) => {
-                    const isPicked = selectedSize === size;
-                    const shortLabel = size === 'Oversize' ? 'OS' : size;
+                    const isSizeDisabled = !isProductInStock || outOfStockSet.has(String(size));
+                    const isPicked = selectedSize === size && !isSizeDisabled;
                     return (
                       <button
                         key={size}
                         type="button"
+                        disabled={isSizeDisabled}
                         onClick={() => {
+                          if (isSizeDisabled) return;
                           setSelectedSize(size);
                           setNeedsSizePrompt(false);
                         }}
-                        title={size === 'Oversize' ? 'Oversize (EU 42+)' : `Size ${size}`}
+                        title={isSizeDisabled ? `UK Size ${size} — Sold Out` : `UK Size ${size}`}
                         className={`min-w-[32px] h-7 px-2 rounded-lg text-[11px] font-bold transition-all tabular-nums ${
-                          isPicked
+                          isSizeDisabled
+                            ? 'bg-zinc-100/70 dark:bg-zinc-900/50 border border-pink-100/60 dark:border-zinc-800 text-[#18181B]/30 dark:text-zinc-600 line-through cursor-not-allowed'
+                            : isPicked
                             ? 'bg-[#18181B] dark:bg-pink-600 text-white shadow-2xs'
                             : 'bg-white/80 dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-700 text-[#18181B]/80 dark:text-zinc-300 hover:border-[#DB2777]'
                         }`}
                       >
-                        {shortLabel}
+                        {size}
                       </button>
                     );
                   })}
                 </div>
-                {needsSizePrompt && !selectedSize && (
+                {needsSizePrompt && !selectedSize && isProductInStock && (
                   <p className="text-[11px] font-semibold text-[#DB2777] dark:text-pink-400">
-                    Choose a size before adding to bag
+                    Choose an available size before adding to bag
                   </p>
                 )}
               </div>
@@ -319,10 +347,21 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                 <button
                   id={`hero-buy-${currentProduct.id}`}
                   onClick={handleHeroAdd}
-                  className="px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider bg-[#18181B] dark:bg-pink-600 text-white hover:bg-[#DB2777] dark:hover:bg-pink-500 transition-all shadow-sm hover:scale-[1.02] active:scale-95 flex items-center gap-1.5 whitespace-nowrap shrink-0"
+                  disabled={!isProductInStock}
+                  className={`px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                    !isProductInStock
+                      ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-500 cursor-not-allowed'
+                      : 'bg-[#18181B] dark:bg-pink-600 text-white hover:bg-[#DB2777] dark:hover:bg-pink-500 hover:scale-[1.02] active:scale-95'
+                  }`}
                 >
-                  <span>{selectedSize ? `Add Size ${selectedSize}` : 'Add to Bag'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>
+                    {!isProductInStock
+                      ? 'Sold Out'
+                      : selectedSize
+                      ? `Add Size ${selectedSize}`
+                      : 'Add to Bag'}
+                  </span>
+                  {isProductInStock && <ArrowRight className="w-3.5 h-3.5" />}
                 </button>
 
                 <button
@@ -335,9 +374,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                 </button>
               </div>
             </div>
-
           </div>
-
         </div>
       </div>
     </section>

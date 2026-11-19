@@ -155,7 +155,8 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   <div className="p-3.5 rounded-2xl bg-white dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-800 text-xs">
                     <strong className="block text-[#DB2777] dark:text-pink-400 mb-1">WhatsApp Order Fulfillment</strong>
-                    Pre-populate the formatted order dispatch summary sent directly to our official WhatsApp helpline (01613-817630 / 01618007003).
+                    {/* Change: consolidated to single WhatsApp number (01613-817630) */}
+                    Pre-populate the formatted order dispatch summary sent directly to our official WhatsApp helpline (01613-817630).
                   </div>
                   <div className="p-3.5 rounded-2xl bg-white dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-800 text-xs">
                     <strong className="block text-[#DB2777] dark:text-pink-400 mb-1">Courier Logistics</strong>
@@ -180,7 +181,8 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
                   4. Data Rights &amp; Contact
                 </h4>
                 <p className="text-xs sm:text-sm">
-                  You have the right to request deletion of your order records or update your contact details at any point by messaging our support line on WhatsApp at <strong>01613-817630 / 01618007003</strong> or emailing <strong>aesthesteps@gmail.com</strong>.
+                  {/* Change: consolidated to single WhatsApp number (01613-817630) */}
+                  You have the right to request deletion of your order records or update your contact details at any point by messaging our support line on WhatsApp at <strong>01613-817630</strong> or emailing <strong>aesthesteps@gmail.com</strong>.
                 </p>
               </div>
             </div>
@@ -210,7 +212,8 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
                   We understand that finding the dream fit is essential. You may exchange any purchased pair within <strong>7 days of delivery</strong> for:
                 </p>
                 <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
-                  <li>A different size (Sizes 6–11 or Oversize).</li>
+                  {/* Change: updated exchange sizes to UK Sizes 6–11 */}
+                  <li>A different size (UK Sizes 6–11).</li>
                   <li>An alternative silhouette or colorway of equal value (or settle the difference for higher-priced designs).</li>
                 </ul>
               </div>
@@ -246,7 +249,8 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
                   4. How to Initiate an Exchange
                 </h4>
                 <p className="text-xs sm:text-sm">
-                  Simply send a message to our WhatsApp team at <strong>01613-817630 / 01618007003</strong> with your order name and desired replacement size. Inside Dhaka, our courier handles direct doorstep swaps (delivering the new parcel while retrieving the original). Outside Dhaka, return pickup is coordinated via local express parcel hubs.
+                  {/* Change: consolidated to single WhatsApp number (01613-817630) */}
+                  Simply send a message to our WhatsApp team at <strong>01613-817630</strong> with your order name and desired replacement size. Inside Dhaka, our courier handles direct doorstep swaps (delivering the new parcel while retrieving the original). Outside Dhaka, return pickup is coordinated via local express parcel hubs.
                 </p>
               </div>
             </div>
@@ -337,10 +341,10 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
 
         {/* Modal Footer */}
         <div className="p-4 sm:p-5 border-t border-pink-200/80 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-3 text-[#18181B]/70 dark:text-zinc-400">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 text-[#18181B]/70 dark:text-zinc-400">
             <span className="flex items-center gap-1.5 font-medium">
               <Phone className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" />
-              01613-817630 / 01618007003
+              01613-817630 (WhatsApp) / 01618-007003
             </span>
             <span className="text-pink-300 dark:text-zinc-700">•</span>
             <span className="flex items-center gap-1.5 font-medium">

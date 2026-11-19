@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { X, Heart, ShoppingBag, Check, Truck, Phone, Star, Ruler, Minus, Plus } from 'lucide-react';
-import { Product, ProductColorVariant } from '../types';
-import { STORE_CONTACT, DELIVERY_RATES } from '../data/products';
+import { Product, ProductColorVariant, StoreConfig } from '../types';
+import { DEFAULT_STORE_CONFIG } from '../data/products';
 
 interface ProductDetailModalProps {
   product: Product | null;
   initialVariant?: ProductColorVariant;
+  storeConfig?: StoreConfig;
   onClose: () => void;
   onAddToCart: (product: Product, size: number | string, quantity: number, variant?: ProductColorVariant) => void;
   onToggleFavorite: (productId: string) => void;
@@ -16,32 +17,42 @@ interface ProductDetailModalProps {
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   product,
   initialVariant,
+  storeConfig = DEFAULT_STORE_CONFIG,
   onClose,
   onAddToCart,
   onToggleFavorite,
   isFavorite,
-  onOpenSizeGuide
+  onOpenSizeGuide,
 }) => {
-  if (!product) return null;
+  const outOfStockSet = new Set((product?.outOfStockSizes || []).map(String));
+  const firstAvailableSize =
+    product?.sizes.find((s) => !outOfStockSet.has(String(s))) ?? product?.sizes[0] ?? 6;
 
-  const [selectedSize, setSelectedSize] = useState<number | string>(product.sizes[0] || 6);
+  const [selectedSize, setSelectedSize] = useState<number | string>(firstAvailableSize);
   const [selectedVariant, setSelectedVariant] = useState<ProductColorVariant | undefined>(
-    initialVariant || product.variants?.[0]
+    initialVariant || product?.variants?.[0]
   );
   const [quantity, setQuantity] = useState<number>(1);
   const [addedAnimation, setAddedAnimation] = useState(false);
 
   useEffect(() => {
     if (product) {
-      setSelectedSize(product.sizes[0] || 6);
+      const blocked = new Set((product.outOfStockSizes || []).map(String));
+      const nextSize = product.sizes.find((s) => !blocked.has(String(s))) ?? product.sizes[0] ?? 6;
+      setSelectedSize(nextSize);
       setSelectedVariant(initialVariant || product.variants?.[0]);
       setQuantity(1);
     }
   }, [product, initialVariant]);
 
-  const activeImage = selectedVariant ? selectedVariant.image : product.image;
+  if (!product) return null;
+
+  const isProductInStock = product.inStock !== false;
+  const activeImage = selectedVariant?.image || product.image;
+  const isSelectedSizeDisabled = !isProductInStock || outOfStockSet.has(String(selectedSize));
 
   const handleAdd = () => {
+    if (isSelectedSizeDisabled) return;
     onAddToCart(product, selectedSize, quantity, selectedVariant);
     setAddedAnimation(true);
     setTimeout(() => {
@@ -53,14 +64,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
-      <div 
+      <div
         className="fixed inset-0 bg-black/55 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Dialog */}
       <div className="relative w-full max-w-3xl bg-[#FAF6F0] dark:bg-[#121217] border border-pink-200 dark:border-zinc-800 rounded-3xl overflow-hidden shadow-2xl z-10 my-8 transition-colors">
-        
         {/* Close button */}
         <button
           onClick={onClose}
@@ -71,10 +81,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-12 items-stretch">
-          
           {/* Left Column: Product Photography */}
           <div className="md:col-span-6 p-6 sm:p-8 bg-[#FFF5F7] dark:bg-zinc-950/60 flex flex-col items-center justify-between relative overflow-hidden border-b md:border-b-0 md:border-r border-pink-200/80 dark:border-zinc-800">
-            
             <div className="w-full flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#DB2777] dark:text-pink-400">
               <span>{product.category}</span>
               {product.badge && (
@@ -87,28 +95,35 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 src={activeImage}
                 alt={selectedVariant ? `${product.name} in ${selectedVariant.name}` : product.name}
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover ${!isProductInStock ? 'opacity-65 grayscale-[30%]' : ''}`}
               />
             </div>
 
             <div className="w-full flex items-center justify-between text-[11px] font-medium text-[#18181B]/70 dark:text-zinc-400">
-              <span>{product.campaignLabel || 'Curated Edit'}</span>
-              <span className="text-[#DB2777] dark:text-pink-400 font-semibold">Sizes 6–11 &amp; Oversize</span>
+              <span>{product.campaignLabel || 'Signature Edit'}</span>
+              <span className="text-[#DB2777] dark:text-pink-400 font-semibold">UK Sizes 6–11</span>
             </div>
           </div>
 
           {/* Right Column: Details, Size Guide & Bag Action */}
           <div className="md:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-5 bg-[#FAF6F0] dark:bg-[#121217]">
-            
             <div className="space-y-3.5">
               <div className="flex items-center justify-between pr-8">
                 <div className="flex items-center gap-1 text-amber-500 text-xs font-bold tabular-nums">
                   <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                   <span>{product.rating}</span>
-                  <span className="text-[#18181B]/60 dark:text-zinc-400 font-normal">({product.reviewsCount} reviews)</span>
+                  <span className="text-[#18181B]/60 dark:text-zinc-400 font-normal">
+                    ({product.reviewsCount} reviews)
+                  </span>
                 </div>
-                <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
-                  In Stock
+                <span
+                  className={`text-[11px] font-semibold ${
+                    isProductInStock
+                      ? 'text-emerald-700 dark:text-emerald-400'
+                      : 'text-rose-600 dark:text-rose-400'
+                  }`}
+                >
+                  {isProductInStock ? 'In Stock' : 'Out of Stock'}
                 </span>
               </div>
 
@@ -125,7 +140,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </div>
                 <div className="text-right text-[11px] text-[#18181B]/70 dark:text-zinc-400 tabular-nums">
                   <div className="font-semibold text-[#18181B] dark:text-zinc-200">Delivery</div>
-                  <div>৳{DELIVERY_RATES.insideDhaka} Dhaka · ৳{DELIVERY_RATES.outsideDhaka} Outside</div>
+                  <div>
+                    ৳{storeConfig.insideDhakaFee} Dhaka · ৳{storeConfig.outsideDhakaFee} Outside
+                  </div>
                 </div>
               </div>
 
@@ -138,7 +155,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <div className="pt-3 border-t border-pink-200/60 dark:border-zinc-800">
                   <div className="flex justify-between items-center mb-2">
                     <label className="text-xs font-bold uppercase tracking-wider text-[#18181B] dark:text-zinc-200">
-                      Color: <span className="text-[#DB2777] dark:text-pink-400 font-semibold">{selectedVariant?.name}</span>
+                      Color:{' '}
+                      <span className="text-[#DB2777] dark:text-pink-400 font-semibold">
+                        {selectedVariant?.name}
+                      </span>
                     </label>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
@@ -198,23 +218,26 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     <span>Size Guide</span>
                   </button>
                 </div>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                   {product.sizes.map((size) => {
-                    const isWide = String(size).length > 3;
+                    const isSizeOut = !isProductInStock || outOfStockSet.has(String(size));
+                    const isActive = selectedSize === size && !isSizeOut;
                     return (
                       <button
                         key={size}
                         type="button"
-                        onClick={() => setSelectedSize(size)}
-                        className={`${
-                          isWide ? 'col-span-2 px-3' : 'px-2'
-                        } py-2 rounded-xl text-[11px] font-bold transition-all tabular-nums whitespace-nowrap text-center ${
-                          selectedSize === size
+                        disabled={isSizeOut}
+                        onClick={() => !isSizeOut && setSelectedSize(size)}
+                        title={isSizeOut ? `UK ${size} — Sold Out` : `UK ${size}`}
+                        className={`py-2 px-2 rounded-xl text-[11px] font-bold transition-all tabular-nums whitespace-nowrap text-center ${
+                          isSizeOut
+                            ? 'bg-zinc-100 dark:bg-zinc-900 border border-pink-100 dark:border-zinc-800 text-[#18181B]/30 dark:text-zinc-600 line-through cursor-not-allowed'
+                            : isActive
                             ? 'bg-[#18181B] dark:bg-pink-600 text-white shadow-sm'
                             : 'bg-white dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 text-[#18181B]/80 dark:text-zinc-200 hover:bg-pink-50 dark:hover:bg-zinc-700'
                         }`}
                       >
-                        {size}
+                        UK {size}
                       </button>
                     );
                   })}
@@ -229,7 +252,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-[#18181B]/70 dark:text-zinc-300 hover:bg-pink-50 dark:hover:bg-zinc-700"
+                    disabled={!isProductInStock}
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-[#18181B]/70 dark:text-zinc-300 hover:bg-pink-50 dark:hover:bg-zinc-700 disabled:opacity-40"
                     aria-label="Decrease quantity"
                   >
                     <Minus className="w-3.5 h-3.5" />
@@ -240,7 +264,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => q + 1)}
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-[#18181B]/70 dark:text-zinc-300 hover:bg-pink-50 dark:hover:bg-zinc-700"
+                    disabled={!isProductInStock}
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-[#18181B]/70 dark:text-zinc-300 hover:bg-pink-50 dark:hover:bg-zinc-700 disabled:opacity-40"
                     aria-label="Increase quantity"
                   >
                     <Plus className="w-3.5 h-3.5" />
@@ -250,16 +275,20 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <button
                   id="modal-add-to-cart-btn"
                   onClick={handleAdd}
-                  disabled={addedAnimation}
+                  disabled={addedAnimation || isSelectedSizeDisabled}
                   className={`flex-1 h-11 px-4 rounded-full font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-sm whitespace-nowrap ${
-                    addedAnimation
+                    isSelectedSizeDisabled
+                      ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed'
+                      : addedAnimation
                       ? 'bg-emerald-600 text-white'
                       : 'bg-[#18181B] dark:bg-pink-600 text-white hover:bg-[#DB2777] dark:hover:bg-pink-500'
                   }`}
                 >
                   <ShoppingBag className="w-4 h-4 shrink-0" />
                   <span className="truncate">
-                    {addedAnimation
+                    {!isProductInStock
+                      ? 'Sold Out'
+                      : addedAnimation
                       ? 'Added to Bag!'
                       : `Add · ৳ ${(product.priceBDT * quantity).toLocaleString()}`}
                   </span>
@@ -280,20 +309,17 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <Truck className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" /> Inspect Before Paying (COD)
                 </span>
                 <a
-                  href={`https://wa.me/${STORE_CONTACT.whatsappNumber}`}
+                  href={`https://wa.me/${storeConfig.whatsappNumber || '8801613817630'}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 tabular-nums hover:text-[#DB2777] dark:hover:text-pink-400"
                 >
-                  <Phone className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" /> {STORE_CONTACT.primaryPhone}
+                  <Phone className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" /> {storeConfig.primaryPhone}
                 </a>
               </div>
             </div>
-
           </div>
-
         </div>
-
       </div>
     </div>
   );

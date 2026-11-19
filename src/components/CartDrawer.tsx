@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  X, 
-  Trash2, 
-  Plus, 
-  Minus, 
-  ShoppingBag, 
-  ShieldCheck, 
-  Truck, 
-  ArrowRight, 
-  ArrowLeft, 
-  MessageCircle, 
-  AlertCircle
+import {
+  X,
+  Trash2,
+  Plus,
+  Minus,
+  ShoppingBag,
+  ShieldCheck,
+  Truck,
+  ArrowRight,
+  ArrowLeft,
+  MessageCircle,
+  AlertCircle,
 } from 'lucide-react';
-import { CartItem } from '../types';
+import { CartItem, PromoRule, StoreConfig } from '../types';
 import { trackBeginCheckout, trackPurchase } from '../utils/analytics';
-import { STORE_CONTACT, DELIVERY_RATES } from '../data/products';
+import { DEFAULT_STORE_CONFIG, STORE_CONTACT } from '../data/products';
+import { createGuestOrder, generateOrderCode } from '../lib/storeService';
 
 export const WHATSAPP_PHONE_NUMBER = STORE_CONTACT.whatsappNumber;
 
@@ -22,6 +23,7 @@ interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   cartItems: CartItem[];
+  storeConfig?: StoreConfig;
   onUpdateQuantity: (productId: string, size: number | string, quantity: number, variantId?: string) => void;
   onRemoveItem: (productId: string, size: number | string, variantId?: string) => void;
   onClearCart: () => void;
@@ -32,30 +34,47 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   isOpen,
   onClose,
   cartItems,
+  storeConfig = DEFAULT_STORE_CONFIG,
   onUpdateQuantity,
   onRemoveItem,
   onClearCart,
-  onShowToast
+  onShowToast,
 }) => {
   const [step, setStep] = useState<'cart' | 'checkout'>('cart');
   const [deliveryArea, setDeliveryArea] = useState<'inside_dhaka' | 'outside_dhaka'>('inside_dhaka');
   const [promoCode, setPromoCode] = useState('');
-  const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+  const [appliedPromoRule, setAppliedPromoRule] = useState<PromoRule | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
-  
+
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [customerNote, setCustomerNote] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const activePromos = (storeConfig.promoCodes || []).filter((p) => p.active);
 
   useEffect(() => {
     if (!isOpen || cartItems.length === 0) {
       setStep('cart');
       setValidationError(null);
       setPromoError(null);
+      setIsSubmitting(false);
     }
   }, [isOpen, cartItems.length]);
+
+  useEffect(() => {
+    if (appliedPromoRule) {
+      const updated = activePromos.find((p) => p.code.toUpperCase() === appliedPromoRule.code.toUpperCase());
+      if (!updated) {
+        setAppliedPromoRule(null);
+        setPromoCode('');
+      } else {
+        setAppliedPromoRule(updated);
+      }
+    }
+  }, [storeConfig.promoCodes]);
 
   if (!isOpen) return null;
 
@@ -65,30 +84,38 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   );
 
   const deliveryFee =
-    deliveryArea === 'inside_dhaka' ? DELIVERY_RATES.insideDhaka : DELIVERY_RATES.outsideDhaka;
-  
+    deliveryArea === 'inside_dhaka' ? storeConfig.insideDhakaFee : storeConfig.outsideDhakaFee;
+
   let discountBDT = 0;
-  if (appliedPromo === 'DHAKAGENZ') {
-    discountBDT = Math.min(Math.round(subtotalBDT * 0.1), 100);
-  } else if (appliedPromo === 'HAXMAHIN') {
-    discountBDT = 200;
+  if (appliedPromoRule) {
+    if (appliedPromoRule.type === 'percent') {
+      const pctDiscount = Math.round((subtotalBDT * appliedPromoRule.value) / 100);
+      discountBDT = appliedPromoRule.maxDiscountBDT
+        ? Math.min(pctDiscount, appliedPromoRule.maxDiscountBDT)
+        : pctDiscount;
+    } else {
+      discountBDT = Math.min(subtotalBDT, appliedPromoRule.value);
+    }
   }
 
   const totalBDT = Math.max(0, subtotalBDT + deliveryFee - discountBDT);
   const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const dispatchPhone = storeConfig.primaryPhone || '01613-817630';
+  const dispatchWhatsApp = storeConfig.whatsappNumber || '8801613817630';
 
   const applyPromoValue = (rawCode: string) => {
     const code = rawCode.trim().toUpperCase();
-    if (code === 'DHAKAGENZ' || code === 'HAXMAHIN') {
-      setAppliedPromo(code);
-      setPromoCode(code);
+    const matched = activePromos.find((p) => p.code.toUpperCase() === code);
+    if (matched) {
+      setAppliedPromoRule(matched);
+      setPromoCode(matched.code.toUpperCase());
       setPromoError(null);
     } else {
-      setPromoError('Invalid promo code. Use DHAKAGENZ or HAXMAHIN below.');
+      setPromoError('Invalid or expired promo code.');
     }
   };
 
-  const buildWhatsAppOrderMessage = (): string => {
+  const buildWhatsAppOrderMessage = (orderCode: string): string => {
     const areaLabel = deliveryArea === 'inside_dhaka' ? 'Inside Dhaka' : 'Outside Dhaka';
 
     const itemsSummary = cartItems
@@ -103,6 +130,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       .join('\n\n');
 
     let message = `🛍️ *NEW ORDER - AESTHÉ STEPS*\n`;
+    message += `• *Order Ref:* #${orderCode}\n`;
     message += `==============================\n\n`;
     message += `*CUSTOMER DETAILS:*\n`;
     message += `• *Full Name:* ${customerName.trim()}\n`;
@@ -117,8 +145,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     message += `*BILLING SUMMARY:*\n`;
     message += `• Subtotal: ৳${subtotalBDT.toLocaleString()}\n`;
     message += `• Delivery Fee (${areaLabel}): ৳${deliveryFee}\n`;
-    if (discountBDT > 0 && appliedPromo) {
-      message += `• Discount (${appliedPromo}): -৳${discountBDT.toLocaleString()}\n`;
+    if (discountBDT > 0 && appliedPromoRule) {
+      message += `• Discount (${appliedPromoRule.code}): -৳${discountBDT.toLocaleString()}\n`;
     }
     message += `• *TOTAL PAYABLE:* ৳${totalBDT.toLocaleString()}\n`;
     message += `• *Payment Method:* Cash on Delivery (COD)\n\n`;
@@ -136,22 +164,53 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     setStep('checkout');
   };
 
-  const handleWhatsAppCheckout = (e: React.FormEvent) => {
+  const handleWhatsAppCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setValidationError(null);
 
     const name = customerName.trim();
     const phone = customerPhone.trim();
     const address = customerAddress.trim();
 
-    if (!name || !phone || !address) {
-      setValidationError('Please fill in your full name, phone number, and delivery address.');
+    if (!name || phone.length < 6 || address.length < 4) {
+      setValidationError('Please enter your full name, valid phone number, and complete delivery address.');
       return;
     }
 
-    const orderMessage = buildWhatsAppOrderMessage();
+    setIsSubmitting(true);
+    const orderCode = generateOrderCode();
+
+    try {
+      await createGuestOrder({
+        orderCode,
+        customerName: name,
+        customerPhone: phone,
+        customerAddress: address,
+        customerNote: customerNote.trim() || undefined,
+        deliveryArea,
+        deliveryFee,
+        promoCode: appliedPromoRule?.code,
+        discountBDT,
+        subtotalBDT,
+        totalBDT,
+        items: cartItems.map((item) => ({
+          productId: item.product.id,
+          productName: item.product.name,
+          ...(item.selectedVariant?.name ? { variantName: item.selectedVariant.name } : {}),
+          size: item.selectedSize,
+          quantity: item.quantity,
+          unitPriceBDT: item.product.priceBDT,
+          lineTotalBDT: item.product.priceBDT * item.quantity,
+        })),
+      });
+    } catch (err) {
+      console.warn('Cloud order sync warning (continuing to WhatsApp):', err);
+    }
+
+    const orderMessage = buildWhatsAppOrderMessage(orderCode);
     const encodedMessage = encodeURIComponent(orderMessage);
-    const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE_NUMBER}?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/${dispatchWhatsApp}?text=${encodedMessage}`;
 
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
 
@@ -167,21 +226,23 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     setCustomerPhone('');
     setCustomerAddress('');
     setCustomerNote('');
+    setAppliedPromoRule(null);
+    setPromoCode('');
+    setIsSubmitting(false);
 
     onClose();
-    onShowToast?.('Order sent via WhatsApp! We will confirm your delivery shortly.');
+    onShowToast?.(`Order #${orderCode} logged & opened in WhatsApp (${dispatchPhone}).`);
   };
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
-      <div 
+      <div
         className="absolute inset-0 bg-black/75 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-8 sm:pl-10">
         <div className="w-screen max-w-md bg-[#FAF6F0] dark:bg-[#121217] border-l border-pink-200 dark:border-zinc-800 text-[#18181B] dark:text-zinc-100 shadow-2xl flex flex-col justify-between transition-colors">
-          
           {/* Drawer Header */}
           <div className="p-5 border-b border-pink-200/80 dark:border-zinc-800 flex items-center justify-between bg-[#FDF2F4] dark:bg-zinc-900">
             {step === 'checkout' ? (
@@ -226,13 +287,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
           {/* Drawer Body */}
           <div className="flex-1 overflow-y-auto p-5 space-y-5">
-            
             {cartItems.length === 0 ? (
               <div className="text-center py-16 space-y-4">
                 <div className="w-16 h-16 rounded-full bg-white dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 text-[#18181B]/40 dark:text-zinc-400 flex items-center justify-center mx-auto shadow-2xs">
                   <ShoppingBag className="w-7 h-7" />
                 </div>
-                <h3 className="text-base font-bold text-[#18181B] dark:text-zinc-50 font-serif-display">Your shopping bag is empty</h3>
+                <h3 className="text-base font-bold text-[#18181B] dark:text-zinc-50 font-serif-display">
+                  Your shopping bag is empty
+                </h3>
                 <p className="text-xs text-[#18181B]/65 dark:text-zinc-400 max-w-xs mx-auto leading-relaxed">
                   Explore our latest silhouettes and choose your size to start your order.
                 </p>
@@ -258,7 +320,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         <div className="w-16 h-14 rounded-xl overflow-hidden bg-[#FFF5F7] dark:bg-zinc-800 border border-pink-100 dark:border-zinc-700 shrink-0">
                           <img
                             src={itemImage}
-                            alt={item.selectedVariant ? `${item.product.name} in ${item.selectedVariant.name}` : item.product.name}
+                            alt={
+                              item.selectedVariant
+                                ? `${item.product.name} in ${item.selectedVariant.name}`
+                                : item.product.name
+                            }
                             referrerPolicy="no-referrer"
                             className="w-full h-full object-cover"
                           />
@@ -298,7 +364,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                           <div className="flex items-center gap-1.5 bg-[#FAF6F0] dark:bg-zinc-800 px-2 py-1 rounded-lg border border-pink-200 dark:border-zinc-700 tabular-nums">
                             <button
-                              onClick={() => onUpdateQuantity(item.product.id, item.selectedSize, item.quantity - 1, item.selectedVariant?.id)}
+                              onClick={() =>
+                                onUpdateQuantity(
+                                  item.product.id,
+                                  item.selectedSize,
+                                  item.quantity - 1,
+                                  item.selectedVariant?.id
+                                )
+                              }
                               className="text-[#18181B]/70 dark:text-zinc-300 hover:text-[#18181B] dark:hover:text-white"
                               aria-label="Decrease quantity"
                             >
@@ -308,7 +381,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                               {item.quantity}
                             </span>
                             <button
-                              onClick={() => onUpdateQuantity(item.product.id, item.selectedSize, item.quantity + 1, item.selectedVariant?.id)}
+                              onClick={() =>
+                                onUpdateQuantity(
+                                  item.product.id,
+                                  item.selectedSize,
+                                  item.quantity + 1,
+                                  item.selectedVariant?.id
+                                )
+                              }
                               className="text-[#18181B]/70 dark:text-zinc-300 hover:text-[#18181B] dark:hover:text-white"
                               aria-label="Increase quantity"
                             >
@@ -343,7 +423,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       }`}
                     >
                       <div className="font-bold">Inside Dhaka</div>
-                      <div className="text-[11px] text-[#18181B]/65 dark:text-zinc-400 mt-0.5">24–48h · ৳ {DELIVERY_RATES.insideDhaka}</div>
+                      <div className="text-[11px] text-[#18181B]/65 dark:text-zinc-400 mt-0.5">
+                        24–48h · ৳ {storeConfig.insideDhakaFee}
+                      </div>
                     </button>
 
                     <button
@@ -356,74 +438,76 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       }`}
                     >
                       <div className="font-bold">Outside Dhaka</div>
-                      <div className="text-[11px] text-[#18181B]/65 dark:text-zinc-400 mt-0.5">48–72h · ৳ {DELIVERY_RATES.outsideDhaka}</div>
+                      <div className="text-[11px] text-[#18181B]/65 dark:text-zinc-400 mt-0.5">
+                        48–72h · ৳ {storeConfig.outsideDhakaFee}
+                      </div>
                     </button>
                   </div>
                 </div>
 
-                {/* Promo Code Input & One-Tap Offer Chips */}
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={promoCode}
-                      onChange={(e) => {
-                        setPromoCode(e.target.value);
-                        if (promoError) setPromoError(null);
-                      }}
-                      placeholder="Promo code"
-                      className="flex-1 bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-[#18181B] dark:text-zinc-100 placeholder-[#18181B]/40 dark:placeholder-zinc-500 focus:outline-none focus:border-[#F472B6] uppercase"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => applyPromoValue(promoCode)}
-                      className="px-4 py-2.5 rounded-xl bg-[#18181B] dark:bg-pink-600 hover:bg-[#DB2777] dark:hover:bg-pink-500 text-xs font-bold text-white transition-colors uppercase tracking-wider shrink-0"
-                    >
-                      Apply
-                    </button>
-                  </div>
-
-                  {promoError && (
-                    <p className="text-[11px] font-medium text-rose-600 dark:text-rose-400 px-1">
-                      {promoError}
-                    </p>
-                  )}
-
-                  {!appliedPromo ? (
-                    <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-[#18181B]/65 dark:text-zinc-400">
-                      <span>Available:</span>
-                      <button
-                        type="button"
-                        onClick={() => applyPromoValue('DHAKAGENZ')}
-                        className="px-2 py-0.5 rounded-md bg-white dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 font-mono font-semibold text-[#DB2777] dark:text-pink-400 hover:border-[#DB2777] transition-colors"
-                      >
-                        DHAKAGENZ
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => applyPromoValue('HAXMAHIN')}
-                        className="px-2 py-0.5 rounded-md bg-white dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 font-mono font-semibold text-[#DB2777] dark:text-pink-400 hover:border-[#DB2777] transition-colors"
-                      >
-                        HAXMAHIN
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="text-[11px] text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 px-3 py-2 rounded-xl flex justify-between items-center font-medium tabular-nums">
-                      <span>Code &apos;{appliedPromo}&apos; applied ({appliedPromo === 'DHAKAGENZ' ? '10% off up to ৳100' : '৳200 off'})</span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setAppliedPromo(null);
-                          setPromoCode('');
+                {/* Promo Code Input & Active Offer Chips */}
+                {(activePromos.length > 0 || appliedPromoRule) && (
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={promoCode}
+                        onChange={(e) => {
+                          setPromoCode(e.target.value);
+                          if (promoError) setPromoError(null);
                         }}
-                        className="text-[#18181B]/60 dark:text-zinc-400 hover:text-[#18181B]"
-                        aria-label="Remove promo code"
+                        placeholder="Promo code"
+                        className="flex-1 bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-[#18181B] dark:text-zinc-100 placeholder-[#18181B]/40 dark:placeholder-zinc-500 focus:outline-none focus:border-[#F472B6] uppercase"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => applyPromoValue(promoCode)}
+                        className="px-4 py-2.5 rounded-xl bg-[#18181B] dark:bg-pink-600 hover:bg-[#DB2777] dark:hover:bg-pink-500 text-xs font-bold text-white transition-colors uppercase tracking-wider shrink-0"
                       >
-                        ✕
+                        Apply
                       </button>
                     </div>
-                  )}
-                </div>
+
+                    {promoError && (
+                      <p className="text-[11px] font-medium text-rose-600 dark:text-rose-400 px-1">
+                        {promoError}
+                      </p>
+                    )}
+
+                    {!appliedPromoRule ? (
+                      <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-[#18181B]/65 dark:text-zinc-400">
+                        <span>Available:</span>
+                        {activePromos.map((promo) => (
+                          <button
+                            key={promo.code}
+                            type="button"
+                            onClick={() => applyPromoValue(promo.code)}
+                            className="px-2 py-0.5 rounded-md bg-white dark:bg-zinc-800 border border-pink-200 dark:border-zinc-700 font-mono font-semibold text-[#DB2777] dark:text-pink-400 hover:border-[#DB2777] transition-colors"
+                          >
+                            {promo.code}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-[11px] text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 px-3 py-2 rounded-xl flex justify-between items-center font-medium tabular-nums">
+                        <span>
+                          Code &apos;{appliedPromoRule.code}&apos; applied ({appliedPromoRule.label})
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAppliedPromoRule(null);
+                            setPromoCode('');
+                          }}
+                          className="text-[#18181B]/60 dark:text-zinc-400 hover:text-[#18181B]"
+                          aria-label="Remove promo code"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </>
             ) : (
               /* STEP 2: CHECKOUT FORM */
@@ -441,12 +525,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                   <div className="space-y-1.5 max-h-28 overflow-y-auto pr-1">
                     {cartItems.map((item) => (
-                      <div 
+                      <div
                         key={`${item.product.id}-${item.selectedSize}-${item.selectedVariant?.id || 'std'}`}
                         className="flex items-center justify-between text-[11px] text-[#18181B]/80 dark:text-zinc-300 gap-2"
                       >
                         <span className="truncate">
-                          {item.quantity} × {item.product.name} (Size {item.selectedSize}{item.selectedVariant ? `, ${item.selectedVariant.name}` : ''})
+                          {item.quantity} × {item.product.name} (Size {item.selectedSize}
+                          {item.selectedVariant ? `, ${item.selectedVariant.name}` : ''})
                         </span>
                         <span className="font-semibold text-[#18181B] dark:text-zinc-100 shrink-0">
                           ৳ {(item.product.priceBDT * item.quantity).toLocaleString()}
@@ -457,12 +542,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                   <div className="pt-2 border-t border-pink-100 dark:border-zinc-800 space-y-1 text-[11px] text-[#18181B]/70 dark:text-zinc-400">
                     <div className="flex items-center justify-between">
-                      <span>Delivery ({deliveryArea === 'inside_dhaka' ? `Inside Dhaka · ৳${DELIVERY_RATES.insideDhaka}` : `Outside Dhaka · ৳${DELIVERY_RATES.outsideDhaka}`})</span>
+                      <span>
+                        Delivery (
+                        {deliveryArea === 'inside_dhaka'
+                          ? `Inside Dhaka · ৳${storeConfig.insideDhakaFee}`
+                          : `Outside Dhaka · ৳${storeConfig.outsideDhakaFee}`}
+                        )
+                      </span>
                       <span className="font-bold text-emerald-600 dark:text-emerald-400">Cash on Delivery</span>
                     </div>
-                    {discountBDT > 0 && (
+                    {discountBDT > 0 && appliedPromoRule && (
                       <div className="flex items-center justify-between text-emerald-600 dark:text-emerald-400 font-semibold">
-                        <span>Discount {appliedPromo === 'DHAKAGENZ' ? '(10% off up to ৳100)' : `(${appliedPromo})`}:</span>
+                        <span>Discount ({appliedPromoRule.code}):</span>
                         <span>- ৳ {discountBDT.toLocaleString()}</span>
                       </div>
                     )}
@@ -475,7 +566,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       Delivery Details
                     </h3>
                     <p className="text-[11px] text-[#18181B]/65 dark:text-zinc-400">
-                      Complete your details below to send your order directly on WhatsApp.
+                      Complete your details below to log your order &amp; send it on WhatsApp.
                     </p>
                   </div>
 
@@ -494,6 +585,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       id="checkout-name"
                       type="text"
                       required
+                      maxLength={100}
                       value={customerName}
                       onChange={(e) => {
                         setCustomerName(e.target.value);
@@ -512,6 +604,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       id="checkout-phone"
                       type="tel"
                       required
+                      maxLength={30}
                       value={customerPhone}
                       onChange={(e) => {
                         setCustomerPhone(e.target.value);
@@ -530,6 +623,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       id="checkout-address"
                       required
                       rows={3}
+                      maxLength={400}
                       value={customerAddress}
                       onChange={(e) => {
                         setCustomerAddress(e.target.value);
@@ -550,6 +644,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <textarea
                       id="checkout-note"
                       rows={2}
+                      maxLength={400}
                       value={customerNote}
                       onChange={(e) => setCustomerNote(e.target.value)}
                       placeholder="e.g. Call before arrival / deliver after 4 PM"
@@ -560,13 +655,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <div className="p-3 rounded-2xl bg-[#FFF5F7] dark:bg-zinc-900 border border-pink-200/80 dark:border-zinc-800 flex items-start gap-2.5 text-[11px] text-[#18181B]/75 dark:text-zinc-400">
                     <MessageCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                     <p className="leading-relaxed">
-                      Submitting opens WhatsApp directly with us ({STORE_CONTACT.primaryPhone}) to confirm availability.
+                      Submitting saves your order reference &amp; opens WhatsApp directly with us ({dispatchPhone}) to confirm availability.
                     </p>
                   </div>
                 </form>
               </div>
             )}
-
           </div>
 
           {/* Drawer Footer */}
@@ -577,21 +671,25 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <div className="space-y-1.5 text-xs text-[#18181B]/75 dark:text-zinc-400">
                     <div className="flex justify-between">
                       <span>Subtotal</span>
-                      <span className="text-[#18181B] dark:text-zinc-100 font-bold">৳ {subtotalBDT.toLocaleString()}</span>
+                      <span className="text-[#18181B] dark:text-zinc-100 font-bold">
+                        ৳ {subtotalBDT.toLocaleString()}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Delivery ({deliveryArea === 'inside_dhaka' ? 'Dhaka' : 'Outside'})</span>
                       <span className="font-semibold text-[#18181B] dark:text-zinc-200">৳ {deliveryFee}</span>
                     </div>
-                    {discountBDT > 0 && (
+                    {discountBDT > 0 && appliedPromoRule && (
                       <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-bold">
-                        <span>Discount {appliedPromo === 'DHAKAGENZ' ? '(10% off up to ৳100)' : appliedPromo ? `(${appliedPromo})` : ''}</span>
+                        <span>Discount ({appliedPromoRule.code})</span>
                         <span>- ৳ {discountBDT.toLocaleString()}</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm font-bold text-[#18181B] dark:text-zinc-100 pt-2 border-t border-pink-100 dark:border-zinc-800">
                       <span>Total Payable</span>
-                      <span className="text-[#DB2777] dark:text-pink-400 text-base font-bold">৳ {totalBDT.toLocaleString()}</span>
+                      <span className="text-[#DB2777] dark:text-pink-400 text-base font-bold">
+                        ৳ {totalBDT.toLocaleString()}
+                      </span>
                     </div>
                   </div>
 
@@ -614,17 +712,20 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <>
                   <div className="flex items-center justify-between text-xs text-[#18181B]/80 dark:text-zinc-300">
                     <span className="font-medium">Total Payable (COD)</span>
-                    <span className="text-[#DB2777] dark:text-pink-400 text-base font-bold">৳ {totalBDT.toLocaleString()}</span>
+                    <span className="text-[#DB2777] dark:text-pink-400 text-base font-bold">
+                      ৳ {totalBDT.toLocaleString()}
+                    </span>
                   </div>
 
                   <button
                     id="checkout-submit-whatsapp"
                     type="submit"
                     form="whatsapp-checkout-form"
-                    className="w-full py-3.5 rounded-full bg-[#18181B] dark:bg-pink-600 hover:bg-[#DB2777] dark:hover:bg-pink-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
+                    disabled={isSubmitting}
+                    className="w-full py-3.5 rounded-full bg-[#18181B] dark:bg-pink-600 hover:bg-[#DB2777] dark:hover:bg-pink-500 disabled:opacity-60 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
                   >
                     <MessageCircle className="w-4 h-4 text-emerald-400" />
-                    <span>Send Order via WhatsApp</span>
+                    <span>{isSubmitting ? 'Saving Order...' : 'Send Order via WhatsApp'}</span>
                   </button>
 
                   <div className="flex items-center justify-center gap-2 text-[11px] text-[#18181B]/65 dark:text-zinc-400 font-medium">
@@ -635,7 +736,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               )}
             </div>
           )}
-
         </div>
       </div>
     </div>
