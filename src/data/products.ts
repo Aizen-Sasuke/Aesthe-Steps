@@ -16,6 +16,8 @@ export const STORE_CONTACT = {
   whatsappNumber: '8801613817630',
   location: 'Dhaka, Bangladesh',
   email: 'aesthesteps@gmail.com',
+  facebookUrl: 'https://www.facebook.com/people/Aesth%C3%A9-Steps/61585719196848/',
+  instagramUrl: 'https://www.instagram.com/aesthe.steps/',
 };
 
 export const DELIVERY_RATES = {

@@ -136,9 +136,14 @@ export function subscribePublishedProducts(
   const q = query(collection(db, path), where('isPublished', '==', true));
   return onSnapshot(
     q,
-    (snapshot) => {
+    async (snapshot) => {
       if (snapshot.empty) {
-        onData(ALL_PRODUCTS);
+        try {
+          const cfgSnap = await getDoc(doc(db, 'storeConfig', 'main'));
+          onData(cfgSnap.exists() ? [] : ALL_PRODUCTS);
+        } catch {
+          onData(ALL_PRODUCTS);
+        }
         return;
       }
       const list = snapshot.docs

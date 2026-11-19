@@ -1,6 +1,6 @@
 import React from 'react';
-import { ArrowRight, MapPin } from 'lucide-react';
-import { LOOKBOOK_IMAGES } from '../data/products';
+import { ArrowRight, MapPin, Instagram } from 'lucide-react';
+import { LOOKBOOK_IMAGES, STORE_CONTACT } from '../data/products';
 import { Product } from '../types';
 
 interface LookbookSectionProps {
@@ -78,7 +78,15 @@ export const LookbookSection: React.FC<LookbookSectionProps> = ({
               <span className="flex items-center gap-1.5 font-medium">
                 <MapPin className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" /> Tap any look to view details
               </span>
-              <span className="font-semibold text-[#DB2777] dark:text-pink-400">Dhaka Lookbook</span>
+              <a
+                href={STORE_CONTACT.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 font-semibold text-[#DB2777] dark:text-pink-400 hover:underline underline-offset-2"
+              >
+                <Instagram className="w-3.5 h-3.5" />
+                <span>@aesthe.steps</span>
+              </a>
             </div>
           </div>
 

@@ -10,9 +10,10 @@ import {
   MessageCircle,
   Ruler,
   Lock,
+  Instagram,
 } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
-import { ALL_PRODUCTS, DEFAULT_STORE_CONFIG } from '../data/products';
+import { ALL_PRODUCTS, DEFAULT_STORE_CONFIG, STORE_CONTACT } from '../data/products';
 import { Product, StoreConfig } from '../types';
 
 interface FooterProps {
@@ -84,6 +85,35 @@ export const Footer: React.FC<FooterProps> = ({
             <p className="text-xs font-semibold text-[#DB2777] dark:text-pink-400">
               UK Sizes 6–11 · Nationwide COD
             </p>
+            <div className="flex items-center gap-2.5 pt-1">
+              <a
+                href={STORE_CONTACT.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 hover:border-[#DB2777] dark:hover:border-pink-400 text-xs font-semibold text-[#18181B] dark:text-zinc-200 hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors"
+                aria-label="Aesthé Steps on Instagram"
+              >
+                <Instagram className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400" />
+                <span>@aesthe.steps</span>
+              </a>
+              <a
+                href={STORE_CONTACT.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-pink-200 dark:border-zinc-800 hover:border-[#DB2777] dark:hover:border-pink-400 text-xs font-semibold text-[#18181B] dark:text-zinc-200 hover:text-[#DB2777] dark:hover:text-pink-400 transition-colors"
+                aria-label="Aesthé Steps on Facebook"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-3.5 h-3.5 text-[#DB2777] dark:text-pink-400 shrink-0"
+                  aria-hidden="true"
+                >
+                  <path d="M13.5 21v-7.5h2.5l.4-3H13.5V8.6c0-.9.2-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H8v3h2.5V21h3z" />
+                </svg>
+                <span>Facebook</span>
+              </a>
+            </div>
           </div>
 
           {/* Column 2: Direct Product Shortcuts */}

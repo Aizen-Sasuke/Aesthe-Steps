@@ -96,9 +96,7 @@ function StorefrontApp() {
   useEffect(() => {
     testConnection();
     const unsubProducts = subscribePublishedProducts((liveProducts) => {
-      if (liveProducts.length > 0) {
-        setProducts(liveProducts);
-      }
+      setProducts(liveProducts);
     });
     const unsubConfig = subscribeStoreConfig((liveConfig) => {
       setStoreConfig(liveConfig);
